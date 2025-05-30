@@ -1,0 +1,12 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+.qodo
+.vscode
+addons
+*.uid
+project_time.json
+*.tmp
+*.import
+*.pck
+export_presets.cfg

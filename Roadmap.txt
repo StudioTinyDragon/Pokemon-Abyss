@@ -1,0 +1,33 @@
+Roadmap for Pokémon Project (Godot 4)
+
+Phase 1: Foundation
+- Set up Godot project and version control
+- Learn Godot basics (scenes, nodes, scripting)
+- Create player movement and simple map
+
+Phase 1.5: Story Roadmap
+- Basic story premise
+- Story Roadmap & Stretchgoals
+- Map overlay
+
+Phase 2: Core Gameplay
+- Create basic Pokémon and battle system
+- Implement NPCs and dialogue
+- Design and load multiple maps
+- Add wild Pokémon encounters
+
+Phase 3: Game Features
+- Expand Pokémon roster (Gen 1)
+- Add catching and party management
+- Implement trainer battles
+- Add basic inventory (items, Pokéballs, potions)
+
+Phase 4: Polish & Expansion
+- Improve UI/UX (menus, battle screens)
+- Add sound and music
+- Polish graphics and animations
+- Playtesting and bug fixing
+
+Phase 5: Stretch Goals
+- Add more features (trading, online, more generations)
+Review and adjust roadmap as you learn and progress!
