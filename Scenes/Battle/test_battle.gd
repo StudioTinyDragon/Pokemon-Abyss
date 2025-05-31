@@ -90,8 +90,35 @@ func _on_add_kangaskhan_as_enemy_pressed() -> void:
 	print("Kangaskhan added as enemy for debug.")
 
 
+func execute_move(attacker, defender, move_instance, move_name, damage_calculator):
+	if not attacker or not defender or not move_instance:
+		return
+	var damage = 0
+	if move_instance.moveCat == "Physical":
+		damage = damage_calculator.calculate_move_damage(attacker, defender, move_instance)
+	elif move_instance.moveCat == "Special":
+		damage = damage_calculator.calculate_special_move_damage(attacker, defender, move_instance)
+	else:
+		print("Move category not supported for damage calculation.")
+	if "currentHP" in defender:
+		defender.currentHP = max(0, defender.currentHP - damage)
+		print("%s used %s!" % [attacker.Name, move_name])
+		print("%s HP after attack: %d" % [defender.Name, defender.currentHP])
+		# Print both player and enemy HP after each attack
+		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
+			print("Player HP:", attacker.currentHP)
+		elif defender.has_method("is_in_group") and defender.is_in_group("player_pokemon"):
+			print("Player HP:", defender.currentHP)
+		if attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
+			print("Enemy used %s!" % move_name)
+			print("Enemy HP:", attacker.currentHP)
+		elif defender.has_method("is_in_group") and defender.is_in_group("enemy_pokemon"):
+			print("Enemy HP:", defender.currentHP)
+	else:
+		print("No valid defender HP.")
+
+
 func _on_move_1_button_pressed() -> void:
-	# Get player and enemy
 	if get_tree() == null:
 		print("Error: get_tree() is null!")
 		return
@@ -104,32 +131,53 @@ func _on_move_1_button_pressed() -> void:
 	if enemies.size() > 0:
 		enemy_pokemon = enemies[0]
 
-	# Get move name from slot 1
+	# Get move name from slot 1 for player
+	var player_move_name = null
 	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		var move_name = player_pokemon.currentMoves[0]
-		# Try to load the move script by name (assumes move scripts are in Scripts/Moves/ and named <move_name>.gd)
-		var move_path = "res://Scripts/Moves/%s.gd" % move_name
-		if ResourceLoader.exists(move_path):
-			var move_resource = load(move_path)
-			var move_instance = move_resource.new()
-			# Load damage_calculator singleton
-			var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
-			# Calculate damage
-			var damage = 0
-			if move_instance.moveCat == "Physical":
-				damage = damage_calculator.calculate_move_damage(player_pokemon, enemy_pokemon, move_instance)
-			elif move_instance.moveCat == "Special":
-				damage = damage_calculator.calculate_special_move_damage(player_pokemon, enemy_pokemon, move_instance)
-			else:
-				print("Move category not supported for damage calculation.")
-			# Apply damage
-			if enemy_pokemon and "currentHP" in enemy_pokemon:
-				enemy_pokemon.currentHP = max(0, enemy_pokemon.currentHP - damage)
-				print("%s used %s!" % [player_pokemon.Name, move_name])
-				print("Enemy HP after attack:", enemy_pokemon.currentHP)
-			else:
-				print("No enemy to attack or enemy has no HP.")
+		player_move_name = player_pokemon.currentMoves[0]
+
+	# Enemy selects a random valid move
+	var enemy_move_name = null
+	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
+		var rng = RandomNumberGenerator.new()
+		enemy_move_name = enemy_pokemon.currentMoves[rng.randi_range(0, enemy_pokemon.currentMoves.size() - 1)]
+
+	# Load move scripts
+	var player_move_instance = null
+	if player_move_name:
+		var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
+		if ResourceLoader.exists(player_move_path):
+			var move_resource = load(player_move_path)
+			player_move_instance = move_resource.new()
+	var enemy_move_instance = null
+	if enemy_move_name:
+		var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
+		if ResourceLoader.exists(enemy_move_path):
+			var move_resource = load(enemy_move_path)
+			enemy_move_instance = move_resource.new()
+
+	# Load damage_calculator
+	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
+
+	# Determine initiative
+	var player_initiative = player_pokemon.Iniative if player_pokemon else 0
+	var enemy_initiative = enemy_pokemon.Iniative if enemy_pokemon else 0
+
+	# Execute moves in order of initiative
+	if player_move_instance and enemy_move_instance:
+		if player_initiative > enemy_initiative:
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+		elif enemy_initiative > player_initiative:
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
 		else:
-			print("Move script not found for:", move_name)
+			# If tied, player goes first
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	elif player_move_instance:
+		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+	elif enemy_move_instance:
+		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
 	else:
-		print("No move assigned to slot 1.")
+		print("No valid moves to execute.")
