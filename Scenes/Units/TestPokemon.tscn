@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dci36lvcxf0o6"]
+
+[ext_resource type="Script" uid="uid://x7n5ju5y8ei6" path="res://Scenes/Units/template_pokemon.gd" id="1_ntpmb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tn6nq"]
+
+[node name="TestPokemon" type="CharacterBody2D"]
+script = ExtResource("1_ntpmb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_tn6nq")
