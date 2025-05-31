@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cywjr1l5snmyj"]
+[gd_scene load_steps=3 format=3 uid="uid://53o3iw8kgj36"]
 
-[ext_resource type="Script" uid="uid://dq7a15cnixllj" path="res://Scenes/Units/template_pokemon.gd" id="1_ntpmb"]
+[ext_resource type="Script" uid="uid://bgpt0wsgmpbj3" path="res://Scenes/Units/test_pokemon.gd" id="1_f7h8m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tn6nq"]
 
 [node name="TestPokemon" type="CharacterBody2D"]
-script = ExtResource("1_ntpmb")
+script = ExtResource("1_f7h8m")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 
