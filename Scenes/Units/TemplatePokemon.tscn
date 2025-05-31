@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://53o3iw8kgj36"]
 
-[ext_resource type="Script" uid="uid://bgpt0wsgmpbj3" path="res://Scenes/Units/test_pokemon.gd" id="1_f7h8m"]
+[ext_resource type="Script" uid="uid://bgpt0wsgmpbj3" path="res://Scenes/Units/Kangaskhan.gd" id="1_f7h8m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tn6nq"]
 

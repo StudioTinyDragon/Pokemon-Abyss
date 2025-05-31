@@ -1,3 +1,104 @@
-[gd_scene format=3 uid="uid://cig6eqk1anw1k"]
+[gd_scene load_steps=2 format=3 uid="uid://cig6eqk1anw1k"]
+
+[ext_resource type="Script" uid="uid://cccnekk21q7i7" path="res://Scenes/Battle/test_battle.gd" id="1_8knuu"]
 
 [node name="TestBattle" type="Node2D"]
+script = ExtResource("1_8knuu")
+
+[node name="BattleOptions" type="Panel" parent="."]
+offset_left = 416.0
+offset_top = 833.0
+offset_right = 1598.0
+offset_bottom = 1046.0
+
+[node name="battleButton" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 16.0
+offset_right = 182.0
+offset_bottom = 71.0
+text = "Battle!"
+
+[node name="Button2" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 90.0
+offset_right = 190.0
+offset_bottom = 145.0
+
+[node name="Button3" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 213.0
+offset_top = 19.0
+offset_right = 380.0
+offset_bottom = 74.0
+
+[node name="Button4" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 91.0
+offset_right = 388.0
+offset_bottom = 146.0
+
+[node name="MoveOptions" type="Panel" parent="."]
+visible = false
+offset_left = 416.0
+offset_top = 833.0
+offset_right = 1598.0
+offset_bottom = 1046.0
+
+[node name="move1Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 16.0
+offset_right = 190.0
+offset_bottom = 71.0
+
+[node name="move2Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 90.0
+offset_right = 190.0
+offset_bottom = 145.0
+
+[node name="move3Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 213.0
+offset_top = 19.0
+offset_right = 380.0
+offset_bottom = 74.0
+
+[node name="move4Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 91.0
+offset_right = 388.0
+offset_bottom = 146.0
+
+[node name="SetMovesButton" type="Button" parent="."]
+offset_right = 429.0
+offset_bottom = 99.0
+theme_override_font_sizes/font_size = 50
+text = "Set Moves"
+
+[node name="addKangaskhan" type="Button" parent="."]
+offset_left = 507.0
+offset_top = 41.0
+offset_right = 947.0
+offset_bottom = 183.0
+theme_override_font_sizes/font_size = 50
+text = "add Kangaskhan"
+
+[node name="addKangaskhanAsEnemy" type="Button" parent="."]
+offset_left = 1118.0
+offset_top = 40.0
+offset_right = 1558.0
+offset_bottom = 182.0
+theme_override_font_sizes/font_size = 50
+text = "add Kangaskhan as enemy"
+
+[connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
+[connection signal="pressed" from="MoveOptions/move1Button" to="." method="_on_move_1_button_pressed"]
+[connection signal="pressed" from="SetMovesButton" to="." method="_on_set_moves_button_pressed"]
+[connection signal="pressed" from="addKangaskhan" to="." method="_on_add_kangaskhan_pressed"]
+[connection signal="pressed" from="addKangaskhanAsEnemy" to="." method="_on_add_kangaskhan_as_enemy_pressed"]
