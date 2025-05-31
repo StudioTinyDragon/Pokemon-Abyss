@@ -98,4 +98,25 @@ func SetMoves():
 			currentMoves.append(move)
 
 func _ready():
-	add_to_group("player_pokemon")
+	# Removed automatic group assignment. Group should be set in the battle scene.
+	pass
+
+# Utility methods for stat manipulation (needed for status moves like Tail Whip)
+func _has_exported_property(stat_name: String) -> bool:
+	for prop in get_property_list():
+		if prop.name == stat_name:
+			return true
+	return false
+
+func set_stat(stat_name: String, value):
+	if _has_exported_property(stat_name):
+		self.set(stat_name, value)
+	else:
+		print("[Kangaskhan] set_stat: Stat not found:", stat_name)
+
+func get_stat(stat_name: String):
+	if _has_exported_property(stat_name):
+		return self.get(stat_name)
+	else:
+		print("[Kangaskhan] get_stat: Stat not found:", stat_name)
+		return null

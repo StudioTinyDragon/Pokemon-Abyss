@@ -11,6 +11,14 @@ extends Node2D
 @onready var set_moves_button: Button = $SetMovesButton
 @onready var add_kangaskhan: Button = $addKangaskhan
 @onready var add_kangaskhan_as_enemy: Button = $addKangaskhanAsEnemy
+@onready var enemy_statblock: Panel = $EnemyStatblock
+@onready var enemy_name: Label = $EnemyStatblock/EnemyName
+@onready var current_enemy_hp: Label = $EnemyStatblock/CurrentEnemyHP
+@onready var current_enemy_status: Label = $EnemyStatblock/CurrentEnemyStatus
+@onready var own_statblock: Panel = $OwnStatblock
+@onready var pokemon_name: Label = $OwnStatblock/PokemonName
+@onready var current_pokemon_hp: Label = $OwnStatblock/CurrentPokemonHP
+@onready var current_pokemon_status: Label = $OwnStatblock/CurrentPokemonStatus
 
 
 
@@ -65,6 +73,8 @@ func _on_add_kangaskhan_pressed() -> void:
 	# Instance Kangaskhan scene and add to the scene tree for debug/party
 	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()
+	# Add to player group for logic separation
+	kangaskhan_instance.add_to_group("player_pokemon")
 	# Optionally set position or parent as needed
 	# Add to Units node if it exists
 	var units_node = get_node_or_null("../Units")
@@ -93,6 +103,19 @@ func _on_add_kangaskhan_as_enemy_pressed() -> void:
 func execute_move(attacker, defender, move_instance, move_name, damage_calculator):
 	if not attacker or not defender or not move_instance:
 		return
+	# Handle Status moves (like Tail Whip) separately
+	if move_instance.moveCat == "Status":
+		# Try to call a debuff or effect function if it exists
+		if move_instance.has_method("DebuffEnenmyDefensex1"):
+			# Only call if defender is a valid target, not attacker, and is in the enemy_pokemon group
+			if defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("enemy_pokemon"):
+				move_instance.DebuffEnenmyDefensex1(defender)
+				print("%s used %s!" % [attacker.Name, move_name])
+			else:
+				print("[Tail Whip] No valid enemy target for debuff. Defender: ", defender)
+		else:
+			print("Status move %s has no effect function implemented." % move_name)
+		return
 	var damage = 0
 	if move_instance.moveCat == "Physical":
 		damage = damage_calculator.calculate_move_damage(attacker, defender, move_instance)
@@ -107,13 +130,16 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		# Print both player and enemy HP after each attack
 		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
 			print("Player HP:", attacker.currentHP)
+			current_pokemon_hp.text = str(attacker.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("player_pokemon"):
 			print("Player HP:", defender.currentHP)
+			current_pokemon_hp.text = str(defender.currentHP)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
-			print("Enemy used %s!" % move_name)
 			print("Enemy HP:", attacker.currentHP)
+			current_enemy_hp.text = str(attacker.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("enemy_pokemon"):
 			print("Enemy HP:", defender.currentHP)
+			current_enemy_hp.text = str(defender.currentHP)
 	else:
 		print("No valid defender HP.")
 
