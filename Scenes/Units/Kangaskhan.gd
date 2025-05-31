@@ -28,12 +28,18 @@ extends CharacterBody2D
 
 
 # Statblock
-@export var Lvl1HP: int                       = 13
-@export var Lvl1Attack: int                   = 6
-@export var Lvl1Defense: int                  = 6
-@export var Lvl1SPAttack: int                 = 5
-@export var Lvl1SPDefense: int                = 6
+#region MinStats
+ 
+@export var Lvl1HP: int                         = 13
+@export var Lvl1Attack: int                     = 6
+@export var Lvl1Defense: int                    = 6
+@export var Lvl1SPAttack: int                   = 5
+@export var Lvl1SPDefense: int                  = 6
 @export var Lvl1Initiative: int                 = 6
+
+#endregion
+
+#region MaxStats
 
 @export var maxLvlHP: int                 = 320
 @export var maxLvlAttack: int             = 195
@@ -41,6 +47,10 @@ extends CharacterBody2D
 @export var maxLvlSPAttack: int           = 85
 @export var maxLvlSPDefense: int          = 165
 @export var maxLvlInitiative: int         = 185
+
+#endregion
+
+#region current Stats
 
 @warning_ignore("narrowing_conversion")
 @export var currentMaxHP :int             = (maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP
@@ -54,6 +64,8 @@ extends CharacterBody2D
 @export var currentSPDefense :int         = (maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense
 @warning_ignore("narrowing_conversion")
 @export var currentInitiative :int        = (maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative
+
+#endregion
 
 @export var CatchRate: int                = 45 #Higher Catchrate = easier
 
