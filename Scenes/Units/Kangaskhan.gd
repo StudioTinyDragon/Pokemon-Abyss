@@ -13,10 +13,10 @@ extends CharacterBody2D
 
 #dynamic stats
 @export var currentHP: int                = 13
-@export var Move1AP: int                  = 0
-@export var Move2AP: int                  = 0
-@export var Move3AP: int                  = 0
-@export var Move4AP: int                  = 0
+@export var Move1PP: int                  = 0
+@export var Move2PP: int                  = 0
+@export var Move3PP: int                  = 0
+@export var Move4PP: int                  = 0
 @export var StatusEffect: Array[String]   = []
 @export var heldItem: String              = ""
 
@@ -75,7 +75,8 @@ var move_levels = {
 #region State
 
 var isFainted
-
+var settingMove = false
+@export var isStruggling: bool = false
 
 #endregion
 
@@ -96,10 +97,8 @@ func SetMoves():
 	for move in potentialMoves:
 		if not currentMoves.has(move) and currentMoves.size() < 4:
 			currentMoves.append(move)
+			settingMove = true
 
-func _ready():
-	# Removed automatic group assignment. Group should be set in the battle scene.
-	pass
 
 # Utility methods for stat manipulation (needed for status moves like Tail Whip)
 func _has_exported_property(stat_name: String) -> bool:
@@ -120,3 +119,85 @@ func get_stat(stat_name: String):
 	else:
 		print("[Kangaskhan] get_stat: Stat not found:", stat_name)
 		return null
+
+func setMove1PP():
+	if settingMove == true and currentMoves.size() > 0:
+		var move_name = currentMoves[0]
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_resource = load(move_path)
+			var move_instance = move_resource.new()
+			var has_max_pp = false
+			for prop in move_instance.get_property_list():
+				if prop.name == "maxPP":
+					has_max_pp = true
+					break
+			if has_max_pp:
+				Move1PP = move_instance.maxPP
+			else:
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+		else:
+			print("[Kangaskhan] Move script not found for %s" % move_name)
+
+
+func setMove2PP():
+	if settingMove == true and currentMoves.size() > 1:
+		var move_name = currentMoves[1]
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_resource = load(move_path)
+			var move_instance = move_resource.new()
+			var has_max_pp = false
+			for prop in move_instance.get_property_list():
+				if prop.name == "maxPP":
+					has_max_pp = true
+					break
+			if has_max_pp:
+				Move2PP = move_instance.maxPP
+			else:
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+		else:
+			print("[Kangaskhan] Move script not found for %s" % move_name)
+
+func setMove3PP():
+	if settingMove == true and currentMoves.size() > 2:
+		var move_name = currentMoves[2]
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_resource = load(move_path)
+			var move_instance = move_resource.new()
+			var has_max_pp = false
+			for prop in move_instance.get_property_list():
+				if prop.name == "maxPP":
+					has_max_pp = true
+					break
+			if has_max_pp:
+				Move3PP = move_instance.maxPP
+			else:
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+		else:
+			print("[Kangaskhan] Move script not found for %s" % move_name)
+
+func setMove4PP():
+	if settingMove == true and currentMoves.size() > 3:
+		var move_name = currentMoves[3]
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_resource = load(move_path)
+			var move_instance = move_resource.new()
+			var has_max_pp = false
+			for prop in move_instance.get_property_list():
+				if prop.name == "maxPP":
+					has_max_pp = true
+					break
+			if has_max_pp:
+				Move4PP = move_instance.maxPP
+			else:
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+		else:
+			print("[Kangaskhan] Move script not found for %s" % move_name)
+
+
+func checkIfStruggle():
+	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:
+		isStruggling = true
