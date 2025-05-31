@@ -1,27 +1,34 @@
 extends CharacterBody2D
 
-@export var Name : String
-@export var PokedexNR : int
-@export var TYP: Array[String]
+#region PokemonVars
+# Pokemon info
+@export var Name : String                 = "Test"
+@export var PokedexNR : int               = 0
+@export var TYP: Array[String]            = []
+@export var Gender : String               = "Test"
 
-@export var Gender : String
-@export var Level: int
-@export var Exp: int
-@export var Moves: Array[String]
-@export var Ability : String
 
-@export var currentHP: int
-@export var Move1AP: int
-@export var Move2AP: int
-@export var Move3AP: int
-@export var Move4AP: int
-@export var StatusEffect: Array[String]
+#dynamic stats
+@export var currentHP: int                = 0
+@export var Move1AP: int                  = 0
+@export var Move2AP: int                  = 0
+@export var Move3AP: int                  = 0
+@export var Move4AP: int                  = 0
+@export var StatusEffect: Array[String]   = []
 
-@export var maxHP: int
-@export var Attack: int
-@export var SPAttack: int
-@export var Defense: int
-@export var SPDefense: int
-@export var Iniative: int
+@export var Level: int                    = 0
+@export var Exp: int                      = 0
+@export var Moves: Array[String]          = []
+@export var Ability : Array[String]       = []
 
-@export var CatchRate: int
+# Statblock
+@export var maxHP: int                    = 0
+@export var Attack: int                   = 0
+@export var SPAttack: int                 = 0
+@export var Defense: int                  = 0
+@export var SPDefense: int                = 0
+@export var Iniative: int                 = 0
+
+@export var CatchRate: int                = 0
+
+#endregion
