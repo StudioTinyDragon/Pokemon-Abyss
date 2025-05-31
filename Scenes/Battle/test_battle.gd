@@ -146,17 +146,23 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
 			print("Player HP:", attacker.currentHP)
 			current_pokemon_hp.text = str(attacker.currentHP)
+			current_enemy_hp.text = str(defender.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("player_pokemon"):
 			print("Player HP:", defender.currentHP)
 			current_pokemon_hp.text = str(defender.currentHP)
+			current_enemy_hp.text = str(attacker.currentHP)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
 			print("Enemy HP:", attacker.currentHP)
 			current_enemy_hp.text = str(attacker.currentHP)
+			current_pokemon_hp.text = str(defender.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("enemy_pokemon"):
 			current_enemy_hp.text = str(defender.currentHP)
+			current_pokemon_hp.text = str(attacker.currentHP)
 		# Apply Struggle recoil if move is Struggle
 		if move_name == "Struggle" and move_instance.has_method("RecoilDamage"):
 			move_instance.RecoilDamage(attacker)
+			current_pokemon_hp.text = str(attacker.currentHP)
+			current_enemy_hp.text = str(defender.currentHP)
 	else:
 		print("No valid defender HP.")
 
