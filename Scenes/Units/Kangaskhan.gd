@@ -13,10 +13,10 @@ extends CharacterBody2D
 
 #dynamic stats
 @export var currentHP: int                = 13
-@export var Move1AP: int                  = 0
-@export var Move2AP: int                  = 0
-@export var Move3AP: int                  = 0
-@export var Move4AP: int                  = 0
+@export var Move1PP: int                  = 0
+@export var Move2PP: int                  = 0
+@export var Move3PP: int                  = 0
+@export var Move4PP: int                  = 0
 @export var StatusEffect: Array[String]   = []
 @export var heldItem: String              = ""
 
@@ -28,14 +28,14 @@ extends CharacterBody2D
 
 
 # Statblock
-@export var Lvl1Hp: int                       = 13
+@export var Lvl1HP: int                       = 13
 @export var Lvl1Attack: int                   = 6
 @export var Lvl1Defense: int                  = 6
 @export var Lvl1SPAttack: int                 = 5
 @export var Lvl1SPDefense: int                = 6
 @export var Lvl1Initiative: int                 = 6
 
-@export var maxLvlHp: int                 = 320
+@export var maxLvlHP: int                 = 320
 @export var maxLvlAttack: int             = 195
 @export var maxLvlDefense: int            = 165
 @export var maxLvlSPAttack: int           = 85
@@ -43,7 +43,7 @@ extends CharacterBody2D
 @export var maxLvlInitiative: int         = 185
 
 @warning_ignore("narrowing_conversion")
-@export var currentMaxHp :int             = (maxLvlHp - Lvl1Hp) /99.0 * (currentLevel - 1.0) +Lvl1Hp
+@export var currentMaxHP :int             = (maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP
 @warning_ignore("narrowing_conversion")
 @export var currentAttack :int            = (maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack
 @warning_ignore("narrowing_conversion")
