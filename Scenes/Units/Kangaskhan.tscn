@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://w66ycrams3y7"]
+[gd_scene load_steps=3 format=3 uid="uid://cywjr1l5snmyj"]
 
-[ext_resource type="Script" uid="uid://d4but4v2q01ki" path="res://Scenes/Units/Kangaskhan.gd" id="1_gefbp"]
+[ext_resource type="Script" uid="uid://bgpt0wsgmpbj3" path="res://Scenes/Units/Kangaskhan.gd" id="1_gefbp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tn6nq"]
 

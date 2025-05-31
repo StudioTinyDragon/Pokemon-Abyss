@@ -99,6 +99,7 @@ text = "add Kangaskhan as enemy"
 
 [connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move1Button" to="." method="_on_move_1_button_pressed"]
+[connection signal="pressed" from="MoveOptions/move2Button" to="." method="_on_move_2_button_pressed"]
 [connection signal="pressed" from="SetMovesButton" to="." method="_on_set_moves_button_pressed"]
 [connection signal="pressed" from="addKangaskhan" to="." method="_on_add_kangaskhan_pressed"]
 [connection signal="pressed" from="addKangaskhanAsEnemy" to="." method="_on_add_kangaskhan_as_enemy_pressed"]

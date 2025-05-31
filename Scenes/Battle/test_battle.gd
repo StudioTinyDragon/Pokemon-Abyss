@@ -160,8 +160,204 @@ func _on_move_1_button_pressed() -> void:
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
 
 	# Determine initiative
-	var player_initiative = player_pokemon.Iniative if player_pokemon else 0
-	var enemy_initiative = enemy_pokemon.Iniative if enemy_pokemon else 0
+	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
+	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
+
+	# Execute moves in order of initiative
+	if player_move_instance and enemy_move_instance:
+		if player_initiative > enemy_initiative:
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+		elif enemy_initiative > player_initiative:
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+		else:
+			# If tied, player goes first
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	elif player_move_instance:
+		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+	elif enemy_move_instance:
+		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	else:
+		print("No valid moves to execute.")
+
+
+func _on_move_2_button_pressed() -> void:
+	if get_tree() == null:
+		print("Error: get_tree() is null!")
+		return
+	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
+	var player_pokemon = null
+	if pokemons.size() > 0:
+		player_pokemon = pokemons[0]
+	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	var enemy_pokemon = null
+	if enemies.size() > 0:
+		enemy_pokemon = enemies[0]
+
+	# Get move name from slot 2 for player
+	var player_move_name = null
+	if player_pokemon and player_pokemon.currentMoves.size() > 1:
+		player_move_name = player_pokemon.currentMoves[1]
+
+	# Enemy selects a random valid move
+	var enemy_move_name = null
+	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
+		var rng = RandomNumberGenerator.new()
+		enemy_move_name = enemy_pokemon.currentMoves[rng.randi_range(0, enemy_pokemon.currentMoves.size() - 1)]
+
+	# Load move scripts
+	var player_move_instance = null
+	if player_move_name:
+		var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name.to_lower()
+		if ResourceLoader.exists(player_move_path):
+			var move_resource = load(player_move_path)
+			player_move_instance = move_resource.new()
+		else:
+			print("Move script not found for: ", player_move_name, " at ", player_move_path)
+	var enemy_move_instance = null
+	if enemy_move_name:
+		var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name.to_lower()
+		if ResourceLoader.exists(enemy_move_path):
+			var move_resource = load(enemy_move_path)
+			enemy_move_instance = move_resource.new()
+
+	# Load damage_calculator
+	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
+
+	# Determine initiative
+	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
+	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
+
+	# Execute moves in order of initiative
+	if player_move_instance and enemy_move_instance:
+		if player_initiative > enemy_initiative:
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+		elif enemy_initiative > player_initiative:
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+		else:
+			# If tied, player goes first
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	elif player_move_instance:
+		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+	elif enemy_move_instance:
+		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	else:
+		print("No valid moves to execute.")
+
+func _on_move_3_button_pressed() -> void:
+	if get_tree() == null:
+		print("Error: get_tree() is null!")
+		return
+	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
+	var player_pokemon = null
+	if pokemons.size() > 0:
+		player_pokemon = pokemons[0]
+	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	var enemy_pokemon = null
+	if enemies.size() > 0:
+		enemy_pokemon = enemies[0]
+
+	# Get move name from slot 1 for player
+	var player_move_name = null
+	if player_pokemon and player_pokemon.currentMoves.size() > 0:
+		player_move_name = player_pokemon.currentMoves[0]
+
+	# Enemy selects a random valid move
+	var enemy_move_name = null
+	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
+		var rng = RandomNumberGenerator.new()
+		enemy_move_name = enemy_pokemon.currentMoves[rng.randi_range(0, enemy_pokemon.currentMoves.size() - 1)]
+
+	# Load move scripts
+	var player_move_instance = null
+	if player_move_name:
+		var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
+		if ResourceLoader.exists(player_move_path):
+			var move_resource = load(player_move_path)
+			player_move_instance = move_resource.new()
+	var enemy_move_instance = null
+	if enemy_move_name:
+		var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
+		if ResourceLoader.exists(enemy_move_path):
+			var move_resource = load(enemy_move_path)
+			enemy_move_instance = move_resource.new()
+
+	# Load damage_calculator
+	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
+
+	# Determine initiative
+	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
+	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
+
+	# Execute moves in order of initiative
+	if player_move_instance and enemy_move_instance:
+		if player_initiative > enemy_initiative:
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+		elif enemy_initiative > player_initiative:
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+		else:
+			# If tied, player goes first
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	elif player_move_instance:
+		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+	elif enemy_move_instance:
+		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+	else:
+		print("No valid moves to execute.")
+
+
+func _on_move_4_button_pressed() -> void:
+	if get_tree() == null:
+		print("Error: get_tree() is null!")
+		return
+	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
+	var player_pokemon = null
+	if pokemons.size() > 0:
+		player_pokemon = pokemons[0]
+	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	var enemy_pokemon = null
+	if enemies.size() > 0:
+		enemy_pokemon = enemies[0]
+
+	# Get move name from slot 1 for player
+	var player_move_name = null
+	if player_pokemon and player_pokemon.currentMoves.size() > 0:
+		player_move_name = player_pokemon.currentMoves[0]
+
+	# Enemy selects a random valid move
+	var enemy_move_name = null
+	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
+		var rng = RandomNumberGenerator.new()
+		enemy_move_name = enemy_pokemon.currentMoves[rng.randi_range(0, enemy_pokemon.currentMoves.size() - 1)]
+
+	# Load move scripts
+	var player_move_instance = null
+	if player_move_name:
+		var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
+		if ResourceLoader.exists(player_move_path):
+			var move_resource = load(player_move_path)
+			player_move_instance = move_resource.new()
+	var enemy_move_instance = null
+	if enemy_move_name:
+		var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
+		if ResourceLoader.exists(enemy_move_path):
+			var move_resource = load(enemy_move_path)
+			enemy_move_instance = move_resource.new()
+
+	# Load damage_calculator
+	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
+
+	# Determine initiative
+	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
+	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
 
 	# Execute moves in order of initiative
 	if player_move_instance and enemy_move_instance:

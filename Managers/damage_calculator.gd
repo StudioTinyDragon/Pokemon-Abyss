@@ -12,8 +12,8 @@ func calculate_move_damage(attacker, defender, move) -> int:
 	# move: instance of the move (e.g., Pound)
 	var move_power = move.movePower
 	var level = attacker.currentLevel
-	var attack = attacker.Attack
-	var defense = defender.Defense
+	var attack = attacker.currentAttack
+	var defense = defender.currentDefense
 	return calculate_damage(level, move_power, attack, defense)
 
 func calculate_special_move_damage(attacker, defender, move) -> int:
@@ -22,6 +22,6 @@ func calculate_special_move_damage(attacker, defender, move) -> int:
 	# move: instance of the move (e.g., a special move)
 	var move_power = move.movePower
 	var level = attacker.currentLevel
-	var sp_attack = attacker.SPAttack
-	var sp_defense = defender.SPDefense
+	var sp_attack = attacker.currentSPAttack
+	var sp_defense = defender.currentSPDefense
 	return calculate_damage(level, move_power, sp_attack, sp_defense)

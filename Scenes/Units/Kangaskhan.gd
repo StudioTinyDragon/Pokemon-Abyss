@@ -42,12 +42,18 @@ extends CharacterBody2D
 @export var maxLvlSPDefense: int          = 165
 @export var maxLvlInitiative: int         = 185
 
-@export var currentMaxHp :int             = (maxLvlHp - Lvl1Hp) /99 * (currentLevel - 1) +Lvl1Hp
-@export var currentAttack :int            = (maxLvlAttack - Lvl1Attack) /99 * (currentLevel - 1) +Lvl1Attack
-@export var currentDefense :int           = (maxLvlDefense - Lvl1Defense) /99 * (currentLevel - 1) +Lvl1Defense
-@export var currentSPAttack :int          = (maxLvlSPAttack - Lvl1SPAttack) /99 * (currentLevel - 1) +Lvl1SPAttack
-@export var currentSPDefense :int         = (maxLvlSPDefense - Lvl1SPDefense) /99 * (currentLevel - 1) +Lvl1SPDefense
-@export var currentInitiative :int        = (maxLvlInitiative - Lvl1Initiative) /99 * (currentLevel - 1) +Lvl1Initiative
+@warning_ignore("narrowing_conversion")
+@export var currentMaxHp :int             = (maxLvlHp - Lvl1Hp) /99.0 * (currentLevel - 1.0) +Lvl1Hp
+@warning_ignore("narrowing_conversion")
+@export var currentAttack :int            = (maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack
+@warning_ignore("narrowing_conversion")
+@export var currentDefense :int           = (maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense
+@warning_ignore("narrowing_conversion")
+@export var currentSPAttack :int          = (maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack
+@warning_ignore("narrowing_conversion")
+@export var currentSPDefense :int         = (maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense
+@warning_ignore("narrowing_conversion")
+@export var currentInitiative :int        = (maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative
 
 @export var CatchRate: int                = 45 #Higher Catchrate = easier
 
