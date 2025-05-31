@@ -97,6 +97,67 @@ offset_bottom = 182.0
 theme_override_font_sizes/font_size = 50
 text = "add Kangaskhan as enemy"
 
+[node name="EnemyStatblock" type="Panel" parent="."]
+offset_left = 1062.0
+offset_top = 235.0
+offset_right = 1690.0
+offset_bottom = 425.0
+
+[node name="EnemyName" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_right = 142.0
+offset_bottom = 39.0
+theme_override_font_sizes/font_size = 40
+text = "Enemy: "
+
+[node name="CurrentEnemyHP" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 55.0
+offset_right = 147.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentEnemyStatus" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 110.0
+offset_right = 44.0
+offset_bottom = 133.0
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="OwnStatblock" type="Panel" parent="."]
+offset_left = 117.0
+offset_top = 582.0
+offset_right = 745.0
+offset_bottom = 772.0
+
+[node name="PokemonName" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_right = 142.0
+offset_bottom = 39.0
+theme_override_font_sizes/font_size = 40
+text = "Pokemon:"
+
+[node name="CurrentPokemonHP" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 55.0
+offset_right = 159.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentPokemonStatus" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 127.0
+offset_right = 52.0
+offset_bottom = 182.0
+theme_override_font_sizes/font_size = 40
+text = "-"
+
 [connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move1Button" to="." method="_on_move_1_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move2Button" to="." method="_on_move_2_button_pressed"]
