@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://dci36lvcxf0o6"]
+[gd_scene load_steps=3 format=3 uid="uid://53o3iw8kgj36"]
 
-[ext_resource type="Script" uid="uid://x7n5ju5y8ei6" path="res://Scenes/Units/template_pokemon.gd" id="1_ntpmb"]
+[ext_resource type="Script" uid="uid://ca2see7r1iuaa" path="res://Scenes/Units/template_pokemon.gd" id="1_ntpmb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tn6nq"]
 
