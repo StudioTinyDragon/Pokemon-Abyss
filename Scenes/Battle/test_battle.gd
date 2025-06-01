@@ -83,21 +83,21 @@ func _on_set_moves_button_pressed() -> void:
 		player_pokemon.setMove3PP()
 		player_pokemon.setMove4PP()
 
-	# Also set moves and PP for enemy pokemon
-	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
-	for enemy_pokemon in enemies:
-		if enemy_pokemon.has_method("SetPotentiellMoves"):
-			enemy_pokemon.SetPotentiellMoves()
-		if enemy_pokemon.has_method("SetMoves"):
-			enemy_pokemon.SetMoves()
-		if enemy_pokemon.has_method("setMove1PP"):
-			enemy_pokemon.setMove1PP()
-		if enemy_pokemon.has_method("setMove2PP"):
-			enemy_pokemon.setMove2PP()
-		if enemy_pokemon.has_method("setMove3PP"):
-			enemy_pokemon.setMove3PP()
-		if enemy_pokemon.has_method("setMove4PP"):
-			enemy_pokemon.setMove4PP()
+	## Also set moves and PP for enemy pokemon
+	#var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	#for enemy_pokemon in enemies:
+		#if enemy_pokemon.has_method("SetPotentiellMoves"):
+			#enemy_pokemon.SetPotentiellMoves()
+		#if enemy_pokemon.has_method("SetMoves"):
+			#enemy_pokemon.SetMoves()
+		#if enemy_pokemon.has_method("setMove1PP"):
+			#enemy_pokemon.setMove1PP()
+		#if enemy_pokemon.has_method("setMove2PP"):
+			#enemy_pokemon.setMove2PP()
+		#if enemy_pokemon.has_method("setMove3PP"):
+			#enemy_pokemon.setMove3PP()
+		#if enemy_pokemon.has_method("setMove4PP"):
+			#enemy_pokemon.setMove4PP()
 
 
 func _on_add_kangaskhan_pressed() -> void:

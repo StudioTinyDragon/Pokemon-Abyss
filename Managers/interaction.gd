@@ -14,6 +14,7 @@ func try_interact_with_tile1(player: Node2D) -> void:
 						if "battle_layer" in node:
 							node.battle_layer.visible = true
 							StateManager.inBattle = true
+							EncounterManager.debugKangaskhanEncounter()
 						elif node.has_node("BattleLayer"):
 							node.get_node("BattleLayer").visible = true
 							StateManager.inBattle = true
@@ -29,7 +30,6 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.player.visible = false
 						elif node.has_node("Player"):
 							node.get_node("Player").visible = false
-
 						return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:
