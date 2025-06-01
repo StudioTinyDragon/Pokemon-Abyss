@@ -1,5 +1,7 @@
 extends Node2D
 
+#region onready
+
 @onready var battle_options: Panel = $BattleOptions
 @onready var battle_button: Button = $BattleOptions/battleButton
 @onready var move_1_button: Button = $MoveOptions/move1Button
@@ -20,18 +22,16 @@ extends Node2D
 @onready var current_pokemon_status: Label = $OwnStatblock/CurrentPokemonStatus
 @onready var flee_button: Button = $BattleOptions/fleeButton
 
-
+#endregion
 
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
-
 	# Set move button text to currentMoves using group-based approach
 	var player_pokemon = null
 	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
 	if pokemons.size() > 0:
 		player_pokemon = pokemons[0]
-
 	if player_pokemon:
 		if player_pokemon.currentMoves.size() > 0:
 			var move_name = player_pokemon.currentMoves[0]
@@ -62,73 +62,11 @@ func _on_battle_button_pressed() -> void:
 		move_2_button.text = "-"
 		move_3_button.text = "-"
 		move_4_button.text = "-"
-
 	# Output enemy HP in the console
 	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
 	for enemy in enemies:
 		if "currentHP" in enemy:
 			print("Enemy HP:", enemy.currentHP)
-
-
-func _on_set_moves_button_pressed() -> void:
-	var player_pokemon = null
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	if player_pokemon:
-		player_pokemon.SetPotentiellMoves()
-		player_pokemon.SetMoves()
-		player_pokemon.setMove1PP()
-		player_pokemon.setMove2PP()
-		player_pokemon.setMove3PP()
-		player_pokemon.setMove4PP()
-
-	## Also set moves and PP for enemy pokemon
-	#var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
-	#for enemy_pokemon in enemies:
-		#if enemy_pokemon.has_method("SetPotentiellMoves"):
-			#enemy_pokemon.SetPotentiellMoves()
-		#if enemy_pokemon.has_method("SetMoves"):
-			#enemy_pokemon.SetMoves()
-		#if enemy_pokemon.has_method("setMove1PP"):
-			#enemy_pokemon.setMove1PP()
-		#if enemy_pokemon.has_method("setMove2PP"):
-			#enemy_pokemon.setMove2PP()
-		#if enemy_pokemon.has_method("setMove3PP"):
-			#enemy_pokemon.setMove3PP()
-		#if enemy_pokemon.has_method("setMove4PP"):
-			#enemy_pokemon.setMove4PP()
-
-
-func _on_add_kangaskhan_pressed() -> void:
-	# Instance Kangaskhan scene and add to the scene tree for debug/party
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
-	var kangaskhan_instance = kangaskhan_scene.instantiate()
-	# Add to player group for logic separation
-	kangaskhan_instance.add_to_group("player_pokemon")
-	# Optionally set position or parent as needed
-	# Add to Units node if it exists
-	var units_node = get_node_or_null("../Units")
-	if units_node:
-		units_node.add_child(kangaskhan_instance)
-	else:
-		add_child(kangaskhan_instance)
-	print("Kangaskhan added to party for debug.")
-
-
-func _on_add_kangaskhan_as_enemy_pressed() -> void:
-	# Instance Kangaskhan scene and add to the scene tree as enemy
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
-	var kangaskhan_instance = kangaskhan_scene.instantiate()
-	# Add to enemy group for logic separation
-	kangaskhan_instance.add_to_group("enemy_pokemon")
-	# Add to Units node if it exists
-	var units_node = get_node_or_null("../Units")
-	if units_node:
-		units_node.add_child(kangaskhan_instance)
-	else:
-		add_child(kangaskhan_instance)
-	print("Kangaskhan added as enemy for debug.")
 
 
 func execute_move(attacker, defender, move_instance, move_name, damage_calculator):
@@ -188,9 +126,7 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		print("No valid defender HP.")
 
 
-func _on_move_1_button_pressed() -> void:
-	if get_tree() == null:
-		return
+func _get_battle_pokemon() -> Dictionary: # Helper: get player and enemy pokemon
 	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
 	var player_pokemon = null
 	if pokemons.size() > 0:
@@ -199,16 +135,20 @@ func _on_move_1_button_pressed() -> void:
 	var enemy_pokemon = null
 	if enemies.size() > 0:
 		enemy_pokemon = enemies[0]
+	return {"player": player_pokemon, "enemy": enemy_pokemon}
 
-	# Check if all PP are 0, if so, force Struggle for player
+
+func _handle_move_button(move_index: int) -> void: # Helper: handle move logic for a given move index
+	var mons = _get_battle_pokemon()
+	var player_pokemon = mons["player"]
+	var enemy_pokemon = mons["enemy"]
+	if not player_pokemon:
+		return
 	player_pokemon.checkIfStruggle()
 	var player_is_struggling = player_pokemon.isStruggling
-
-	# Check if all PP are 0, if so, force Struggle for enemy
 	if enemy_pokemon:
 		enemy_pokemon.checkIfStruggle()
 	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-
 	var player_move_name = null
 	var player_move_instance = null
 	if player_is_struggling:
@@ -218,14 +158,13 @@ func _on_move_1_button_pressed() -> void:
 			var move_resource = load(struggle_path)
 			player_move_instance = move_resource.new()
 	else:
-		if player_pokemon and player_pokemon.currentMoves.size() > 0 and player_pokemon.Move1PP > 0:
-			player_move_name = player_pokemon.currentMoves[0]
+		if player_pokemon.currentMoves.size() > move_index and player_pokemon["Move%dPP" % (move_index+1)] > 0:
+			player_move_name = player_pokemon.currentMoves[move_index]
 			var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
 			if ResourceLoader.exists(player_move_path):
 				var move_resource = load(player_move_path)
 				player_move_instance = move_resource.new()
-				player_pokemon.Move1PP = max(0, player_pokemon.Move1PP - 1)
-
+				player_pokemon["Move%dPP" % (move_index+1)] = max(0, player_pokemon["Move%dPP" % (move_index+1)] - 1)
 	var enemy_move_name = null
 	var enemy_move_instance = null
 	if enemy_pokemon:
@@ -236,7 +175,6 @@ func _on_move_1_button_pressed() -> void:
 				var move_resource = load(struggle_path)
 				enemy_move_instance = move_resource.new()
 		else:
-			# Find all moves with 0 PP, if all are 0, use Struggle
 			var all_pp_zero = true
 			var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
 			for pp in move_pps:
@@ -250,7 +188,6 @@ func _on_move_1_button_pressed() -> void:
 					var move_resource = load(struggle_path)
 					enemy_move_instance = move_resource.new()
 			else:
-				# Pick a random move with PP > 0 for the enemy
 				var available_moves = []
 				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
 					available_moves.append({"name": enemy_pokemon.currentMoves[0], "slot": 1})
@@ -276,14 +213,10 @@ func _on_move_1_button_pressed() -> void:
 								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
 							4:
 								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
-
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
 	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
 	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
-
-	# Debug print for move selection
 	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
-
 	if player_move_instance and enemy_move_instance:
 		if player_initiative > enemy_initiative:
 			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
@@ -300,8 +233,6 @@ func _on_move_1_button_pressed() -> void:
 		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
 	else:
 		print("No valid moves to execute.")
-
-	# Update move button text to reflect new PP
 	if player_pokemon and player_pokemon.currentMoves.size() > 0:
 		move_1_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[0], player_pokemon.Move1PP]
 	if player_pokemon and player_pokemon.currentMoves.size() > 1:
@@ -311,371 +242,17 @@ func _on_move_1_button_pressed() -> void:
 	if player_pokemon and player_pokemon.currentMoves.size() > 3:
 		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
 
+func _on_move_1_button_pressed() -> void:
+	_handle_move_button(0)
 
 func _on_move_2_button_pressed() -> void:
-	if get_tree() == null:
-		return
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	var player_pokemon = null
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
-	var enemy_pokemon = null
-	if enemies.size() > 0:
-		enemy_pokemon = enemies[0]
-
-	# Check if all PP are 0, if so, force Struggle for player
-	player_pokemon.checkIfStruggle()
-	var player_is_struggling = player_pokemon.isStruggling
-
-	# Check if all PP are 0, if so, force Struggle for enemy
-	if enemy_pokemon:
-		enemy_pokemon.checkIfStruggle()
-	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-
-	var player_move_name = null
-	var player_move_instance = null
-	if player_is_struggling:
-		player_move_name = "Struggle"
-		var struggle_path = "res://Scripts/Moves/struggle.gd"
-		if ResourceLoader.exists(struggle_path):
-			var move_resource = load(struggle_path)
-			player_move_instance = move_resource.new()
-	else:
-		if player_pokemon and player_pokemon.currentMoves.size() > 1 and player_pokemon.Move2PP > 0:
-			player_move_name = player_pokemon.currentMoves[1]
-			var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
-			if ResourceLoader.exists(player_move_path):
-				var move_resource = load(player_move_path)
-				player_move_instance = move_resource.new()
-				player_pokemon.Move2PP = max(0, player_pokemon.Move2PP - 1)
-
-	var enemy_move_name = null
-	var enemy_move_instance = null
-	if enemy_pokemon:
-		if enemy_is_struggling:
-			enemy_move_name = "Struggle"
-			var struggle_path = "res://Scripts/Moves/struggle.gd"
-			if ResourceLoader.exists(struggle_path):
-				var move_resource = load(struggle_path)
-				enemy_move_instance = move_resource.new()
-		else:
-			# Find all moves with 0 PP, if all are 0, use Struggle
-			var all_pp_zero = true
-			var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
-			for pp in move_pps:
-				if pp > 0:
-					all_pp_zero = false
-					break
-			if all_pp_zero:
-				enemy_move_name = "Struggle"
-				var struggle_path = "res://Scripts/Moves/struggle.gd"
-				if ResourceLoader.exists(struggle_path):
-					var move_resource = load(struggle_path)
-					enemy_move_instance = move_resource.new()
-			else:
-				# Pick a random move with PP > 0 for the enemy
-				var available_moves = []
-				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
-					available_moves.append({"name": enemy_pokemon.currentMoves[0], "slot": 1})
-				if enemy_pokemon.Move2PP > 0 and enemy_pokemon.currentMoves.size() > 1:
-					available_moves.append({"name": enemy_pokemon.currentMoves[1], "slot": 2})
-				if enemy_pokemon.Move3PP > 0 and enemy_pokemon.currentMoves.size() > 2:
-					available_moves.append({"name": enemy_pokemon.currentMoves[2], "slot": 3})
-				if enemy_pokemon.Move4PP > 0 and enemy_pokemon.currentMoves.size() > 3:
-					available_moves.append({"name": enemy_pokemon.currentMoves[3], "slot": 4})
-				if available_moves.size() > 0:
-					var idx = randi() % available_moves.size()
-					enemy_move_name = available_moves[idx]["name"]
-					var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
-					if ResourceLoader.exists(enemy_move_path):
-						var move_resource = load(enemy_move_path)
-						enemy_move_instance = move_resource.new()
-						match available_moves[idx]["slot"]:
-							1:
-								enemy_pokemon.Move1PP = max(0, enemy_pokemon.Move1PP - 1)
-							2:
-								enemy_pokemon.Move2PP = max(0, enemy_pokemon.Move2PP - 1)
-							3:
-								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
-							4:
-								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
-
-	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
-	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
-	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
-
-	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
-
-	if player_move_instance and enemy_move_instance:
-		if player_initiative > enemy_initiative:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-		elif enemy_initiative > player_initiative:
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-		else:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	elif player_move_instance:
-		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-	elif enemy_move_instance:
-		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	else:
-		print("No valid moves to execute.")
-
-	# Update move button text to reflect new PP
-	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		move_1_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[0], player_pokemon.Move1PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 1:
-		move_2_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[1], player_pokemon.Move2PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 2:
-		move_3_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[2], player_pokemon.Move3PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 3:
-		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
-
+	_handle_move_button(1)
 
 func _on_move_3_button_pressed() -> void:
-	if get_tree() == null:
-		return
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	var player_pokemon = null
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
-	var enemy_pokemon = null
-	if enemies.size() > 0:
-		enemy_pokemon = enemies[0]
-
-	player_pokemon.checkIfStruggle()
-	var player_is_struggling = player_pokemon.isStruggling
-
-	if enemy_pokemon:
-		enemy_pokemon.checkIfStruggle()
-	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-
-	var player_move_name = null
-	var player_move_instance = null
-	if player_is_struggling:
-		player_move_name = "Struggle"
-		var struggle_path = "res://Scripts/Moves/struggle.gd"
-		if ResourceLoader.exists(struggle_path):
-			var move_resource = load(struggle_path)
-			player_move_instance = move_resource.new()
-	else:
-		if player_pokemon and player_pokemon.currentMoves.size() > 2 and player_pokemon.Move3PP > 0:
-			player_move_name = player_pokemon.currentMoves[2]
-			var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
-			if ResourceLoader.exists(player_move_path):
-				var move_resource = load(player_move_path)
-				player_move_instance = move_resource.new()
-				player_pokemon.Move3PP = max(0, player_pokemon.Move3PP - 1)
-
-	var enemy_move_name = null
-	var enemy_move_instance = null
-	if enemy_pokemon:
-		if enemy_is_struggling:
-			enemy_move_name = "Struggle"
-			var struggle_path = "res://Scripts/Moves/struggle.gd"
-			if ResourceLoader.exists(struggle_path):
-				var move_resource = load(struggle_path)
-				enemy_move_instance = move_resource.new()
-		else:
-			# Find all moves with 0 PP, if all are 0, use Struggle
-			var all_pp_zero = true
-			var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
-			for pp in move_pps:
-				if pp > 0:
-					all_pp_zero = false
-					break
-			if all_pp_zero:
-				enemy_move_name = "Struggle"
-				var struggle_path = "res://Scripts/Moves/struggle.gd"
-				if ResourceLoader.exists(struggle_path):
-					var move_resource = load(struggle_path)
-					enemy_move_instance = move_resource.new()
-			else:
-				# Pick a random move with PP > 0 for the enemy
-				var available_moves = []
-				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
-					available_moves.append({"name": enemy_pokemon.currentMoves[0], "slot": 1})
-				if enemy_pokemon.Move2PP > 0 and enemy_pokemon.currentMoves.size() > 1:
-					available_moves.append({"name": enemy_pokemon.currentMoves[1], "slot": 2})
-				if enemy_pokemon.Move3PP > 0 and enemy_pokemon.currentMoves.size() > 2:
-					available_moves.append({"name": enemy_pokemon.currentMoves[2], "slot": 3})
-				if enemy_pokemon.Move4PP > 0 and enemy_pokemon.currentMoves.size() > 3:
-					available_moves.append({"name": enemy_pokemon.currentMoves[3], "slot": 4})
-				if available_moves.size() > 0:
-					var idx = randi() % available_moves.size()
-					enemy_move_name = available_moves[idx]["name"]
-					var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
-					if ResourceLoader.exists(enemy_move_path):
-						var move_resource = load(enemy_move_path)
-						enemy_move_instance = move_resource.new()
-						match available_moves[idx]["slot"]:
-							1:
-								enemy_pokemon.Move1PP = max(0, enemy_pokemon.Move1PP - 1)
-							2:
-								enemy_pokemon.Move2PP = max(0, enemy_pokemon.Move2PP - 1)
-							3:
-								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
-							4:
-								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
-
-	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
-	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
-	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
-
-	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
-
-	if player_move_instance and enemy_move_instance:
-		if player_initiative > enemy_initiative:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-		elif enemy_initiative > player_initiative:
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-		else:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	elif player_move_instance:
-		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-	elif enemy_move_instance:
-		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	else:
-		print("No valid moves to execute.")
-
-	# Update move button text to reflect new PP
-	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		move_1_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[0], player_pokemon.Move1PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 1:
-		move_2_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[1], player_pokemon.Move2PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 2:
-		move_3_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[2], player_pokemon.Move3PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 3:
-		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
-
+	_handle_move_button(2)
 
 func _on_move_4_button_pressed() -> void:
-	if get_tree() == null:
-		return
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	var player_pokemon = null
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
-	var enemy_pokemon = null
-	if enemies.size() > 0:
-		enemy_pokemon = enemies[0]
-
-	player_pokemon.checkIfStruggle()
-	var player_is_struggling = player_pokemon.isStruggling
-
-	if enemy_pokemon:
-		enemy_pokemon.checkIfStruggle()
-	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-
-	var player_move_name = null
-	var player_move_instance = null
-	if player_is_struggling:
-		player_move_name = "Struggle"
-		var struggle_path = "res://Scripts/Moves/struggle.gd"
-		if ResourceLoader.exists(struggle_path):
-			var move_resource = load(struggle_path)
-			player_move_instance = move_resource.new()
-	else:
-		if player_pokemon and player_pokemon.currentMoves.size() > 3 and player_pokemon.Move4PP > 0:
-			player_move_name = player_pokemon.currentMoves[3]
-			var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
-			if ResourceLoader.exists(player_move_path):
-				var move_resource = load(player_move_path)
-				player_move_instance = move_resource.new()
-				player_pokemon.Move4PP = max(0, player_pokemon.Move4PP - 1)
-
-	var enemy_move_name = null
-	var enemy_move_instance = null
-	if enemy_pokemon:
-		if enemy_is_struggling:
-			enemy_move_name = "Struggle"
-			var struggle_path = "res://Scripts/Moves/struggle.gd"
-			if ResourceLoader.exists(struggle_path):
-				var move_resource = load(struggle_path)
-				enemy_move_instance = move_resource.new()
-		else:
-			# Find all moves with 0 PP, if all are 0, use Struggle
-			var all_pp_zero = true
-			var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
-			for pp in move_pps:
-				if pp > 0:
-					all_pp_zero = false
-					break
-			if all_pp_zero:
-				enemy_move_name = "Struggle"
-				var struggle_path = "res://Scripts/Moves/struggle.gd"
-				if ResourceLoader.exists(struggle_path):
-					var move_resource = load(struggle_path)
-					enemy_move_instance = move_resource.new()
-			else:
-				# Pick a random move with PP > 0 for the enemy
-				var available_moves = []
-				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
-					available_moves.append({"name": enemy_pokemon.currentMoves[0], "slot": 1})
-				if enemy_pokemon.Move2PP > 0 and enemy_pokemon.currentMoves.size() > 1:
-					available_moves.append({"name": enemy_pokemon.currentMoves[1], "slot": 2})
-				if enemy_pokemon.Move3PP > 0 and enemy_pokemon.currentMoves.size() > 2:
-					available_moves.append({"name": enemy_pokemon.currentMoves[2], "slot": 3})
-				if enemy_pokemon.Move4PP > 0 and enemy_pokemon.currentMoves.size() > 3:
-					available_moves.append({"name": enemy_pokemon.currentMoves[3], "slot": 4})
-				if available_moves.size() > 0:
-					var idx = randi() % available_moves.size()
-					enemy_move_name = available_moves[idx]["name"]
-					var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
-					if ResourceLoader.exists(enemy_move_path):
-						var move_resource = load(enemy_move_path)
-						enemy_move_instance = move_resource.new()
-						match available_moves[idx]["slot"]:
-							1:
-								enemy_pokemon.Move1PP = max(0, enemy_pokemon.Move1PP - 1)
-							2:
-								enemy_pokemon.Move2PP = max(0, enemy_pokemon.Move2PP - 1)
-							3:
-								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
-							4:
-								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
-
-	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
-	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
-	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
-
-	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
-
-	if player_move_instance and enemy_move_instance:
-		if player_initiative > enemy_initiative:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-		elif enemy_initiative > player_initiative:
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-		else:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	elif player_move_instance:
-		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-	elif enemy_move_instance:
-		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-	else:
-		print("No valid moves to execute.")
-
-	# Update move button text to reflect new PP
-	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		move_1_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[0], player_pokemon.Move1PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 1:
-		move_2_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[1], player_pokemon.Move2PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 2:
-		move_3_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[2], player_pokemon.Move3PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 3:
-		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
-
+	_handle_move_button(3)
 
 func _on_flee_button_pressed() -> void:
 	# When fleeing, show the map and player, hide the battle layer
@@ -714,3 +291,64 @@ func _on_flee_button_pressed() -> void:
 			player_node.visible = true
 		if battle_layer_node:
 			battle_layer_node.visible = false
+
+#region debugbutons
+
+func _on_set_moves_button_pressed() -> void:
+	var player_pokemon = null
+	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
+	if pokemons.size() > 0:
+		player_pokemon = pokemons[0]
+	if player_pokemon:
+		player_pokemon.SetPotentiellMoves()
+		player_pokemon.SetMoves()
+		player_pokemon.setMove1PP()
+		player_pokemon.setMove2PP()
+		player_pokemon.setMove3PP()
+		player_pokemon.setMove4PP()
+
+	## Also set moves and PP for enemy pokemon
+	#var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	#for enemy_pokemon in enemies:
+		#if enemy_pokemon.has_method("SetPotentiellMoves"):
+			#enemy_pokemon.SetPotentiellMoves()
+		#if enemy_pokemon.has_method("SetMoves"):
+			#enemy_pokemon.SetMoves()
+		#if enemy_pokemon.has_method("setMove1PP"):
+			#enemy_pokemon.setMove1PP()
+		#if enemy_pokemon.has_method("setMove2PP"):
+			#enemy_pokemon.setMove2PP()
+		#if enemy_pokemon.has_method("setMove3PP"):
+			#enemy_pokemon.setMove3PP()
+		#if enemy_pokemon.has_method("setMove4PP"):
+			#enemy_pokemon.setMove4PP()
+
+func _on_add_kangaskhan_pressed() -> void:
+	# Instance Kangaskhan scene and add to the scene tree for debug/party
+	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
+	var kangaskhan_instance = kangaskhan_scene.instantiate()
+	# Add to player group for logic separation
+	kangaskhan_instance.add_to_group("player_pokemon")
+	# Optionally set position or parent as needed
+	# Add to Units node if it exists
+	var units_node = get_node_or_null("../Units")
+	if units_node:
+		units_node.add_child(kangaskhan_instance)
+	else:
+		add_child(kangaskhan_instance)
+	print("Kangaskhan added to party for debug.")
+
+func _on_add_kangaskhan_as_enemy_pressed() -> void:
+	# Instance Kangaskhan scene and add to the scene tree as enemy
+	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
+	var kangaskhan_instance = kangaskhan_scene.instantiate()
+	# Add to enemy group for logic separation
+	kangaskhan_instance.add_to_group("enemy_pokemon")
+	# Add to Units node if it exists
+	var units_node = get_node_or_null("../Units")
+	if units_node:
+		units_node.add_child(kangaskhan_instance)
+	else:
+		add_child(kangaskhan_instance)
+	print("Kangaskhan added as enemy for debug.")
+#endregion
