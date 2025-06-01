@@ -4,7 +4,7 @@ extends CharacterBody2D
 # Pokemon info
 @export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
-@export var TYP: Array[String]            = ["Rock"]
+@export var TYP: Array[String]            = ["Normal"]
 @export var Gender : String               = ""
 @export var Nature: String                = ""
 
