@@ -4,12 +4,15 @@ extends CharacterBody2D
 # Pokemon info
 @export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
+@export var OwndexNR: int                 
 @export var TYP: Array[String]            = ["Normal"]
 @export var Gender : String               = ""
 @export var Nature: String                = ""
 
 @export var PotentialGenders: Array[String] = ["Female"]
 @export var PotentialNatures: Array[String] = ["Hardy"]
+
+#region currentBattleStats
 
 #dynamic stats
 @export var currentHP: int                = 13
@@ -25,7 +28,7 @@ extends CharacterBody2D
 @export var Moves: Array[String]          = []
 @export var Ability : String              = ""
 
-
+#endregion
 
 # Statblock
 #region MinStats
@@ -50,7 +53,7 @@ extends CharacterBody2D
 
 #endregion
 
-#region current Stats
+#region currentStats
 
 @warning_ignore("narrowing_conversion")
 @export var currentMaxHP :int             = (maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP
@@ -72,7 +75,9 @@ extends CharacterBody2D
 @export var currentMoves: Array[String] = []
 @export var potentialMoves: Array[String] = []
 @export var potentialAbilities: Array[String] = ["Early Bird", "Scrappy", "Inner Focus"]
+@export var potentialHeldItems: Array[String] = ["Bitter Berry"]
 
+#region MoveLvlLocked
 
 var move_levels = {
 	"Pound": 1,
@@ -81,6 +86,8 @@ var move_levels = {
 	"FakeOut": 8,
 	"Bite": 12
 }
+
+#endregion
 
 #endregion
 
