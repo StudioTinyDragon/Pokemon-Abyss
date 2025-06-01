@@ -72,7 +72,14 @@ func calculate_move_damage(attacker, defender, move) -> int:
 	else:
 		defender_types = []
 	var type_multiplier = get_type_multiplier(move_types, defender_types)
-	return int(base_damage * type_multiplier)
+	# STAB (Same Type Attack Bonus): if attacker has any type matching move type, increase by 1.5x
+	var stab = 1.0
+	if "TYP" in attacker:
+		for t in move_types:
+			if t in attacker.TYP:
+				stab = 1.5
+				break
+	return int(base_damage * type_multiplier * stab)
 
 func calculate_special_move_damage(attacker, defender, move) -> int:
 	# attacker: instance of the attacking Pokémon
@@ -96,4 +103,11 @@ func calculate_special_move_damage(attacker, defender, move) -> int:
 	else:
 		defender_types = []
 	var type_multiplier = get_type_multiplier(move_types, defender_types)
-	return int(base_damage * type_multiplier)
+	# STAB (Same Type Attack Bonus): if attacker has any type matching move type, increase by 1.5x
+	var stab = 1.0
+	if "TYP" in attacker:
+		for t in move_types:
+			if t in attacker.TYP:
+				stab = 1.5
+				break
+	return int(base_damage * type_multiplier * stab)
