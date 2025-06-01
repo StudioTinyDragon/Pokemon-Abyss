@@ -77,16 +77,18 @@ offset_right = 388.0
 offset_bottom = 146.0
 
 [node name="SetMovesButton" type="Button" parent="."]
-offset_right = 429.0
-offset_bottom = 99.0
+offset_left = 1.0
+offset_top = 34.0
+offset_right = 430.0
+offset_bottom = 133.0
 theme_override_font_sizes/font_size = 50
 text = "Set Moves"
 
 [node name="addKangaskhan" type="Button" parent="."]
-offset_left = 507.0
-offset_top = 41.0
-offset_right = 947.0
-offset_bottom = 183.0
+offset_left = 485.0
+offset_top = 34.0
+offset_right = 925.0
+offset_bottom = 176.0
 theme_override_font_sizes/font_size = 50
 text = "add Kangaskhan"
 

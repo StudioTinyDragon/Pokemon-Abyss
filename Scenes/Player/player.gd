@@ -13,11 +13,11 @@ func _process(delta: float) -> void:
 		if input_vector.length() > 0:
 			input_vector = input_vector.normalized()
 
-		var new_velocity = input_vector * SPEED
-		var new_position = position + new_velocity * delta
-		
-	#region out of bounds check
+#region out of bounds check
 
+		#var new_velocity = input_vector * SPEED
+		#var new_position = position + new_velocity * delta
+		#
 		## Restrict player to map bounds only (no ground tile check)
 		## Assumes parent is the city map TileMapLayer with grid_width/grid_height exported
 		#var map_node = get_parent()
@@ -31,9 +31,11 @@ func _process(delta: float) -> void:
 		#if cell.x < 0 or cell.y < 0 or cell.x >= map_size.x or cell.y >= map_size.y:
 			#velocity = Vector2.ZERO
 			#return
+		#velocity = new_velocity
+
 	#endregion
 
-		velocity = new_velocity
+
 		move_and_slide()
 
 		# --- INTERACTION: Show/hide 'F' label above trees every frame ---

@@ -12,3 +12,10 @@ f. 6. Implement basic Pokémon data structure (name, type, HP, moves)
 f. 8. Implement basic battle system (turn-based, simple moves)
 9. Add basic UI for battles (HP bars, move selection)
 10. Save and load game state (basic progress)
+
+1. Evasion Accuracy
+2. Crit https://bulbapedia.bulbagarden.net/wiki/Critical_hit
+3. Flinch
+4. Combat textbox
+5. prio move
+6. Shorten battle script
