@@ -5,7 +5,6 @@ func calculate_damage(level: int, move_power: int, attack: int, defense: int) ->
 	return int(damage)
 
 
-
 func calculate_move_damage(attacker, defender, move) -> int:
 	# attacker: instance of the attacking Pokémon
 	# defender: instance of the defending Pokémon

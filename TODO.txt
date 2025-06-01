@@ -2,13 +2,13 @@ Studio Tiny Dragon
 
 Basic TODO List for Pokémon Project (Godot 4)
 
-1. Set up Godot 4 project and version control (e.g., Git)
-2. Create basic player movement (top-down)
-3. Design a simple test map (tileset, collisions)
+f. 1. Set up Godot 4 project and version control (e.g., Git)
+f. 2. Create basic player movement (top-down)
+f. 3. Design a simple test map (tileset, collisions)
 4. Implement basic NPCs (static, simple dialogue)
 5. Add a simple menu (start, options, exit)
-6. Implement basic Pokémon data structure (name, type, HP, moves)
+f. 6. Implement basic Pokémon data structure (name, type, HP, moves)
 7. Add wild Pokémon encounter system (random grass encounters)
-8. Implement basic battle system (turn-based, simple moves)
+f. 8. Implement basic battle system (turn-based, simple moves)
 9. Add basic UI for battles (HP bars, move selection)
 10. Save and load game state (basic progress)
