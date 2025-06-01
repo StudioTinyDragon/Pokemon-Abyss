@@ -1,6 +1,5 @@
 extends Node2D
 
-
 @onready var battle_options: Panel = $BattleOptions
 @onready var battle_button: Button = $BattleOptions/battleButton
 @onready var move_1_button: Button = $MoveOptions/move1Button
@@ -19,6 +18,7 @@ extends Node2D
 @onready var pokemon_name: Label = $OwnStatblock/PokemonName
 @onready var current_pokemon_hp: Label = $OwnStatblock/CurrentPokemonHP
 @onready var current_pokemon_status: Label = $OwnStatblock/CurrentPokemonStatus
+@onready var flee_button: Button = $BattleOptions/fleeButton
 
 
 
@@ -675,3 +675,42 @@ func _on_move_4_button_pressed() -> void:
 		move_3_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[2], player_pokemon.Move3PP]
 	if player_pokemon and player_pokemon.currentMoves.size() > 3:
 		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
+
+
+func _on_flee_button_pressed() -> void:
+	# When fleeing, show the map and player, hide the battle layer
+	var parent = get_parent()
+	if parent:
+		# Try to find the map and player as children or siblings of the battle scene
+		var map_node : Node = null
+		var player_node : Node = null
+		var battle_layer_node : Node = null
+
+		# Look for map and player as siblings (common in Godot scene trees)
+		if parent.has_node("../TestMap"):
+			map_node = parent.get_node("../TestMap")
+		elif parent.has_node("../test_map"):
+			map_node = parent.get_node("../test_map")
+		elif parent.has_node("../ground"):
+			map_node = parent.get_node("../ground")
+		elif parent.has_node("../Ground"):
+			map_node = parent.get_node("../Ground")
+
+		if parent.has_node("../Player"):
+			player_node = parent.get_node("../Player")
+		elif parent.has_node("../player"):
+			player_node = parent.get_node("../player")
+
+		# Try to find the battle layer as a sibling or as a child
+		if parent.has_node("../BattleLayer"):
+			battle_layer_node = parent.get_node("../BattleLayer")
+			map_node = parent.get_node("..")
+			StateManager.inBattle = false
+
+		# Set visibility accordingly
+		if map_node:
+			map_node.visible = true
+		if player_node:
+			player_node.visible = true
+		if battle_layer_node:
+			battle_layer_node.visible = false

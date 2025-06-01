@@ -10,8 +10,26 @@ func try_interact_with_tile1(player: Node2D) -> void:
 				if child is StaticBody2D and child.name.begins_with("tileCollision1_"):
 					var dist = player.global_position.distance_to(child.global_position)
 					if dist <= radius:
-						#if node.has_method("show_chopping_tree_minigame"):
-							#node.show_chopping_tree_minigame(Callable(self, "_on_tree_minigame_complete").bind(child))
+						# Make the battle_layer visible
+						if "battle_layer" in node:
+							node.battle_layer.visible = true
+							StateManager.inBattle = true
+						elif node.has_node("BattleLayer"):
+							node.get_node("BattleLayer").visible = true
+							StateManager.inBattle = true
+
+						# Hide the map and player when starting battle
+						if "test_map" in node:
+							node.test_map.visible = false
+						elif node.has_node("TestMap"):
+							node.get_node("TestMap").visible = false
+
+						# Hide the player (assume player is a child of the map or scene)
+						if "player" in node:
+							node.player.visible = false
+						elif node.has_node("Player"):
+							node.get_node("Player").visible = false
+
 						return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:

@@ -33,12 +33,13 @@ offset_top = 19.0
 offset_right = 380.0
 offset_bottom = 74.0
 
-[node name="Button4" type="Button" parent="BattleOptions"]
+[node name="fleeButton" type="Button" parent="BattleOptions"]
 layout_mode = 0
 offset_left = 221.0
 offset_top = 91.0
 offset_right = 388.0
 offset_bottom = 146.0
+text = "Flee"
 
 [node name="MoveOptions" type="Panel" parent="."]
 visible = false
@@ -159,6 +160,7 @@ theme_override_font_sizes/font_size = 40
 text = "-"
 
 [connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
+[connection signal="pressed" from="BattleOptions/fleeButton" to="." method="_on_flee_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move1Button" to="." method="_on_move_1_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move2Button" to="." method="_on_move_2_button_pressed"]
 [connection signal="pressed" from="SetMovesButton" to="." method="_on_set_moves_button_pressed"]
