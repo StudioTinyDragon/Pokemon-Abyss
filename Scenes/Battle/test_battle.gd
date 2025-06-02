@@ -9,9 +9,6 @@ extends Node2D
 @onready var move_3_button: Button = $MoveOptions/move3Button
 @onready var move_4_button: Button = $MoveOptions/move4Button
 @onready var move_options: Panel = $MoveOptions
-@onready var set_moves_button: Button = $SetMovesButton
-@onready var add_kangaskhan: Button = $addKangaskhan
-@onready var add_kangaskhan_as_enemy: Button = $addKangaskhanAsEnemy
 @onready var enemy_statblock: Panel = $EnemyStatblock
 @onready var enemy_name: Label = $EnemyStatblock/EnemyName
 @onready var current_enemy_hp: Label = $EnemyStatblock/CurrentEnemyHP
@@ -23,38 +20,54 @@ extends Node2D
 @onready var flee_button: Button = $BattleOptions/fleeButton
 
 #endregion
+# Helper to refresh move button text from party data
+func refresh_move_buttons() -> void:
+	if StateManager.player_party.size() > 0:
+		var moves = StateManager.player_party[0]["moves"]
+		if moves.size() > 0:
+			move_1_button.text = moves[0]["name"] + " (" + str(moves[0]["pp"]) + "/" + str(moves[0]["max_pp"]) + ")"
+		else:
+			move_1_button.text = "-"
+		if moves.size() > 1:
+			move_2_button.text = moves[1]["name"] + " (" + str(moves[1]["pp"]) + "/" + str(moves[1]["max_pp"]) + ")"
+		else:
+			move_2_button.text = "-"
+		if moves.size() > 2:
+			move_3_button.text = moves[2]["name"] + " (" + str(moves[2]["pp"]) + "/" + str(moves[2]["max_pp"]) + ")"
+		else:
+			move_3_button.text = "-"
+		if moves.size() > 3:
+			move_4_button.text = moves[3]["name"] + " (" + str(moves[3]["pp"]) + "/" + str(moves[3]["max_pp"]) + ")"
+		else:
+			move_4_button.text = "-"
+	else:
+		move_1_button.text = "-"
+		move_2_button.text = "-"
+		move_3_button.text = "-"
+		move_4_button.text = "-"
+
+
 
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
-	# Set move button text to currentMoves using group-based approach
-	var player_pokemon = null
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	if player_pokemon:
-		if player_pokemon.currentMoves.size() > 0:
-			var move_name = player_pokemon.currentMoves[0]
-			var move_pp = player_pokemon.Move1PP
-			move_1_button.text = "%s (PP: %s)" % [move_name, move_pp]
+	# Set move button text to moves from StateManager.player_party[0]
+	if StateManager.player_party.size() > 0:
+		var moves = StateManager.player_party[0]["moves"]
+		if moves.size() > 0:
+			move_1_button.text = moves[0]["name"] + " (" + str(moves[0]["pp"]) + "/" + str(moves[0]["max_pp"]) + ")"
 		else:
 			move_1_button.text = "-"
-		if player_pokemon.currentMoves.size() > 1:
-			var move_name = player_pokemon.currentMoves[1]
-			var move_pp = player_pokemon.Move2PP
-			move_2_button.text = "%s (PP: %s)" % [move_name, move_pp]
+		if moves.size() > 1:
+			move_2_button.text = moves[1]["name"] + " (" + str(moves[1]["pp"]) + "/" + str(moves[1]["max_pp"]) + ")"
 		else:
 			move_2_button.text = "-"
-		if player_pokemon.currentMoves.size() > 2:
-			var move_name = player_pokemon.currentMoves[2]
-			var move_pp = player_pokemon.Move3PP
-			move_3_button.text = "%s (PP: %s)" % [move_name, move_pp]
+		if moves.size() > 2:
+			move_3_button.text = moves[2]["name"] + " (" + str(moves[2]["pp"]) + "/" + str(moves[2]["max_pp"]) + ")"
 		else:
 			move_3_button.text = "-"
-		if player_pokemon.currentMoves.size() > 3:
-			var move_name = player_pokemon.currentMoves[3]
-			var move_pp = player_pokemon.Move4PP
-			move_4_button.text = "%s (PP: %s)" % [move_name, move_pp]
+		if moves.size() > 3:
+			move_4_button.text = moves[3]["name"] + " (" + str(moves[3]["pp"]) + "/" + str(moves[3]["max_pp"]) + ")"
 		else:
 			move_4_button.text = "-"
 	else:
@@ -140,32 +153,46 @@ func _get_battle_pokemon() -> Dictionary: # Helper: get player and enemy pokemon
 
 
 func _handle_move_button(move_index: int) -> void: # Helper: handle move logic for a given move index
+	# Use party data for move logic and PP
+	if StateManager.player_party.size() == 0:
+		return
+	var moves = StateManager.player_party[0]["moves"]
+	if moves.size() <= move_index or moves[move_index]["pp"] <= 0:
+		return
+	var player_move_name = moves[move_index]["name"]
+	var player_move_instance = null
+	var move_script_name = player_move_name.replace(" ", "")
+	var player_move_path = "res://Scripts/Moves/%s.gd" % move_script_name
+	if ResourceLoader.exists(player_move_path):
+		var move_resource = load(player_move_path)
+		player_move_instance = move_resource.new()
+		print("[DEBUG] Before decrement: %s" % [str(moves)])
+		moves[move_index]["pp"] = max(0, moves[move_index]["pp"] - 1)
+		print("[DEBUG] After decrement: %s" % [str(moves)])
+		refresh_move_buttons()
+	# Legacy: get player and enemy nodes for compatibility with rest of battle logic
 	var mons = _get_battle_pokemon()
 	var player_pokemon = mons["player"]
 	var enemy_pokemon = mons["enemy"]
-	if not player_pokemon:
-		return
-	player_pokemon.checkIfStruggle()
-	var player_is_struggling = player_pokemon.isStruggling
+	# Continue with enemy move logic as before
+	var enemy_move_name_ = null
+	var enemy_move_instance_ = null
 	if enemy_pokemon:
 		enemy_pokemon.checkIfStruggle()
 	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-	var player_move_name = null
-	var player_move_instance = null
-	if player_is_struggling:
-		player_move_name = "Struggle"
+	if enemy_is_struggling:
+		enemy_move_name_ = "Struggle"
 		var struggle_path = "res://Scripts/Moves/struggle.gd"
 		if ResourceLoader.exists(struggle_path):
 			var move_resource = load(struggle_path)
-			player_move_instance = move_resource.new()
+			enemy_move_instance_ = move_resource.new()
 	else:
-		if player_pokemon.currentMoves.size() > move_index and player_pokemon["Move%dPP" % (move_index+1)] > 0:
-			player_move_name = player_pokemon.currentMoves[move_index]
-			var player_move_path = "res://Scripts/Moves/%s.gd" % player_move_name
-			if ResourceLoader.exists(player_move_path):
-				var move_resource = load(player_move_path)
-				player_move_instance = move_resource.new()
-				player_pokemon["Move%dPP" % (move_index+1)] = max(0, player_pokemon["Move%dPP" % (move_index+1)] - 1)
+		var all_pp_zero = true
+		var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
+		for pp in move_pps:
+			if pp > 0:
+				all_pp_zero = false
+				break
 	var enemy_move_name = null
 	var enemy_move_instance = null
 	if enemy_pokemon:
@@ -234,14 +261,8 @@ func _handle_move_button(move_index: int) -> void: # Helper: handle move logic f
 		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
 	else:
 		print("No valid moves to execute.")
-	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		move_1_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[0], player_pokemon.Move1PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 1:
-		move_2_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[1], player_pokemon.Move2PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 2:
-		move_3_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[2], player_pokemon.Move3PP]
-	if player_pokemon and player_pokemon.currentMoves.size() > 3:
-		move_4_button.text = "%s (PP: %s)" % [player_pokemon.currentMoves[3], player_pokemon.Move4PP]
+	# Always refresh move buttons from party data after move resolution
+	refresh_move_buttons()
 
 func _on_move_1_button_pressed() -> void:
 	_handle_move_button(0)
@@ -295,19 +316,6 @@ func _on_flee_button_pressed() -> void:
 
 #region debugbutons
 
-func _on_set_moves_button_pressed() -> void:
-	var player_pokemon = null
-	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
-	if pokemons.size() > 0:
-		player_pokemon = pokemons[0]
-	if player_pokemon:
-		player_pokemon.SetPotentiellMoves()
-		player_pokemon.SetMoves()
-		player_pokemon.setMove1PP()
-		player_pokemon.setMove2PP()
-		player_pokemon.setMove3PP()
-		player_pokemon.setMove4PP()
-
 	# Also set moves and PP for enemy pokemon
 	#var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
 	#for enemy_pokemon in enemies:
@@ -324,32 +332,17 @@ func _on_set_moves_button_pressed() -> void:
 		#if enemy_pokemon.has_method("setMove4PP"):
 			#enemy_pokemon.setMove4PP()
 
-func _on_add_kangaskhan_pressed() -> void:
-	# Instance Kangaskhan scene and add to the scene tree for debug/party
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
-	var kangaskhan_instance = kangaskhan_scene.instantiate()
-	# Add to player group for logic separation
-	kangaskhan_instance.add_to_group("player_pokemon")
-	# Optionally set position or parent as needed
-	# Add to Units node if it exists
-	var units_node = get_node_or_null("../Units")
-	if units_node:
-		units_node.add_child(kangaskhan_instance)
-	else:
-		add_child(kangaskhan_instance)
-	print("Kangaskhan added to party for debug.")
-
-func _on_add_kangaskhan_as_enemy_pressed() -> void:
-	# Instance Kangaskhan scene and add to the scene tree as enemy
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
-	var kangaskhan_instance = kangaskhan_scene.instantiate()
-	# Add to enemy group for logic separation
-	kangaskhan_instance.add_to_group("enemy_pokemon")
-	# Add to Units node if it exists
-	var units_node = get_node_or_null("../Units")
-	if units_node:
-		units_node.add_child(kangaskhan_instance)
-	else:
-		add_child(kangaskhan_instance)
-	print("Kangaskhan added as enemy for debug.")
+#func _on_add_kangaskhan_as_enemy_pressed() -> void:
+	## Instance Kangaskhan scene and add to the scene tree as enemy
+	#var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
+	#var kangaskhan_instance = kangaskhan_scene.instantiate()
+	## Add to enemy group for logic separation
+	#kangaskhan_instance.add_to_group("enemy_pokemon")
+	## Add to Units node if it exists
+	#var units_node = get_node_or_null("../Units")
+	#if units_node:
+		#units_node.add_child(kangaskhan_instance)
+	#else:
+		#add_child(kangaskhan_instance)
+	#print("Kangaskhan added as enemy for debug.")
 #endregion

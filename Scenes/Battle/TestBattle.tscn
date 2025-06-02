@@ -76,30 +76,6 @@ offset_top = 91.0
 offset_right = 388.0
 offset_bottom = 146.0
 
-[node name="SetMovesButton" type="Button" parent="."]
-offset_left = 1.0
-offset_top = 34.0
-offset_right = 430.0
-offset_bottom = 133.0
-theme_override_font_sizes/font_size = 50
-text = "Set Moves"
-
-[node name="addKangaskhan" type="Button" parent="."]
-offset_left = 485.0
-offset_top = 34.0
-offset_right = 925.0
-offset_bottom = 176.0
-theme_override_font_sizes/font_size = 50
-text = "add Kangaskhan"
-
-[node name="addKangaskhanAsEnemy" type="Button" parent="."]
-offset_left = 1118.0
-offset_top = 40.0
-offset_right = 1558.0
-offset_bottom = 182.0
-theme_override_font_sizes/font_size = 50
-text = "add Kangaskhan as enemy"
-
 [node name="EnemyStatblock" type="Panel" parent="."]
 offset_left = 1062.0
 offset_top = 235.0
@@ -167,6 +143,3 @@ text = "-"
 [connection signal="pressed" from="MoveOptions/move2Button" to="." method="_on_move_2_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move3Button" to="." method="_on_move_3_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move4Button" to="." method="_on_move_4_button_pressed"]
-[connection signal="pressed" from="SetMovesButton" to="." method="_on_set_moves_button_pressed"]
-[connection signal="pressed" from="addKangaskhan" to="." method="_on_add_kangaskhan_pressed"]
-[connection signal="pressed" from="addKangaskhanAsEnemy" to="." method="_on_add_kangaskhan_as_enemy_pressed"]

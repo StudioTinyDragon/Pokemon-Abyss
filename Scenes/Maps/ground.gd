@@ -5,8 +5,8 @@ extends TileMapLayer
 @export var default_tile_id: int = 0
 @export var cell_size_override: Vector2i = Vector2(16, 16) # Adjust if your tile is not 32x32
 @onready var battle_layer: CanvasLayer = $"../BattleLayer"
-@onready var test_map: Node2D = $".."
 @onready var player: CharacterBody2D = $"../Player"
+@onready var test_map: Node2D = $".."
 
 
 var grid_overlay: Node2D = null
