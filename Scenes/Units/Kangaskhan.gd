@@ -27,6 +27,8 @@ extends CharacterBody2D
 @export var Exp: int                      = 0
 @export var Moves: Array[String]          = []
 @export var Ability : String              = ""
+@export var pokemonAccuracy: int          = 100
+@export var evasion : int                 = 0
 
 #endregion
 

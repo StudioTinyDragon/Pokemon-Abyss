@@ -138,6 +138,7 @@ func _get_battle_pokemon() -> Dictionary: # Helper: get player and enemy pokemon
 	return {"player": player_pokemon, "enemy": enemy_pokemon}
 
 
+
 func _handle_move_button(move_index: int) -> void: # Helper: handle move logic for a given move index
 	var mons = _get_battle_pokemon()
 	var player_pokemon = mons["player"]
@@ -307,7 +308,7 @@ func _on_set_moves_button_pressed() -> void:
 		player_pokemon.setMove3PP()
 		player_pokemon.setMove4PP()
 
-	## Also set moves and PP for enemy pokemon
+	# Also set moves and PP for enemy pokemon
 	#var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
 	#for enemy_pokemon in enemies:
 		#if enemy_pokemon.has_method("SetPotentiellMoves"):
