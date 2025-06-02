@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://c4q367vpnme4o"]
+
+[node name="MainMenu" type="Node2D"]
+
+[node name="Button" type="Button" parent="."]
+offset_left = 700.0
+offset_top = 520.0
+offset_right = 1220.0
+offset_bottom = 620.0
+theme_override_font_sizes/font_size = 30
+text = "New Game"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 700.0
+offset_top = 630.0
+offset_right = 1220.0
+offset_bottom = 730.0
+theme_override_font_sizes/font_size = 30
+text = "Load Game"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 700.0
+offset_top = 740.0
+offset_right = 1220.0
+offset_bottom = 840.0
+theme_override_font_sizes/font_size = 30
+text = "Options"
+
+[node name="Button4" type="Button" parent="."]
+offset_left = 700.0
+offset_top = 850.0
+offset_right = 1220.0
+offset_bottom = 950.0
+theme_override_font_sizes/font_size = 30
+text = "Exit Game"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 300.0
+offset_top = 100.0
+offset_right = 1620.0
+offset_bottom = 400.0
+theme_override_font_sizes/font_size = 150
+text = "Pokemon Abyss"
+horizontal_alignment = 1
+vertical_alignment = 1
+visible_ratio = -0.0769231

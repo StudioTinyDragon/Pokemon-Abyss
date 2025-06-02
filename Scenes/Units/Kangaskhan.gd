@@ -12,6 +12,16 @@ extends CharacterBody2D
 @export var PotentialGenders: Array[String] = ["Female"]
 @export var PotentialNatures: Array[String] = ["Hardy"]
 
+#region Evolve Info
+
+@export var canEvolve :bool               =false
+@export var EvolveLvl :int
+@export var EvolveItem :String
+@export var EvolveNPC :String
+@export var EvolveLocation :String
+
+#endregion
+
 #region currentBattleStats
 
 #dynamic stats
@@ -55,20 +65,32 @@ extends CharacterBody2D
 
 #endregion
 
+#region TrainingLvl
+
+@export var TraingnigHP :int                   =0
+@export var TraingnigAttack :int               =0
+@export var TraingnigDefense :int              =0
+@export var TraingnigSPAttack :int             =0
+@export var TraingnigSPDefense :int            =0
+@export var TraingnigInitiative :int           =0 
+#TODO TrainingLvl erhöhen können + MaxLvl dafür ( ist schon in der Stat berechnung eingebunden, momentan für 1% Bonus pro TrainingLvl)
+
+#endregion
+
 #region currentStats
 
 @warning_ignore("narrowing_conversion")
-@export var currentMaxHP :int             = (maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP
+@export var currentMaxHP :int             = ((maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP) * (1 + (0.1 * TraingnigHP))
 @warning_ignore("narrowing_conversion")
-@export var currentAttack :int            = (maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack
+@export var currentAttack :int            = ((maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack) * (1 + (0.01 * TraingnigAttack))
 @warning_ignore("narrowing_conversion")
-@export var currentDefense :int           = (maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense
+@export var currentDefense :int           = ((maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense) * (1 + (0.01 * TraingnigDefense))
 @warning_ignore("narrowing_conversion")
-@export var currentSPAttack :int          = (maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack
+@export var currentSPAttack :int          = ((maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack))
 @warning_ignore("narrowing_conversion")
-@export var currentSPDefense :int         = (maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense
+@export var currentSPDefense :int         = ((maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense))
 @warning_ignore("narrowing_conversion")
-@export var currentInitiative :int        = (maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative
+@export var currentInitiative :int        = ((maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative))
 
 #endregion
 
