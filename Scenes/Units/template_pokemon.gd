@@ -1,32 +1,49 @@
 extends CharacterBody2D
 
 #region PokemonVars
-# Pokemon info
-@export var Name : String                 = "PokemonName"
+
+@export var pokemonCurrentStats: Dictionary = {
+#dynamic stats
+	"currentHP" = 0,
+	"Move1PP" = 0,
+	"Move2PP" = 0,
+	"Move3PP" = 0,
+	"Move4PP" = 0,
+	"StatusEffect" = 0,
+	"heldItem" = 0,
+
+	"currentLevel" = 0,
+	"Exp" = 0,
+	"Moves" = 0,
+	"Ability" = 0,
+	"pokemonAccuracy" = 0,
+	"evasion" = 0
+}
+@export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
 @export var OwndexNR: int                 
 @export var TYP: Array[String]            = ["Normal"]
 @export var Gender : String               = ""
 @export var Nature: String                = ""
 
+@export var uniquePokemonID: int
+
 @export var PotentialGenders: Array[String] = ["Female"]
 @export var PotentialNatures: Array[String] = ["Hardy"]
 
+#region Evolve Info
+
+@export var canEvolve :bool               =false
+@export var EvolveLvl :int
+@export var EvolveItem :String
+@export var EvolveNPC :String
+@export var EvolveLocation :String
+
+#endregion
+
 #region currentBattleStats
 
-#dynamic stats
-@export var currentHP: int                = 13
-@export var Move1PP: int                  = 0
-@export var Move2PP: int                  = 0
-@export var Move3PP: int                  = 0
-@export var Move4PP: int                  = 0
-@export var StatusEffect: Array[String]   = []
-@export var heldItem: String              = ""
 
-@export var currentLevel: int             = 1
-@export var Exp: int                      = 0
-@export var Moves: Array[String]          = []
-@export var Ability : String              = ""
 
 #endregion
 
@@ -53,20 +70,31 @@ extends CharacterBody2D
 
 #endregion
 
+#region TrainingLvl
+
+@export var TraingnigHP :int                   =0
+@export var TraingnigAttack :int               =0
+@export var TraingnigDefense :int              =0
+@export var TraingnigSPAttack :int             =0
+@export var TraingnigSPDefense :int            =0
+@export var TraingnigInitiative :int           =0 
+
+#endregion
+
 #region currentStats
 
 @warning_ignore("narrowing_conversion")
-@export var currentMaxHP :int             = (maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP
+@export var currentMaxHP :int             = ((maxLvlHP - Lvl1HP) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1HP) * (1 + (0.1 * TraingnigHP))
 @warning_ignore("narrowing_conversion")
-@export var currentAttack :int            = (maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack
+@export var currentAttack :int            = ((maxLvlAttack - Lvl1Attack) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1Attack) * (1 + (0.01 * TraingnigAttack))
 @warning_ignore("narrowing_conversion")
-@export var currentDefense :int           = (maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense
+@export var currentDefense :int           = ((maxLvlDefense - Lvl1Defense) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1Defense) * (1 + (0.01 * TraingnigDefense))
 @warning_ignore("narrowing_conversion")
-@export var currentSPAttack :int          = (maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack
+@export var currentSPAttack :int          = ((maxLvlSPAttack - Lvl1SPAttack) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack))
 @warning_ignore("narrowing_conversion")
-@export var currentSPDefense :int         = (maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense
+@export var currentSPDefense :int         = ((maxLvlSPDefense - Lvl1SPDefense) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense))
 @warning_ignore("narrowing_conversion")
-@export var currentInitiative :int        = (maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative
+@export var currentInitiative :int        = ((maxLvlInitiative - Lvl1Initiative) /99.0 * (pokemonCurrentStats["currentLevel"] - 1.0) +Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative))
 
 #endregion
 
@@ -99,17 +127,16 @@ var settingMove = false
 
 #endregion
 
-#region funcs
 
 func fainting():
-	if currentHP > 0:
+	if pokemonCurrentStats["currentHP"] > 0:
 		isFainted = false
-	elif currentHP <= 0:
+	elif pokemonCurrentStats["currentHP"] <= 0:
 		isFainted = true
 
 func SetPotentiellMoves():
 	for move in move_levels.keys():
-		if currentLevel >= move_levels[move]:
+		if pokemonCurrentStats["currentLevel"] >= move_levels[move]:
 			if not potentialMoves.has(move):
 				potentialMoves.append(move)
 
@@ -131,13 +158,13 @@ func set_stat(stat_name: String, value):
 	if _has_exported_property(stat_name):
 		self.set(stat_name, value)
 	else:
-		print("[PokemonName] set_stat: Stat not found:", stat_name)
+		print("[Kangaskhan] set_stat: Stat not found:", stat_name)
 
 func get_stat(stat_name: String):
 	if _has_exported_property(stat_name):
 		return self.get(stat_name)
 	else:
-		print("[PokemonName] get_stat: Stat not found:", stat_name)
+		print("[Kangaskhan] get_stat: Stat not found:", stat_name)
 		return null
 
 func setMove1PP():
@@ -153,11 +180,11 @@ func setMove1PP():
 					has_max_pp = true
 					break
 			if has_max_pp:
-				Move1PP = move_instance.maxPP
+				pokemonCurrentStats["Move1PP"] = move_instance.maxPP
 			else:
-				print("[PokemonName] Move script for %s does not have maxPP." % move_name)
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[PokemonName] Move script not found for %s" % move_name)
+			print("[Kangaskhan] Move script not found for %s" % move_name)
 
 
 func setMove2PP():
@@ -173,11 +200,11 @@ func setMove2PP():
 					has_max_pp = true
 					break
 			if has_max_pp:
-				Move2PP = move_instance.maxPP
+				pokemonCurrentStats["Move2PP"] = move_instance.maxPP
 			else:
-				print("[PokemonName] Move script for %s does not have maxPP." % move_name)
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[PokemonName] Move script not found for %s" % move_name)
+			print("[Kangaskhan] Move script not found for %s" % move_name)
 
 func setMove3PP():
 	if settingMove == true and currentMoves.size() > 2:
@@ -192,11 +219,11 @@ func setMove3PP():
 					has_max_pp = true
 					break
 			if has_max_pp:
-				Move3PP = move_instance.maxPP
+				pokemonCurrentStats["Move3PP"] = move_instance.maxPP
 			else:
-				print("[PokemonName] Move script for %s does not have maxPP." % move_name)
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[PokemonName] Move script not found for %s" % move_name)
+			print("[Kangaskhan] Move script not found for %s" % move_name)
 
 func setMove4PP():
 	if settingMove == true and currentMoves.size() > 3:
@@ -211,15 +238,13 @@ func setMove4PP():
 					has_max_pp = true
 					break
 			if has_max_pp:
-				Move4PP = move_instance.maxPP
+				pokemonCurrentStats["Move4PP"] = move_instance.maxPP
 			else:
-				print("[PokemonName] Move script for %s does not have maxPP." % move_name)
+				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[PokemonName] Move script not found for %s" % move_name)
+			print("[Kangaskhan] Move script not found for %s" % move_name)
 
 
 func checkIfStruggle():
-	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:
+	if pokemonCurrentStats["Move1PP"] == 0 && pokemonCurrentStats["Move2PP"] == 0 && pokemonCurrentStats["Move3PP"] == 0 && pokemonCurrentStats["Move4PP"] == 0:
 		isStruggling = true
-
-#endregion

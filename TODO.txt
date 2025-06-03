@@ -18,4 +18,3 @@ f. 8. Implement basic battle system (turn-based, simple moves)
 3. Flinch
 4. Combat textbox
 5. prio move
-6. Shorten battle script

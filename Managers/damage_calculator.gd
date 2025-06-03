@@ -49,9 +49,9 @@ func calculate_damage(level: int, move_power: int, attack: int, defense: int) ->
 	var damage = (((((2.0 * level) / 5.0) + 2.0) * move_power * attack / defense) / 50.0) + 2.0
 	return int(damage)
 
-func calculate_accuracy(moveAccuracy: int, pokemonAccuracy: int, evasion: int):
+func calculate_accuracy(moveAccuracy, pokemonAccuracy, evasion):
 	var hitChance = (moveAccuracy * pokemonAccuracy / 100) - evasion
-	return int(hitChance)
+	return (hitChance)
 
 func calculate_move_damage(attacker, defender, move) -> int:
 	# attacker: instance of the attacking Pokémon

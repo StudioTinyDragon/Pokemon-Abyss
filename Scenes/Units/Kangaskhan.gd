@@ -9,6 +9,8 @@ extends CharacterBody2D
 @export var Gender : String               = ""
 @export var Nature: String                = ""
 
+@export var uniquePokemonID: int
+
 @export var PotentialGenders: Array[String] = ["Female"]
 @export var PotentialNatures: Array[String] = ["Hardy"]
 

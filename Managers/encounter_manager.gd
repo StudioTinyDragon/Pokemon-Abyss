@@ -4,6 +4,9 @@ func debugKangaskhanEncounter():
 	# Instance Kangaskhan scene and add to the scene tree as enemy
 	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()
+	# Assign a unique ID to this enemy Kangaskhan (different from player's)
+	# Use a timestamp + random value for uniqueness
+	kangaskhan_instance.uniquePokemonID = int(Time.get_unix_time_from_system()) + randi() % 100000
 	# Add to enemy group for logic separation
 	kangaskhan_instance.add_to_group("enemy_pokemon")
 	# Add to Units node if it exists

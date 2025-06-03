@@ -1,5 +1,8 @@
 extends Node
 
+# Signal to request the battle scene to start the fight
+signal request_ready_to_fight
+
 func try_interact_with_tile1(player: Node2D) -> void:
 	var radius = 20 # pixels
 	# Search the whole scene for TreeCollision nodes
@@ -15,6 +18,8 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.battle_layer.visible = true
 							StateManager.inBattle = true
 							EncounterManager.debugKangaskhanEncounter()
+							# Emit signal to request the battle scene to start the fight
+							emit_signal("request_ready_to_fight")
 						elif node.has_node("BattleLayer"):
 							node.get_node("BattleLayer").visible = true
 							StateManager.inBattle = true

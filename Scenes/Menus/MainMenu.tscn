@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c4q367vpnme4o"]
+[gd_scene load_steps=0 format=3 uid="uid://c4q367vpnme4o"]
 
 [node name="MainMenu" type="Node2D"]
 

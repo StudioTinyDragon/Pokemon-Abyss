@@ -18,9 +18,41 @@ extends Node2D
 @onready var current_pokemon_hp: Label = $OwnStatblock/CurrentPokemonHP
 @onready var current_pokemon_status: Label = $OwnStatblock/CurrentPokemonStatus
 @onready var flee_button: Button = $BattleOptions/fleeButton
+@onready var move_go_back: Button = $MoveOptions/moveGoBack
+@onready var battle_dialogue_box: Panel = $battleDialogueBox
+@onready var battle_text: RichTextLabel = $battleDialogueBox/battleText
+@onready var ready_to_fight_timer: Timer = $battleDialogueBox/readyToFightTimer
+@onready var attack_shoutout_timer: Timer = $battleDialogueBox/attackShoutoutTimer
+
 
 #endregion
-# Helper to refresh move button text from party data
+
+
+
+func _ready() -> void:
+	# Assign UI nodes to text_manager for universal shoutout system
+	if has_node("/root/text_manager"):
+		var tm = get_node("/root/text_manager")
+		tm.battle_dialogue_box = battle_dialogue_box
+		tm.battle_text = battle_text
+		tm.attack_shoutout_timer = attack_shoutout_timer
+
+	# Connect the battle start signal ONCE, and only here
+	var _Interaction = null
+	if Engine.has_singleton("Interaction"):
+		_Interaction = Engine.get_singleton("Interaction")
+	elif has_node("/root/Interaction"):
+		_Interaction = get_node("/root/Interaction")
+	if _Interaction and not _Interaction.is_connected("request_ready_to_fight", Callable(self, "readyToFight")):
+		_Interaction.connect("request_ready_to_fight", Callable(self, "readyToFight"))
+
+# Signal handlers for chaining shoutouts
+func _on_player_shoutout_done():
+	pass
+
+func _on_enemy_shoutout_done():
+	pass
+
 func refresh_move_buttons() -> void:
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
@@ -45,7 +77,6 @@ func refresh_move_buttons() -> void:
 		move_2_button.text = "-"
 		move_3_button.text = "-"
 		move_4_button.text = "-"
-
 
 
 func _on_battle_button_pressed() -> void:
@@ -81,23 +112,28 @@ func _on_battle_button_pressed() -> void:
 		if "currentHP" in enemy:
 			print("Enemy HP:", enemy.currentHP)
 
-
-func execute_move(attacker, defender, move_instance, move_name, damage_calculator):
+func execute_move(attacker, defender, move_instance, move_name, damage_calculator, _is_first_attacker := false, _is_second_attacker := false):
+	move_options.visible = false
+	var effectiveness = 1.0
+	if move_instance and defender and "TYP" in defender:
+		var move_types = []
+		if typeof(move_instance.moveType) == TYPE_ARRAY:
+			move_types = move_instance.moveType
+		else:
+			move_types = [move_instance.moveType]
+		var defender_types = defender.TYP
+		if has_node("/root/damage_calculator"):
+			var dc = get_node("/root/damage_calculator")
+			effectiveness = dc.get_type_multiplier(move_types, defender_types)
+	var status_msg = ""
 	print("[DEBUG] execute_move: attacker=%s, defender=%s, move_name=%s, moveCat=%s" % [attacker.Name if attacker else "None", defender.Name if defender else "None", move_name, move_instance.moveCat if move_instance else "None"])
-	# Print if this is an enemy move
-	if attacker and attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
-		print("[DEBUG] ENEMY MOVE: %s used %s on %s" % [attacker.Name, move_name, defender.Name if defender else "None"])
 	# Handle Status moves (like Tail Whip) separately
 	if move_instance.moveCat == "Status":
-		# Try to call a debuff or effect function if it exists
 		if move_instance.has_method("DebuffEnenmyDefensex1"):
-			# Only call if defender is a valid target, not attacker, and is in the enemy_pokemon group if attacker is player, or player_pokemon group if attacker is enemy
 			if attacker.is_in_group("player_pokemon") and defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("enemy_pokemon"):
 				move_instance.DebuffEnenmyDefensex1(defender)
-				print("%s used %s!" % [attacker.Name, move_name])
 			elif attacker.is_in_group("enemy_pokemon") and defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("player_pokemon"):
 				move_instance.DebuffEnenmyDefensex1(defender)
-				print("%s used %s!" % [attacker.Name, move_name])
 			else:
 				print("[Tail Whip] No valid enemy target for debuff. Defender: ", defender)
 		else:
@@ -112,19 +148,14 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		print("Move category not supported for damage calculation.")
 	if "currentHP" in defender:
 		defender.currentHP = max(0, defender.currentHP - damage)
-		print("%s used %s!" % [attacker.Name, move_name])
-		print("%s HP after attack: %d" % [defender.Name, defender.currentHP])
-		# Print both player and enemy HP after each attack
+		# HP UI update (not part of shoutout system)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
-			print("Player HP:", attacker.currentHP)
 			current_pokemon_hp.text = str(attacker.currentHP)
 			current_enemy_hp.text = str(defender.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("player_pokemon"):
-			print("Player HP:", defender.currentHP)
 			current_pokemon_hp.text = str(defender.currentHP)
 			current_enemy_hp.text = str(attacker.currentHP)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
-			print("Enemy HP:", attacker.currentHP)
 			current_enemy_hp.text = str(attacker.currentHP)
 			current_pokemon_hp.text = str(defender.currentHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("enemy_pokemon"):
@@ -151,9 +182,7 @@ func _get_battle_pokemon() -> Dictionary: # Helper: get player and enemy pokemon
 	return {"player": player_pokemon, "enemy": enemy_pokemon}
 
 
-
-func _handle_move_button(move_index: int) -> void: # Helper: handle move logic for a given move index
-	# Use party data for move logic and PP
+func _handle_move_button(move_index: int) -> void:
 	if StateManager.player_party.size() == 0:
 		return
 	var moves = StateManager.player_party[0]["moves"]
@@ -170,29 +199,16 @@ func _handle_move_button(move_index: int) -> void: # Helper: handle move logic f
 		moves[move_index]["pp"] = max(0, moves[move_index]["pp"] - 1)
 		print("[DEBUG] After decrement: %s" % [str(moves)])
 		refresh_move_buttons()
-	# Legacy: get player and enemy nodes for compatibility with rest of battle logic
+	   # After all moves are executed, return to the BattleOptions panel
+		battle_options.visible = true
+
 	var mons = _get_battle_pokemon()
 	var player_pokemon = mons["player"]
 	var enemy_pokemon = mons["enemy"]
-	# Continue with enemy move logic as before
-	var enemy_move_name_ = null
-	var enemy_move_instance_ = null
+
 	if enemy_pokemon:
 		enemy_pokemon.checkIfStruggle()
 	var enemy_is_struggling = enemy_pokemon and enemy_pokemon.isStruggling
-	if enemy_is_struggling:
-		enemy_move_name_ = "Struggle"
-		var struggle_path = "res://Scripts/Moves/struggle.gd"
-		if ResourceLoader.exists(struggle_path):
-			var move_resource = load(struggle_path)
-			enemy_move_instance_ = move_resource.new()
-	else:
-		var all_pp_zero = true
-		var move_pps = [enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP]
-		for pp in move_pps:
-			if pp > 0:
-				all_pp_zero = false
-				break
 	var enemy_move_name = null
 	var enemy_move_instance = null
 	if enemy_pokemon:
@@ -241,27 +257,30 @@ func _handle_move_button(move_index: int) -> void: # Helper: handle move logic f
 								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
 							4:
 								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
+
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
 	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
 	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
 	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
+
+	# Determine who attacks first and execute moves in order
 	if player_move_instance and enemy_move_instance:
 		if player_initiative > enemy_initiative:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
 		elif enemy_initiative > player_initiative:
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
 		else:
-			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
-			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+			# If tied, default to player first
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
 	elif player_move_instance:
-		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator)
+		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
 	elif enemy_move_instance:
-		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator)
+		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
 	else:
 		print("No valid moves to execute.")
-	# Always refresh move buttons from party data after move resolution
 	refresh_move_buttons()
 
 func _on_move_1_button_pressed() -> void:
@@ -277,6 +296,10 @@ func _on_move_4_button_pressed() -> void:
 	_handle_move_button(3)
 
 func _on_flee_button_pressed() -> void:
+	battle_options.visible = false
+	move_options.visible = false
+	enemy_statblock.visible = false
+	own_statblock.visible = false
 	# When fleeing, show the map and player, hide the battle layer
 	var parent = get_parent()
 	if parent:
@@ -346,3 +369,41 @@ func _on_flee_button_pressed() -> void:
 		#add_child(kangaskhan_instance)
 	#print("Kangaskhan added as enemy for debug.")
 #endregion
+
+
+func _on_move_go_back_pressed() -> void:
+	battle_options.visible = true
+	move_options.visible = false
+
+var _battle_started := false
+func readyToFight():
+	if _battle_started:
+		return
+	_battle_started = true
+	battle_dialogue_box.visible = true
+	battle_text.text = "It's time to fight"
+	ready_to_fight_timer.start()
+	showPokemonNames()
+
+
+func _on_ready_to_fight_timer_timeout() -> void:
+	battle_dialogue_box.visible = false
+	battle_text.text = ""
+	battle_options.visible = true
+	enemy_statblock.visible = true
+	own_statblock.visible = true
+
+func showPokemonNames():
+	# Get the current player and enemy Pokémon nodes
+	var pokemon = _get_battle_pokemon()
+	var player_pokemon = pokemon["player"]
+	var enemy_pokemon = pokemon["enemy"]
+	# Update the UI with the current Pokémon names
+	if player_pokemon and "Name" in player_pokemon:
+		pokemon_name.text = str(player_pokemon.Name)
+	else:
+		pokemon_name.text = "aa"
+	if enemy_pokemon and "Name" in enemy_pokemon:
+		enemy_name.text = str(enemy_pokemon.Name)
+	else:
+		enemy_name.text = "-"
