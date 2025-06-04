@@ -4,7 +4,6 @@
 .qodo
 .vscode
 addons2
-*.uid
 project_time.json
 *.tmp
 *.import
