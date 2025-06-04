@@ -18,17 +18,17 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.battle_layer.visible = true
 							StateManager.inBattle = true
 							EncounterManager.debugKangaskhanEncounter()
+							print(StateManager.player_position)
 							# Emit signal to request the battle scene to start the fight
 							emit_signal("request_ready_to_fight")
 						elif node.has_node("BattleLayer"):
 							node.get_node("BattleLayer").visible = true
 							StateManager.inBattle = true
 
-					# Hide the map when starting battle
+					# Hide tilemap
 					if "ground" in node:
 						node.ground.visible = false
-
-					# Hide only the PlayerSprite2D (not the whole player node)
+					# Hide player
 					var parent = node.get_parent()
 					if parent and parent.has_node("Player"):
 						var player_node = parent.get_node("Player")

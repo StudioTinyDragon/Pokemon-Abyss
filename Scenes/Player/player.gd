@@ -38,6 +38,9 @@ func _process(_delta: float) -> void:
 		velocity = new_velocity
 		move_and_slide()
 
+		# --- PLAYER POSITION TRACKING ---
+		StateManager.update_player_position(global_position)
+
 		# --- INTERACTION: Show/hide 'F' label above trees every frame ---
 		if typeof(Interaction) == TYPE_OBJECT:
 			Interaction.update_tile1_interaction_labels(self)

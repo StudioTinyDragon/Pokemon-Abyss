@@ -1,10 +1,13 @@
 extends Node
 
+signal player_fled_battle
+
 var CalculatingDamage = false
 var inBattle = false
 var inBattleSelect = false
 var inItems = false
 var switchingPokemon = false
+var isTryingToFlee = false
 
 # Player's active Pokémon party (up to 6)
 # Each Pokémon is a dictionary with all relevant fields for battle and overworld
@@ -66,3 +69,11 @@ func clear_stat_debuffs(unique_id: int) -> void:
 
 # Enemy Pokémon party (for wild or trainer battles, similar structure)
 var enemy_party: Array = []
+
+# --- Player position tracking ---
+# Continuously updated by the map/player scene
+var player_position: Vector2 = Vector2.ZERO
+
+# Call this from the player or map script to update the position
+func update_player_position(pos: Vector2) -> void:
+	player_position = pos
