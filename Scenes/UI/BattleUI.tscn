@@ -1,0 +1,73 @@
+[gd_scene load_steps=2 format=3 uid="uid://ci0op2hlj3y3u"]
+
+[ext_resource type="Script" uid="uid://b633av0rl4vyg" path="res://Scenes/UI/battle_ui.gd" id="1_bg7jw"]
+
+[node name="TextManager" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bg7jw")
+
+[node name="EnemyStatblock" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 1292.0
+offset_right = 1920.0
+offset_bottom = 190.0
+
+[node name="EnemyName" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_right = 142.0
+offset_bottom = 39.0
+theme_override_font_sizes/font_size = 40
+text = "Enemy: "
+
+[node name="CurrentEnemyHP" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 55.0
+offset_right = 147.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentEnemyStatus" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 110.0
+offset_right = 44.0
+offset_bottom = 133.0
+theme_override_font_sizes/font_size = 40
+text = "-"
+
+[node name="OwnStatblock" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 637.0
+offset_right = 628.0
+offset_bottom = 827.0
+
+[node name="PokemonName" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_right = 142.0
+offset_bottom = 39.0
+theme_override_font_sizes/font_size = 40
+text = "Pokemon:"
+
+[node name="CurrentPokemonHP" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 55.0
+offset_right = 159.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentPokemonStatus" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 127.0
+offset_right = 52.0
+offset_bottom = 182.0
+theme_override_font_sizes/font_size = 40
+text = "-"

@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 StateManager="*res://Managers/state_manager.gd"
 Interaction="*res://Managers/interaction.gd"
 EncounterManager="*res://Managers/encounter_manager.gd"
-TextManager="*res://Managers/text_manager.gd"
+TextManager="*res://Managers/TextManager.tscn"
 
 [display]
 
