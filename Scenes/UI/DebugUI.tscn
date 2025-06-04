@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhyrt4prb5b18"]
 
 [ext_resource type="Script" uid="uid://8qvgirgngucl" path="res://Scenes/UI/debug_ui.gd" id="1_7gdgf"]
-[ext_resource type="FontFile" uid="uid://ccfwuyjker3is" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_fpupx"]
+[ext_resource type="FontFile" uid="uid://dpn410hv3na3p" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_fpupx"]
 
 [node name="DebugUi" type="Node2D"]
 script = ExtResource("1_7gdgf")

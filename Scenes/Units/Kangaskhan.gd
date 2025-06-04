@@ -29,8 +29,8 @@ extends Node2D
 @export var canEvolve :bool                 = false
 @export var EvolveLvl :int
 @export var EvolveItem :String
-@export var EvolveNPC :String
 @export var EvolveLocation :String
+@export var EvolveETC :String
 
 #endregion
 
