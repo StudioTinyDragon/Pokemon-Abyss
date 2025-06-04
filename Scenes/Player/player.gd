@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+@onready var player_sprite_2d: Sprite2D = $PlayerSprite2D
+
 const SPEED = 220.0
 
 func _process(_delta: float) -> void:

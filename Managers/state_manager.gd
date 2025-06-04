@@ -64,7 +64,5 @@ func clear_stat_debuffs(unique_id: int) -> void:
 			return
 
 
-
-
 # Enemy Pokémon party (for wild or trainer battles, similar structure)
 var enemy_party: Array = []

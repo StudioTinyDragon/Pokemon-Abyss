@@ -24,18 +24,21 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.get_node("BattleLayer").visible = true
 							StateManager.inBattle = true
 
-						# Hide the map and player when starting battle
-						if "test_map" in node:
-							node.test_map.visible = false
-						elif node.has_node("TestMap"):
-							node.get_node("TestMap").visible = false
+					# Hide the map when starting battle
+					if "ground" in node:
+						node.ground.visible = false
 
-						# Hide the player (assume player is a child of the map or scene)
-						if "player" in node:
-							node.player.visible = false
-						elif node.has_node("Player"):
-							node.get_node("Player").visible = false
-						return
+					# Hide only the PlayerSprite2D (not the whole player node)
+					var parent = node.get_parent()
+					if parent and parent.has_node("Player"):
+						var player_node = parent.get_node("Player")
+						if player_node.has_node("PlayerSprite2D"):
+							player_node.get_node("PlayerSprite2D").visible = false
+							print("Sprite Player Invisible")
+						else:
+							print("[DEBUG] PlayerSprite2D node not found in Player node:", player_node)
+
+					return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:
 	var radius = 22 # pixels

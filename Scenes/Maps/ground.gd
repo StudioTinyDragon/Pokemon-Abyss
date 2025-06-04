@@ -7,6 +7,8 @@ extends TileMapLayer
 @onready var battle_layer: CanvasLayer = $"../BattleLayer"
 @onready var player: CharacterBody2D = $"../Player"
 @onready var test_map: Node2D = $".."
+@onready var ground: TileMapLayer = $"."
+@onready var player_sprite_2d: Sprite2D = $PlayerSprite2D
 
 
 var grid_overlay: Node2D = null

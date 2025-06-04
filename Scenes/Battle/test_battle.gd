@@ -46,12 +46,6 @@ func _ready() -> void:
 	if _Interaction and not _Interaction.is_connected("request_ready_to_fight", Callable(self, "readyToFight")):
 		_Interaction.connect("request_ready_to_fight", Callable(self, "readyToFight"))
 
-# Signal handlers for chaining shoutouts
-func _on_player_shoutout_done():
-	pass
-
-func _on_enemy_shoutout_done():
-	pass
 
 func refresh_move_buttons() -> void:
 	if StateManager.player_party.size() > 0:
@@ -300,6 +294,7 @@ func _on_flee_button_pressed() -> void:
 	move_options.visible = false
 	enemy_statblock.visible = false
 	own_statblock.visible = false
+	_battle_started = false
 	# When fleeing, show the map and player, hide the battle layer
 	var parent = get_parent()
 	if parent:
@@ -332,8 +327,8 @@ func _on_flee_button_pressed() -> void:
 		# Set visibility accordingly
 		if map_node:
 			map_node.visible = true
-		if player_node:
-			player_node.visible = true
+		if player_node and player_node.has_node("PlayerSprite2D"):
+			player_node.get_node("PlayerSprite2D").visible = true
 		if battle_layer_node:
 			battle_layer_node.visible = false
 
@@ -376,14 +371,17 @@ func _on_move_go_back_pressed() -> void:
 	move_options.visible = false
 
 var _battle_started := false
+
 func readyToFight():
 	if _battle_started:
 		return
 	_battle_started = true
 	battle_dialogue_box.visible = true
 	battle_text.text = "It's time to fight"
+	setPokemonPosition()
 	ready_to_fight_timer.start()
 	showPokemonNames()
+
 
 
 func _on_ready_to_fight_timer_timeout() -> void:
@@ -407,3 +405,22 @@ func showPokemonNames():
 		enemy_name.text = str(enemy_pokemon.Name)
 	else:
 		enemy_name.text = "-"
+
+func setPokemonPosition():
+	var pokemon = _get_battle_pokemon()
+	var player_pokemon = pokemon["player"]
+	var enemy_pokemon = pokemon["enemy"]
+
+	if player_pokemon:
+		player_pokemon.global_position = Vector2(-100, 10)
+		if player_pokemon.has_node("PokemonFrontSprite"):
+			player_pokemon.get_node("PokemonFrontSprite").visible = false
+		if player_pokemon.has_node("PokemonBackSprite"):
+			player_pokemon.get_node("PokemonBackSprite").visible = true
+
+	if enemy_pokemon:
+		enemy_pokemon.global_position = Vector2(120, -20)
+		if enemy_pokemon.has_node("PokemonBackSprite"):
+			enemy_pokemon.get_node("PokemonBackSprite").visible = false
+		if enemy_pokemon.has_node("PokemonFrontSprite"):
+			enemy_pokemon.get_node("PokemonFrontSprite").visible = true

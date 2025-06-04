@@ -1,22 +1,32 @@
-extends CharacterBody2D
+extends Node2D
 
 #region PokemonVars
-# Pokemon info
+@export_category("Pokemon Info")
 @export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
 @export var OwndexNR: int                 
 @export var TYP: Array[String]            = ["Normal"]
-@export var Gender : String               = ""
-@export var Nature: String                = ""
+@export_enum("Female", "Male") var Gender = "No standard Gender"
+@export_enum("Hardy") var Nature          = "No standard Nature"
+@export var canBeShiny: bool              = true
+@export var isShiny: bool                 = false
 
 @export var uniquePokemonID: int
 
 @export var PotentialGenders: Array[String] = ["Female"]
 @export var PotentialNatures: Array[String] = ["Hardy"]
 
-#region Evolve Info
+@export_subgroup("Sprites")
+@export_file("*.png") var PokemonFront             = ""
+@export_file("*.png") var PokemonBack              = ""
+@export_file("*.png") var PokemonIcon              = ""
+@export_file("*.png") var PokemonFrontShiny        = ""
+@export_file("*.png") var PokemonBackShiny         = ""
+@export_file("*.png") var PokemonImage             = ""
 
-@export var canEvolve :bool               =false
+#region Evolve Info
+@export_subgroup("evolve info")
+@export var canEvolve :bool                 = false
 @export var EvolveLvl :int
 @export var EvolveItem :String
 @export var EvolveNPC :String
@@ -27,26 +37,27 @@ extends CharacterBody2D
 #region currentBattleStats
 
 #dynamic stats
-@export var currentHP: int                = 13
-@export var Move1PP: int                  = 0
-@export var Move2PP: int                  = 0
-@export var Move3PP: int                  = 0
-@export var Move4PP: int                  = 0
-@export var StatusEffect: Array[String]   = []
-@export var heldItem: String              = ""
+var currentHP: int                = 13
+var Move1PP: int                  = 0
+var Move2PP: int                  = 0
+var Move3PP: int                  = 0
+var Move4PP: int                  = 0
+var StatusEffect: Array[String]   = []
+@export_group("Stats")
+@export var heldItem: String
 
-@export var currentLevel: int             = 1
-@export var Exp: int                      = 0
-@export var Moves: Array[String]          = []
-@export var Ability : String              = ""
-@export var pokemonAccuracy: int          = 100
-@export var evasion : int                 = 0
+@export_range(0, 100, 1.0) var currentLevel   = 1.0
+@export var Exp: int                          = 0
+@export var Moves: Array[String]              = []
+@export var Ability : String
+var pokemonAccuracy: int                      = 100
+var evasion : int                             = 0
 
 #endregion
 
 # Statblock
 #region MinStats
- 
+@export_subgroup("Lvl1 Stats")
 @export var Lvl1HP: int                         = 13
 @export var Lvl1Attack: int                     = 6
 @export var Lvl1Defense: int                    = 6
@@ -57,7 +68,7 @@ extends CharacterBody2D
 #endregion
 
 #region MaxStats
-
+@export_subgroup("Max Lvl Stats")
 @export var maxLvlHP: int                 = 320
 @export var maxLvlAttack: int             = 195
 @export var maxLvlDefense: int            = 165
@@ -68,7 +79,7 @@ extends CharacterBody2D
 #endregion
 
 #region TrainingLvl
-
+@export_subgroup("Training Modifier")
 @export var TraingnigHP :int                   =0
 @export var TraingnigAttack :int               =0
 @export var TraingnigDefense :int              =0
@@ -80,7 +91,7 @@ extends CharacterBody2D
 #endregion
 
 #region currentStats
-
+@export_subgroup("Current Stats")
 @warning_ignore("narrowing_conversion")
 @export var currentMaxHP :int             = ((maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP) * (1 + (0.1 * TraingnigHP))
 @warning_ignore("narrowing_conversion")
@@ -99,12 +110,13 @@ extends CharacterBody2D
 @export var CatchRate: int                = 45 #Higher Catchrate = easier
 
 @export var currentMoves: Array[String] = []
+@export_subgroup("Potential")
 @export var potentialMoves: Array[String] = []
 @export var potentialAbilities: Array[String] = ["Early Bird", "Scrappy", "Inner Focus"]
 @export var potentialHeldItems: Array[String] = ["Bitter Berry"]
 
 #region MoveLvlLocked
-
+@export_subgroup("Moves per Level")
 var move_levels = {
 	"Pound": 1,
 	"TailWhip": 1,
@@ -121,10 +133,55 @@ var move_levels = {
 
 var isFainted
 var settingMove = false
-@export var isStruggling: bool = false
+var isStruggling: bool = false
 
 #endregion
 
+
+@onready var pokemon_front_sprite: Sprite2D = $PokemonFrontSprite
+@onready var pokemon_back_sprite: Sprite2D = $PokemonBackSprite
+@onready var pokemon_icon: Sprite2D = $PokemonIcon
+@onready var animated_front: AnimatedSprite2D = $AnimatedFront
+@onready var animated_back: AnimatedSprite2D = $AnimatedBack
+@onready var pokemon_front_sprite_shiny: Sprite2D = $PokemonFrontSpriteShiny
+@onready var pokemon_back_sprite_shiny: Sprite2D = $PokemonBackSpriteShiny
+@onready var pokemon_image: Sprite2D = $PokemonImage
+
+
+func _ready():
+	shinyProbabilityGenerator()
+	setPokemonSprites()
+
+func setPokemonSprites():
+	animated_front.play()
+	if isShiny == true:
+		if PokemonFrontShiny != "":
+			var FrontShiny = load(PokemonFront)
+			if FrontShiny:
+				pokemon_front_sprite.texture = FrontShiny
+		if PokemonBackShiny != "":
+			var BackShiny = load(PokemonBack)
+			if BackShiny:
+				pokemon_back_sprite.texture = BackShiny
+	else:
+		if PokemonFront != "":
+			var Front = load(PokemonFront)
+			if Front:
+				pokemon_front_sprite.texture = Front
+		if PokemonBack != "":
+			var Back = load(PokemonBack)
+			if Back:
+				pokemon_back_sprite.texture = Back
+		if PokemonIcon != "":
+			var Icon = load(PokemonIcon)
+			if Icon:
+				pokemon_icon.texture = Icon
+
+func shinyProbabilityGenerator():
+	if randi() % 4000 == 0 && canBeShiny == true:
+		isShiny = true
+	else:
+		isShiny = false
 
 func fainting():
 	if currentHP > 0:

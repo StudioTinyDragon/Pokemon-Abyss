@@ -626,14 +626,14 @@ tile_map_data = PackedByteArray("AAD/////AAAKAAIAAAAAAP//AAALAAIAAAD//wAAAAAKAAM
 tile_set = SubResource("TileSet_h1i30")
 script = ExtResource("3_h1i30")
 
-[node name="Player" parent="." instance=ExtResource("2_ekms1")]
-position = Vector2(1, -36)
-scale = Vector2(0.5, 0.5)
-
 [node name="BattleLayer" type="CanvasLayer" parent="."]
 visible = false
 
 [node name="TestBattle" parent="BattleLayer" instance=ExtResource("4_tf83h")]
+
+[node name="Player" parent="." instance=ExtResource("2_ekms1")]
+position = Vector2(1, -36)
+scale = Vector2(0.5, 0.5)
 
 [node name="DebugLayer" type="CanvasLayer" parent="."]
 
