@@ -1,0 +1,503 @@
+[gd_scene load_steps=0 format=3 uid="uid://cfmh7yeows1cy"]
+
+[node name="TeamManager" type="Node2D"]
+
+[node name="Pokemon1" type="Button" parent="."]
+top_level = true
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 900.0
+offset_bottom = 250.0
+
+[node name="PokemonName1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon1"
+vertical_alignment = 1
+
+[node name="PokemonLvl1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonPic1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus1" type="Label" parent="Pokemon1"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pokemon2" type="Button" parent="."]
+top_level = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -900.0
+offset_top = 100.0
+offset_right = -100.0
+offset_bottom = 250.0
+grow_horizontal = 0
+
+[node name="PokemonName2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon2"
+vertical_alignment = 1
+
+[node name="PokemonLvl2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonPic2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus2" type="Label" parent="Pokemon2"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pokemon3" type="Button" parent="."]
+top_level = true
+offset_left = 100.0
+offset_top = 300.0
+offset_right = 900.0
+offset_bottom = 450.0
+
+[node name="PokemonName3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon3"
+vertical_alignment = 1
+
+[node name="PokemonLvl3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LabePokemonPic3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus3" type="Label" parent="Pokemon3"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pokemon4" type="Button" parent="."]
+top_level = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -900.0
+offset_top = 300.0
+offset_right = -100.0
+offset_bottom = 450.0
+grow_horizontal = 0
+
+[node name="PokemonName4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon4"
+vertical_alignment = 1
+
+[node name="PokemonLvl4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonPic4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus4" type="Label" parent="Pokemon4"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pokemon5" type="Button" parent="."]
+top_level = true
+offset_left = 100.0
+offset_top = 500.0
+offset_right = 900.0
+offset_bottom = 650.0
+
+[node name="PokemonName5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon5"
+vertical_alignment = 1
+
+[node name="PokemonLvl5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonPic5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus5" type="Label" parent="Pokemon5"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Pokemon6" type="Button" parent="."]
+top_level = true
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -900.0
+offset_top = 500.0
+offset_right = -100.0
+offset_bottom = 650.0
+grow_horizontal = 0
+
+[node name="PokemonName6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(500, 75)
+offset_left = 150.0
+offset_right = 650.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Pokemon6"
+vertical_alignment = 1
+
+[node name="PokemonLvl6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(50, 75)
+offset_left = 650.0
+offset_right = 700.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 30
+text = "Lvl"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonGender6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 20
+text = "Gender"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonPic6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(150, 150)
+offset_right = 150.0
+offset_bottom = 150.0
+theme_override_font_sizes/font_size = 30
+text = "Pic"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PokemonHP6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(500, 75)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = -75.0
+offset_right = 650.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "HP"
+vertical_alignment = 1
+
+[node name="PokemonStatus6" type="Label" parent="Pokemon6"]
+custom_minimum_size = Vector2(50, 75)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 30
+text = "Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="."]
+offset_left = 700.0
+offset_top = 900.0
+offset_right = 1220.0
+offset_bottom = 1000.0
+theme_override_font_sizes/font_size = 50
+text = "Back"
