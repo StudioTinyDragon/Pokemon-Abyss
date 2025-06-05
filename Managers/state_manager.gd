@@ -7,7 +7,6 @@ var inBattle = false
 var inBattleSelect = false
 var inItems = false
 var switchingPokemon = false
-var isTryingToFlee = false
 
 # Player's active Pokémon party (up to 6)
 # Each Pokémon is a dictionary with all relevant fields for battle and overworld

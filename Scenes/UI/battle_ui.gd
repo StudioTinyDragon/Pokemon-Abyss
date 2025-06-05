@@ -1,4 +1,4 @@
-extends  Control
+extends Control
 
 @onready var battle_options: Panel = $BattleOptions
 @onready var battle_button: Button = $BattleOptions/battleButton
@@ -24,19 +24,14 @@ extends  Control
 @onready var ready_to_fight_timer: Timer = $battleDialogueBox/readyToFightTimer
 @onready var attack_shoutout_timer: Timer = $battleDialogueBox/attackShoutoutTimer
 
+var _last_enemy_move_name: String = ""
+var _last_player_move_name: String = ""
 var _battle_started := false
 var player_pokemon = null
 var enemy_pokemon = null
 
 
 func _ready() -> void:
-	# Assign UI nodes to text_manager for universal shoutout system
-	if has_node("/root/text_manager"):
-		var tm = get_node("/root/text_manager")
-		tm.battle_dialogue_box = battle_dialogue_box
-		tm.battle_text = battle_text
-		tm.attack_shoutout_timer = attack_shoutout_timer
-
 	# Connect the battle start signal ONCE, and only here
 	var _Interaction = null
 	if Engine.has_singleton("Interaction"):
@@ -45,6 +40,10 @@ func _ready() -> void:
 		_Interaction = get_node("/root/Interaction")
 	if _Interaction and not _Interaction.is_connected("request_ready_to_fight", Callable(self, "readyToFight")):
 		_Interaction.connect("request_ready_to_fight", Callable(self, "readyToFight"))
+	TextManager.connect("playerShoutoutQueue", Callable(self, "_playerShoutoutQueue"))
+	TextManager.connect("playerShoutoutDone", Callable(self, "_playerShoutoutDone"))
+	TextManager.connect("enemyShoutoutQueue", Callable(self, "_enemyShoutoutQueue"))
+	TextManager.connect("enemyShoutoutDone", Callable(self, "_enemyShoutoutDone"))
 
 #region timer
 
@@ -90,7 +89,7 @@ func showPokemonNames():
 		enemy_name.text = "-"
 
 func setPokemonPosition():
-	var player_battle_pos = Vector2(StateManager.player_position.x -125, StateManager.player_position.y - 15)
+	var player_battle_pos = Vector2(StateManager.player_position.x - 125, StateManager.player_position.y - 15)
 	var enemy_battle_pos = Vector2(StateManager.player_position.x + 120, StateManager.player_position.y - 35)
 
 	if player_pokemon:
@@ -177,6 +176,7 @@ func _handle_move_button(move_index: int) -> void:
 	if moves.size() <= move_index or moves[move_index]["pp"] <= 0:
 		return
 	var player_move_name = moves[move_index]["name"]
+	_last_player_move_name = player_move_name
 	var player_move_instance = null
 	var move_script_name = player_move_name.replace(" ", "")
 	var player_move_path = "res://Scripts/Moves/%s.gd" % move_script_name
@@ -187,8 +187,6 @@ func _handle_move_button(move_index: int) -> void:
 		moves[move_index]["pp"] = max(0, moves[move_index]["pp"] - 1)
 		print("[DEBUG] After decrement: %s" % [str(moves)])
 		refresh_move_buttons()
-	   # After all moves are executed, return to the BattleOptions panel
-		battle_options.visible = true
 
 	if enemy_pokemon:
 		enemy_pokemon.checkIfStruggle()
@@ -241,30 +239,63 @@ func _handle_move_button(move_index: int) -> void:
 								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
 							4:
 								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
+	_last_enemy_move_name = enemy_move_name
 
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
 	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
 	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
 	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
 
-	# Determine who attacks first and execute moves in order
+	# --- Synchronous shoutout system using await ---
 	if player_move_instance and enemy_move_instance:
 		if player_initiative > enemy_initiative:
 			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("playerShoutoutQueue")
+			await TextManager.playerShoutoutDone
 			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("enemyShoutoutQueue")
+			await TextManager.enemyShoutoutDone
 		elif enemy_initiative > player_initiative:
 			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("enemyShoutoutQueue")
+			await TextManager.enemyShoutoutDone
 			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("playerShoutoutQueue")
+			await TextManager.playerShoutoutDone
 		else:
 			# If tied, default to player first
 			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("playerShoutoutQueue")
+			await TextManager.playerShoutoutDone
 			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("enemyShoutoutQueue")
+			await TextManager.enemyShoutoutDone
 	elif player_move_instance:
 		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+		await get_tree().create_timer(0.1).timeout
+		TextManager.emit_signal("playerShoutoutQueue")
+		await TextManager.playerShoutoutDone
 	elif enemy_move_instance:
 		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+		await get_tree().create_timer(0.1).timeout
+		TextManager.emit_signal("enemyShoutoutQueue")
+		await TextManager.enemyShoutoutDone
 	else:
 		print("No valid moves to execute.")
+	# After all shoutouts, hide the message box and show battle options
+	if battle_dialogue_box:
+		battle_dialogue_box.visible = false
+	if battle_text:
+		battle_text.text = ""
+	battle_options.visible = true
+	enemy_statblock.visible = true
+	own_statblock.visible = true
 	refresh_move_buttons()
 
 
@@ -353,7 +384,6 @@ func refresh_move_buttons() -> void:
 
 
 func _on_flee_button_pressed():
-	print("Flee button pressed")
 	battle_options.visible = false
 	move_options.visible = false
 	enemy_statblock.visible = false
@@ -361,12 +391,34 @@ func _on_flee_button_pressed():
 	_battle_started = false
 	player_pokemon.get_node("PokemonBackSprite").visible = false
 	enemy_pokemon.get_node("PokemonFrontSprite").visible = false
-	StateManager.isTryingToFlee = true
-	if StateManager.has_signal("player_fled_battle"):
-		StateManager.emit_signal("player_fled_battle")
-		print("Emitted StateManager.player_fled_battle signal from BattleUI")
-	else:
-		print("[ERROR] StateManager missing player_fled_battle signal!")
+	StateManager.emit_signal("player_fled_battle")
+
+
+func _playerShoutoutQueue():
+	if battle_dialogue_box:
+		battle_dialogue_box.visible = true
+	if battle_text:
+		var mon_name = player_pokemon.Name if player_pokemon and "Name" in player_pokemon else "Player Pokémon"
+		var move_name = _last_player_move_name if _last_player_move_name != null else "Move"
+		battle_text.text = "Your %s used %s!" % [mon_name, move_name]
+	await get_tree().create_timer(1.0).timeout
+	TextManager.emit_signal("playerShoutoutDone")
+
+func _playerShoutoutDone():
+	pass
+
+func _enemyShoutoutQueue():
+	if battle_dialogue_box:
+		battle_dialogue_box.visible = true
+	if battle_text:
+		var mon_name = enemy_pokemon.Name if enemy_pokemon and "Name" in enemy_pokemon else "Enemy Pokémon"
+		var move_name = _last_enemy_move_name if _last_enemy_move_name != null else "Move"
+		battle_text.text = "%s used %s!" % [mon_name, move_name]
+	await get_tree().create_timer(1.0).timeout
+	TextManager.emit_signal("enemyShoutoutDone")
+
+func _enemyShoutoutDone():
+	pass
 
 func _on_move_go_back_pressed() -> void:
 	battle_options.visible = true

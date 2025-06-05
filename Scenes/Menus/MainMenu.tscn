@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://c4q367vpnme4o"]
+[gd_scene format=3 uid="uid://bh6wc7ee1qguj"]
 
 [node name="MainMenu" type="Node2D"]
 
@@ -43,4 +43,3 @@ theme_override_font_sizes/font_size = 150
 text = "Pokemon Abyss"
 horizontal_alignment = 1
 vertical_alignment = 1
-visible_ratio = -0.0769231

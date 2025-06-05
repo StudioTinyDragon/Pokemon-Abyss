@@ -1,4 +1,6 @@
-extends Node
+extends Node2D
 
-func _ready():
-	pass
+signal playerShoutoutQueue
+signal enemyShoutoutQueue
+signal playerShoutoutDone
+signal enemyShoutoutDone

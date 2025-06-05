@@ -8,17 +8,10 @@ extends Node2D
 func _ready() -> void:
 	StateManager.inBattle = false
 	# Connect to StateManager's signal for fleeing
-	if not StateManager.is_connected("player_fled_battle", Callable(self, "_on_player_fled_battle")):
-		StateManager.connect("player_fled_battle", Callable(self, "_on_player_fled_battle"))
-		print("Connected StateManager.player_fled_battle signal in test_map.gd")
+	StateManager.connect("player_fled_battle", Callable(self, "_on_player_fled_battle"))
 
 
 func _on_player_fled_battle():
-	print("Flee triggered (via StateManager signal)")
-	var test_battle_instance = $TestBattle
-	print("TestBattle instance:", test_battle_instance)
-	print("Ground node:", ground)
-	print("Player node:", player)
 	ground.visible = true
 	player.visible = true
 	StateManager.inBattle = false

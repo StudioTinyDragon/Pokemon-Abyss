@@ -1,9 +1,6 @@
-[gd_scene format=3 uid="uid://c4vfa2ope13wg"]
+[gd_scene load_steps=2 format=3 uid="uid://ck67yt3ckh4x1"]
 
-[node name="TextManager" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[ext_resource type="Script" uid="uid://b65y0icjig5ua" path="res://Managers/text_manager.gd" id="1_a325y"]
+
+[node name="TextManager" type="Node2D"]
+script = ExtResource("1_a325y")

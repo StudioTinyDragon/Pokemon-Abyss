@@ -18,8 +18,6 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.battle_layer.visible = true
 							StateManager.inBattle = true
 							EncounterManager.debugKangaskhanEncounter()
-							print(StateManager.player_position)
-							# Emit signal to request the battle scene to start the fight
 							emit_signal("request_ready_to_fight")
 						elif node.has_node("BattleLayer"):
 							node.get_node("BattleLayer").visible = true
@@ -34,10 +32,6 @@ func try_interact_with_tile1(player: Node2D) -> void:
 						var player_node = parent.get_node("Player")
 						if player_node.has_node("PlayerSprite2D"):
 							player_node.get_node("PlayerSprite2D").visible = false
-							print("Sprite Player Invisible")
-						else:
-							print("[DEBUG] PlayerSprite2D node not found in Player node:", player_node)
-
 					return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:
