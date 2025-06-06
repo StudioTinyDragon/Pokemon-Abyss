@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8jke3wh4wpk6"]
+
+[ext_resource type="Script" uid="uid://bq0jo0tds5iqm" path="res://Scripts/Moves/struggle.gd" id="1_frg0n"]
+
+[node name="Struggle" type="Node2D"]
+script = ExtResource("1_frg0n")

@@ -16,5 +16,4 @@ f. 8. Implement basic battle system (turn-based, simple moves)
 1. Evasion Accuracy
 2. Crit https://bulbapedia.bulbagarden.net/wiki/Critical_hit
 3. Flinch
-4. Combat textbox
 5. prio move

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dhyrt4prb5b18"]
 
 [ext_resource type="Script" uid="uid://8qvgirgngucl" path="res://Scenes/UI/debug_ui.gd" id="1_7gdgf"]
-[ext_resource type="FontFile" uid="uid://dpn410hv3na3p" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_fpupx"]
+[ext_resource type="FontFile" uid="uid://ccfwuyjker3is" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_fpupx"]
 
 [node name="DebugUi" type="Node2D"]
 script = ExtResource("1_7gdgf")
@@ -18,4 +18,32 @@ text = "add kangaskhan and moves"
 autowrap_mode = 2
 metadata/_edit_use_anchors_ = true
 
+[node name="savePartyButton" type="Button" parent="."]
+top_level = true
+offset_left = 158.0
+offset_top = 30.0
+offset_right = 256.0
+offset_bottom = 71.0
+theme_override_fonts/font = ExtResource("1_fpupx")
+theme_override_font_sizes/font_size = 10
+text = "save party
+"
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="loadPartyButton" type="Button" parent="."]
+top_level = true
+offset_left = 278.0
+offset_top = 30.0
+offset_right = 376.0
+offset_bottom = 71.0
+theme_override_fonts/font = ExtResource("1_fpupx")
+theme_override_font_sizes/font_size = 10
+text = "load party
+"
+autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
+
 [connection signal="pressed" from="addKangaskhan" to="." method="_on_add_kangaskhan_pressed"]
+[connection signal="pressed" from="savePartyButton" to="." method="_on_save_party_button_pressed"]
+[connection signal="pressed" from="loadPartyButton" to="." method="_on_load_party_button_pressed"]

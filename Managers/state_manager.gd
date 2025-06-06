@@ -1,5 +1,6 @@
 extends Node
 
+@warning_ignore("unused_signal")
 signal player_fled_battle
 
 var CalculatingDamage = false

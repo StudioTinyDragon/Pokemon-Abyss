@@ -2,6 +2,7 @@ extends Node
 
 @export var moveType: String = ""
 @export var moveCat: String = "Physical"
+@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "random enemy"
 @export var movePower: int = 50
 @export var maxPP: int = 200
 @export var accuracy: int = 100
@@ -14,6 +15,12 @@ extends Node
 @export var isPrioMove: bool = false
 @export var canInterrupt: int = 0
 @export var isRecoil: int = 4
+
+@export var canBypassFly: bool = false
+@export var canBypassBounce: bool = false
+@export var canBypassSkydrop: bool = false
+@export var canBypassDig: bool = false
+@export var canBypassDive: bool = false
 
 func RecoilDamage(attacker):
 	# Calculate recoil damage based on the attacker's max HP and the recoil percentage

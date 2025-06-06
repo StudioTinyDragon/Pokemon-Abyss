@@ -1,4 +1,4 @@
-[gd_scene load_steps=0 format=3 uid="uid://cfmh7yeows1cy"]
+[gd_scene format=3 uid="uid://d2cqul6c54xsl"]
 
 [node name="TeamManager" type="Node2D"]
 
@@ -11,6 +11,7 @@ offset_bottom = 250.0
 
 [node name="PokemonName1" type="Label" parent="Pokemon1"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -20,6 +21,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl1" type="Label" parent="Pokemon1"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -44,6 +46,7 @@ vertical_alignment = 1
 
 [node name="PokemonPic1" type="Label" parent="Pokemon1"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30
@@ -95,6 +98,7 @@ grow_horizontal = 0
 
 [node name="PokemonName2" type="Label" parent="Pokemon2"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -104,6 +108,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl2" type="Label" parent="Pokemon2"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -128,6 +133,7 @@ vertical_alignment = 1
 
 [node name="PokemonPic2" type="Label" parent="Pokemon2"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30
@@ -175,6 +181,7 @@ offset_bottom = 450.0
 
 [node name="PokemonName3" type="Label" parent="Pokemon3"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -184,6 +191,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl3" type="Label" parent="Pokemon3"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -208,6 +216,7 @@ vertical_alignment = 1
 
 [node name="LabePokemonPic3" type="Label" parent="Pokemon3"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30
@@ -259,6 +268,7 @@ grow_horizontal = 0
 
 [node name="PokemonName4" type="Label" parent="Pokemon4"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -268,6 +278,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl4" type="Label" parent="Pokemon4"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -292,6 +303,7 @@ vertical_alignment = 1
 
 [node name="PokemonPic4" type="Label" parent="Pokemon4"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30
@@ -339,6 +351,7 @@ offset_bottom = 650.0
 
 [node name="PokemonName5" type="Label" parent="Pokemon5"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -348,6 +361,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl5" type="Label" parent="Pokemon5"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -372,6 +386,7 @@ vertical_alignment = 1
 
 [node name="PokemonPic5" type="Label" parent="Pokemon5"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30
@@ -423,6 +438,7 @@ grow_horizontal = 0
 
 [node name="PokemonName6" type="Label" parent="Pokemon6"]
 custom_minimum_size = Vector2(500, 75)
+layout_mode = 0
 offset_left = 150.0
 offset_right = 650.0
 offset_bottom = 50.0
@@ -432,6 +448,7 @@ vertical_alignment = 1
 
 [node name="PokemonLvl6" type="Label" parent="Pokemon6"]
 custom_minimum_size = Vector2(50, 75)
+layout_mode = 0
 offset_left = 650.0
 offset_right = 700.0
 offset_bottom = 50.0
@@ -456,6 +473,7 @@ vertical_alignment = 1
 
 [node name="PokemonPic6" type="Label" parent="Pokemon6"]
 custom_minimum_size = Vector2(150, 150)
+layout_mode = 0
 offset_right = 150.0
 offset_bottom = 150.0
 theme_override_font_sizes/font_size = 30

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 [gd_scene format=3 uid="uid://bh6wc7ee1qguj"]
-=======
-[gd_scene format=3 uid="uid://c4q367vpnme4o"]
->>>>>>> 3f30a463f14c542e435ad7719cdb390020b9d13b
 
 [node name="MainMenu" type="Node2D"]
 

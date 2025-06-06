@@ -1,11 +1,13 @@
 extends Node
 
-@export var moveType: String = "Normal"
-@export var moveCat: String = "Status"
+@export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark") var moveType = "Normal"
+@export_enum("Physical", "Special", "Status") var moveCat = "Status"
 @export var movePower: int = 0
 @export var maxPP: int = 30
-@export var accuracy: int = 100
-@export var effectRange: int = 2    # -1 = 1 ally,  -2 = adjacent allies,  -3 = all allies, 0 = self,  1 = 1 enemy,  2 = adjacent enemies,  3 = all enemies,  4 = random enemy,  5 = everyone  
+@export var canCrit: bool = true
+@export_range(0, 100, 1.0) var BonusCritChance = 0.0
+@export_range(0, 100, 1.0) var interruptChance = 0.0
+@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone") var effectRange
 
 @export var makesContact: bool = false
 

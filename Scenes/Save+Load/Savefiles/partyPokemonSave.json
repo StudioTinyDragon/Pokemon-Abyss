@@ -1,0 +1,29 @@
+[
+	{
+		"current_hp": 13,
+		"level": 1.0,
+		"max_hp": 13,
+		"moves": [
+			{
+				"max_pp": 35,
+				"name": "Pound",
+				"pp": 27
+			},
+			{
+				"max_pp": 30,
+				"name": "Tail Whip",
+				"pp": 30
+			}
+		],
+		"name": "Kangaskhan",
+		"stat_debuffs": {
+			"attack": 0.0,
+			"defense": 0.0
+		},
+		"status_effects": [],
+		"types": [
+			"Normal"
+		],
+		"unique_id": 1749184930
+	}
+]

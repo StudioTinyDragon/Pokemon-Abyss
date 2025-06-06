@@ -20,6 +20,7 @@ StateManager="*res://Managers/state_manager.gd"
 Interaction="*res://Managers/interaction.gd"
 EncounterManager="*res://Managers/encounter_manager.gd"
 TextManager="*res://Managers/TextManager.tscn"
+SaveManager="*res://Managers/save_manager.gd"
 
 [display]
 

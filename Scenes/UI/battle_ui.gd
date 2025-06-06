@@ -29,7 +29,12 @@ var _last_player_move_name: String = ""
 var _battle_started := false
 var player_pokemon = null
 var enemy_pokemon = null
-
+var enemyMaxHP
+var playerMaxHP
+var test_battle = get_parent()
+var pokemon
+var EnemyCurrentHP
+var PlayerCurrentHP
 
 func _ready() -> void:
 	# Connect the battle start signal ONCE, and only here
@@ -57,13 +62,19 @@ func readyToFight():
 	# Fetch Pokémon data from parent TestBattle
 	var test_battle = get_parent()
 	if test_battle and test_battle.has_method("_get_battle_pokemon"):
-		var mons = test_battle._get_battle_pokemon()
-		player_pokemon = mons.get("player", null)
-		enemy_pokemon = mons.get("enemy", null)
-	# Update UI with correct Pokémon info
+		var pokemon = test_battle._get_battle_pokemon()
+		player_pokemon = pokemon.get("player", null)
+		enemy_pokemon = pokemon.get("enemy", null)
+	getBattlePokemon()
 	showPokemonNames()
 	setPokemonPosition()
+	if test_battle and test_battle.has_method("_get_battle_pokemon"):
+		var pokemon = test_battle._get_battle_pokemon()
+		player_pokemon = pokemon.get("player", null)
+		enemy_pokemon = pokemon.get("enemy", null)
 	ready_to_fight_timer.start()
+	current_enemy_hp.text = str(EnemyCurrentHP, " / ", enemyMaxHP)
+	current_pokemon_hp.text = str(PlayerCurrentHP, " / ", playerMaxHP)
 
 func _on_ready_to_fight_timer_timeout() -> void:
 	battle_dialogue_box.visible = false
@@ -71,6 +82,7 @@ func _on_ready_to_fight_timer_timeout() -> void:
 	battle_options.visible = true
 	enemy_statblock.visible = true
 	own_statblock.visible = true
+
 
 
 #endregion
@@ -113,19 +125,25 @@ func setPokemonPosition():
 
 #endregion
 
+
+
+func getBattlePokemon():
+	if test_battle and test_battle.has_method("_get_battle_pokemon"):
+		pokemon = test_battle._get_battle_pokemon()
+		player_pokemon = pokemon.get("player", null)
+		enemy_pokemon = pokemon.get("enemy", null)
+	if enemy_pokemon and "currentHP" in enemy_pokemon:
+		EnemyCurrentHP = enemy_pokemon.currentHP
+	if player_pokemon and "currentHP" in player_pokemon:
+		PlayerCurrentHP = player_pokemon.currentHP
+	if enemy_pokemon and "currentMaxHP" in enemy_pokemon:
+		enemyMaxHP = enemy_pokemon.currentMaxHP
+	if player_pokemon and "currentMaxHP" in player_pokemon:
+		playerMaxHP = player_pokemon.currentMaxHP
+
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
-
-	# Get the current player and enemy Pokémon from parent TestBattle
-	var test_battle = get_parent()
-	if test_battle and test_battle.has_method("_get_battle_pokemon"):
-		var mons = test_battle._get_battle_pokemon()
-		player_pokemon = mons.get("player", null)
-		enemy_pokemon = mons.get("enemy", null)
-	# Update UI with correct Pokémon info
-	showPokemonNames()
-	setPokemonPosition()
 
 	# Set move button text to moves from StateManager.player_party[0]
 	if StateManager.player_party.size() > 0:
@@ -326,6 +344,22 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		else:
 			print("Status move %s has no effect function implemented." % move_name)
 		return
+
+	# --- Accuracy check ---
+	var move_accuracy = move_instance.moveAccuracy if "moveAccuracy" in move_instance else 100
+	var attacker_accuracy = attacker.pokemonAccuracy if "pokemonAccuracy" in attacker else 100
+	var defender_evasion = defender.evasion if "evasion" in defender else 0
+	var hit_chance = damage_calculator.calculate_accuracy(move_accuracy, attacker_accuracy, defender_evasion)
+	var roll = randi() % 100 + 1 # 1-100
+	if roll > hit_chance:
+		# Missed!
+		if attacker.is_in_group("player_pokemon"):
+			_last_player_move_name = move_name + " (missed)"
+		elif attacker.is_in_group("enemy_pokemon"):
+			_last_enemy_move_name = move_name + " (missed)"
+		print("[Battle] %s's %s missed! (roll=%d, hit_chance=%.2f)" % [attacker.Name, move_name, roll, hit_chance])
+		return
+
 	var damage = 0
 	if move_instance.moveCat == "Physical":
 		damage = damage_calculator.calculate_move_damage(attacker, defender, move_instance)
@@ -337,22 +371,22 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		defender.currentHP = max(0, defender.currentHP - damage)
 		# HP UI update (not part of shoutout system)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
-			current_pokemon_hp.text = str(attacker.currentHP)
-			current_enemy_hp.text = str(defender.currentHP)
+			current_pokemon_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)
+			current_enemy_hp.text = str(defender.currentHP, " / ", defender.currentMaxHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("player_pokemon"):
-			current_pokemon_hp.text = str(defender.currentHP)
-			current_enemy_hp.text = str(attacker.currentHP)
+			current_pokemon_hp.text = str(defender.currentHP, " / ", defender.currentMaxHP)
+			current_enemy_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("enemy_pokemon"):
-			current_enemy_hp.text = str(attacker.currentHP)
-			current_pokemon_hp.text = str(defender.currentHP)
+			current_enemy_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)
+			current_pokemon_hp.text = str(defender.currentHP, " / ", defender.currentMaxHP)
 		elif defender.has_method("is_in_group") and defender.is_in_group("enemy_pokemon"):
-			current_enemy_hp.text = str(defender.currentHP)
-			current_pokemon_hp.text = str(attacker.currentHP)
+			current_enemy_hp.text = str(defender.currentHP, " / ", defender.currentMaxHP)
+			current_pokemon_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)
 		# Apply Struggle recoil if move is Struggle
 		if move_name == "Struggle" and move_instance.has_method("RecoilDamage"):
 			move_instance.RecoilDamage(attacker)
-			current_pokemon_hp.text = str(attacker.currentHP)
-			current_enemy_hp.text = str(defender.currentHP)
+			current_pokemon_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)
+			current_enemy_hp.text = str(defender.currentHP, " / ", defender.currentMaxHP)
 	else:
 		print("No valid defender HP.")
 

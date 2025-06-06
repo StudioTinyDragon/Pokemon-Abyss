@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://mp6c0q40efei"]
+
+[ext_resource type="Script" uid="uid://cuqtqm4yv70wl" path="res://Scripts/Moves/pound.gd" id="1_jvwhs"]
+
+[node name="Pound" type="Node2D"]
+script = ExtResource("1_jvwhs")

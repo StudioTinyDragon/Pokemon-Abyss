@@ -39,3 +39,10 @@ func _on_add_kangaskhan_pressed() -> void:
 		print("Kangaskhan added to player_party.")
 	else:
 		print("Party full, could not add Kangaskhan.")
+
+
+func _on_save_party_button_pressed() -> void:
+	SaveManager.save_player_party_to_json()
+
+func _on_load_party_button_pressed() -> void:
+	SaveManager.load_player_party_from_json()
