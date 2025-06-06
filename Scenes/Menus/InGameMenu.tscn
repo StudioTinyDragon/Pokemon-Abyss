@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://ba32k2066s13"]
+[gd_scene load_steps=2 format=3 uid="uid://c0fxtbxwq1mij"]
 
-[ext_resource type="Script" uid="uid://de2grehugld7s" path="res://Scenes/Menus/in_game_menu.gd" id="1_ra8e5"]
+[ext_resource type="Script" path="res://Scenes/Menus/in_game_menu.gd" id="1_ra8e5"]
 
 [node name="InGameMenu" type="Control"]
 layout_mode = 3
@@ -9,8 +9,9 @@ script = ExtResource("1_ra8e5")
 
 [node name="MenuPanel" type="Panel" parent="."]
 visible = false
-offset_left = 712.0
-offset_right = 1212.0
+layout_mode = 1
+offset_left = 1420.0
+offset_right = 1920.0
 offset_bottom = 1080.0
 
 [node name="TrainerIDButton" type="Button" parent="MenuPanel"]

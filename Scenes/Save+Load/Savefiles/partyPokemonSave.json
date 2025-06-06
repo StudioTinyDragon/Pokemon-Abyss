@@ -1,18 +1,18 @@
 [
 	{
-		"current_hp": 9,
+		"current_hp": 7,
 		"level": 1.0,
 		"max_hp": 13,
 		"moves": [
 			{
 				"max_pp": 35,
 				"name": "Pound",
-				"pp": 34
+				"pp": 32
 			},
 			{
 				"max_pp": 30,
 				"name": "Tail Whip",
-				"pp": 30
+				"pp": 29
 			}
 		],
 		"name": "Kangaskhan",
@@ -24,6 +24,6 @@
 		"types": [
 			"Normal"
 		],
-		"unique_id": 1749233089
+		"unique_id": 1749261662
 	}
 ]

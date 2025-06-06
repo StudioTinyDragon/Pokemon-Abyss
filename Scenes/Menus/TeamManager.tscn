@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2cqul6c54xsl"]
+[gd_scene load_steps=2 format=3 uid="uid://cfmh7yeows1cy"]
 
-[ext_resource type="Script" uid="uid://bhu7i1esjaqxm" path="res://Scenes/Menus/team_manager.gd" id="1_duhth"]
+[ext_resource type="Script" path="res://Scenes/Menus/team_manager.gd" id="1_duhth"]
 
 [node name="TeamManager" type="Node2D"]
 script = ExtResource("1_duhth")
@@ -12,6 +12,7 @@ offset_bottom = 1077.0
 
 [node name="Pokemon1" type="Button" parent="TMPanel"]
 top_level = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 100.0
 offset_right = 900.0
@@ -183,6 +184,7 @@ vertical_alignment = 1
 
 [node name="Pokemon3" type="Button" parent="TMPanel"]
 top_level = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 300.0
 offset_right = 900.0
@@ -354,6 +356,7 @@ vertical_alignment = 1
 
 [node name="Pokemon5" type="Button" parent="TMPanel"]
 top_level = true
+layout_mode = 0
 offset_left = 100.0
 offset_top = 500.0
 offset_right = 900.0
@@ -524,6 +527,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BackButton" type="Button" parent="TMPanel"]
+layout_mode = 0
 offset_left = 700.0
 offset_top = 900.0
 offset_right = 1220.0
