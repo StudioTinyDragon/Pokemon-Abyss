@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=4 uid="uid://dgfbnyymaia6u"]
+[gd_scene load_steps=11 format=4 uid="uid://dgfbnyymaia6u"]
 
 [ext_resource type="Script" uid="uid://cv8773qs5f30f" path="res://Scenes/Maps/test_map.gd" id="1_ekms1"]
 [ext_resource type="Texture2D" uid="uid://w0b4rjww2q88" path="res://Assets/tilemaps/terrain_tiles_v2.png" id="1_n4a11"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" uid="uid://fhyddhrgwtvn" path="res://Scenes/Maps/ground.gd" id="3_h1i30"]
 [ext_resource type="PackedScene" uid="uid://cig6eqk1anw1k" path="res://Scenes/Battle/TestBattle.tscn" id="4_tf83h"]
 [ext_resource type="PackedScene" uid="uid://dhyrt4prb5b18" path="res://Scenes/UI/DebugUI.tscn" id="6_kukki"]
+[ext_resource type="PackedScene" uid="uid://ba32k2066s13" path="res://Scenes/Menus/InGameMenu.tscn" id="7_kxphi"]
+[ext_resource type="PackedScene" uid="uid://d2cqul6c54xsl" path="res://Scenes/Menus/TeamManager.tscn" id="8_j28jb"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tf83h"]
 texture = ExtResource("1_n4a11")
@@ -638,3 +640,9 @@ scale = Vector2(0.5, 0.5)
 [node name="DebugLayer" type="CanvasLayer" parent="."]
 
 [node name="DebugUi" parent="DebugLayer" instance=ExtResource("6_kukki")]
+
+[node name="Menus" type="CanvasLayer" parent="."]
+
+[node name="InGameMenu" parent="Menus" instance=ExtResource("7_kxphi")]
+
+[node name="TeamManager" parent="Menus" instance=ExtResource("8_j28jb")]

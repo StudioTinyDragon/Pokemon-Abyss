@@ -36,8 +36,3 @@ func load_player_party_from_json():
 	else:
 		print("[SaveManager] Failed to parse player party JSON.")
 		return []
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass

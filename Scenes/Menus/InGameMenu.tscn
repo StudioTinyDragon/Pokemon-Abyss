@@ -1,13 +1,19 @@
-[gd_scene load_steps=0 format=3 uid="uid://c0fxtbxwq1mij"]
+[gd_scene load_steps=2 format=3 uid="uid://ba32k2066s13"]
 
-[node name="InGameMenu" type="Node2D"]
+[ext_resource type="Script" uid="uid://de2grehugld7s" path="res://Scenes/Menus/in_game_menu.gd" id="1_ra8e5"]
 
-[node name="Panel" type="Panel" parent="."]
-offset_left = 1420.0
-offset_right = 1920.0
+[node name="InGameMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ra8e5")
+
+[node name="MenuPanel" type="Panel" parent="."]
+visible = false
+offset_left = 712.0
+offset_right = 1212.0
 offset_bottom = 1080.0
 
-[node name="TrainerIDButton" type="Button" parent="Panel"]
+[node name="TrainerIDButton" type="Button" parent="MenuPanel"]
 layout_mode = 0
 offset_left = 25.0
 offset_top = 27.0
@@ -17,7 +23,8 @@ theme_override_font_sizes/font_size = 50
 text = "Trainer ID
 "
 
-[node name="BagButton" type="Button" parent="Panel"]
+[node name="BagButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 131.0
 offset_right = 475.0
@@ -26,7 +33,8 @@ theme_override_font_sizes/font_size = 50
 text = "Bag
 "
 
-[node name="PokemonTeamButton" type="Button" parent="Panel"]
+[node name="PokemonTeamButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 235.0
 offset_right = 475.0
@@ -35,7 +43,8 @@ theme_override_font_sizes/font_size = 50
 text = "Pokemon
 "
 
-[node name="PokedexButton" type="Button" parent="Panel"]
+[node name="PokedexButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 339.0
 offset_right = 475.0
@@ -44,7 +53,8 @@ theme_override_font_sizes/font_size = 50
 text = "Pokedex
 "
 
-[node name="MapButton" type="Button" parent="Panel"]
+[node name="MapButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 443.0
 offset_right = 475.0
@@ -53,7 +63,8 @@ theme_override_font_sizes/font_size = 50
 text = "Map
 "
 
-[node name="SaveButton" type="Button" parent="Panel"]
+[node name="SaveButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 547.0
 offset_right = 475.0
@@ -62,7 +73,8 @@ theme_override_font_sizes/font_size = 50
 text = "Save
 "
 
-[node name="LoadButton" type="Button" parent="Panel"]
+[node name="LoadButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 651.0
 offset_right = 475.0
@@ -71,7 +83,8 @@ theme_override_font_sizes/font_size = 50
 text = "Load
 "
 
-[node name="DebugMenuButton" type="Button" parent="Panel"]
+[node name="DebugMenuButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 755.0
 offset_right = 475.0
@@ -80,7 +93,8 @@ theme_override_font_sizes/font_size = 50
 text = "Debug
 "
 
-[node name="OptionsButton" type="Button" parent="Panel"]
+[node name="OptionsButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 859.0
 offset_right = 475.0
@@ -89,7 +103,8 @@ theme_override_font_sizes/font_size = 50
 text = "Options
 "
 
-[node name="ExitGameButton" type="Button" parent="Panel"]
+[node name="ExitGameButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
 offset_left = 25.0
 offset_top = 963.0
 offset_right = 475.0
@@ -97,3 +112,13 @@ offset_bottom = 1053.0
 theme_override_font_sizes/font_size = 50
 text = "Exit Game
 "
+
+[node name="xButton" type="Button" parent="MenuPanel"]
+layout_mode = 0
+offset_left = 475.0
+offset_right = 501.0
+offset_bottom = 31.0
+text = "x"
+
+[connection signal="pressed" from="MenuPanel/PokemonTeamButton" to="." method="_on_pokemon_team_button_pressed"]
+[connection signal="pressed" from="MenuPanel/xButton" to="." method="_on_x_button_pressed"]

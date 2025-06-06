@@ -58,18 +58,19 @@ func readyToFight():
 		return
 	_battle_started = true
 	battle_dialogue_box.visible = true
+	battle_options.visible = false
 	battle_text.text = "It's time to fight"
 	# Fetch Pokémon data from parent TestBattle
-	var test_battle = get_parent()
+	test_battle = get_parent()
 	if test_battle and test_battle.has_method("_get_battle_pokemon"):
-		var pokemon = test_battle._get_battle_pokemon()
+		pokemon = test_battle._get_battle_pokemon()
 		player_pokemon = pokemon.get("player", null)
 		enemy_pokemon = pokemon.get("enemy", null)
 	getBattlePokemon()
 	showPokemonNames()
 	setPokemonPosition()
 	if test_battle and test_battle.has_method("_get_battle_pokemon"):
-		var pokemon = test_battle._get_battle_pokemon()
+		pokemon = test_battle._get_battle_pokemon()
 		player_pokemon = pokemon.get("player", null)
 		enemy_pokemon = pokemon.get("enemy", null)
 	ready_to_fight_timer.start()
@@ -369,6 +370,9 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		print("Move category not supported for damage calculation.")
 	if "currentHP" in defender:
 		defender.currentHP = max(0, defender.currentHP - damage)
+		# Sync HP to party dictionary if this is a player Pokémon
+		if defender.has_method("is_in_group") and defender.is_in_group("player_pokemon") and "uniquePokemonID" in defender:
+			StateManager.update_pokemon_field(defender.uniquePokemonID, "current_hp", defender.currentHP)
 		# HP UI update (not part of shoutout system)
 		if attacker.has_method("is_in_group") and attacker.is_in_group("player_pokemon"):
 			current_pokemon_hp.text = str(attacker.currentHP, " / ", attacker.currentMaxHP)

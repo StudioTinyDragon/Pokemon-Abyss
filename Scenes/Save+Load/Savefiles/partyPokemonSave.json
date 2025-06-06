@@ -1,13 +1,13 @@
 [
 	{
-		"current_hp": 13,
+		"current_hp": 9,
 		"level": 1.0,
 		"max_hp": 13,
 		"moves": [
 			{
 				"max_pp": 35,
 				"name": "Pound",
-				"pp": 27
+				"pp": 34
 			},
 			{
 				"max_pp": 30,
@@ -24,6 +24,6 @@
 		"types": [
 			"Normal"
 		],
-		"unique_id": 1749184930
+		"unique_id": 1749233089
 	}
 ]

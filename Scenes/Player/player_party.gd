@@ -1,6 +1,5 @@
 extends Control
 
-var player_party: Array = []
 
 func _ready() -> void:
 	# Example: Add a Kangaskhan to the party at game start
@@ -36,20 +35,20 @@ func _ready() -> void:
 		print("Party full, could not add Kangaskhan.")
 
 func remove_pokemon_by_id(unique_id: int) -> bool:
-	for i in range(player_party.size()):
-		if player_party[i].get("unique_id", -1) == unique_id:
-			player_party.remove_at(i)
+	for i in range(StateManager.player_party.size()):
+		if StateManager.player_party[i].get("unique_id", -1) == unique_id:
+			StateManager.player_party.remove_at(i)
 			return true
 	return false
 
 func get_pokemon_by_id(unique_id: int) -> Dictionary:
-	for poke in player_party:
+	for poke in StateManager.player_party:
 		if poke.get("unique_id", -1) == unique_id:
 			return poke
 	return {}
 
 func update_pokemon_field(unique_id: int, field: String, value) -> bool:
-	for poke in player_party:
+	for poke in StateManager.player_party:
 		if poke.get("unique_id", -1) == unique_id:
 			poke[field] = value
 			return true

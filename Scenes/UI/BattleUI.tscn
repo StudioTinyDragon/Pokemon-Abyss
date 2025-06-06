@@ -13,7 +13,6 @@ grow_vertical = 2
 script = ExtResource("1_bg7jw")
 
 [node name="BattleOptions" type="Panel" parent="."]
-visible = false
 layout_mode = 0
 offset_left = 416.0
 offset_top = 833.0

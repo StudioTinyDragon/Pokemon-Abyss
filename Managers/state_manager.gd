@@ -8,25 +8,12 @@ var inBattle = false
 var inBattleSelect = false
 var inItems = false
 var switchingPokemon = false
+var mMenuVisible = false
 
-# Player's active Pokémon party (up to 6)
-# Each Pokémon is a dictionary with all relevant fields for battle and overworld
-# Example structure for one Pokémon:
-# {
-#   "name": "Kangaskhan",
-#   "unique_id": 123456, # unique per instance
-#   "types": ["Normal"],
-#   "level": 5,
-#   "current_hp": 13,
-#   "max_hp": 13,
-#   "moves": [
-#     {"name": "Pound", "pp": 35, "max_pp": 35},
-#     {"name": "Tail Whip", "pp": 30, "max_pp": 30}
-#   ],
-#   "status_effects": [], # e.g., ["Paralyzed"]
-#   "stat_debuffs": {"defense": 0.1, "attack": 0.0} # percent debuffed
-# }
+var player_position: Vector2 = Vector2.ZERO
+
 var player_party: Array = []
+var enemy_party: Array = []
 
 # Helper: Add a Pokémon to the party (returns true if added, false if full)
 func add_pokemon_to_party(pokemon_dict: Dictionary) -> bool:
@@ -67,13 +54,8 @@ func clear_stat_debuffs(unique_id: int) -> void:
 			return
 
 
-# Enemy Pokémon party (for wild or trainer battles, similar structure)
-var enemy_party: Array = []
-
 # --- Player position tracking ---
 # Continuously updated by the map/player scene
-var player_position: Vector2 = Vector2.ZERO
-
 # Call this from the player or map script to update the position
 func update_player_position(pos: Vector2) -> void:
 	player_position = pos

@@ -45,4 +45,9 @@ func _on_save_party_button_pressed() -> void:
 	SaveManager.save_player_party_to_json()
 
 func _on_load_party_button_pressed() -> void:
-	SaveManager.load_player_party_from_json()
+	var loaded_party = SaveManager.load_player_party_from_json()
+	if loaded_party.size() > 0:
+		StateManager.player_party = loaded_party
+		print("[save_pokemon] Player party loaded and set in StateManager.")
+	else:
+		print("[save_pokemon] No party loaded or file empty.")
