@@ -1,7 +1,7 @@
 [gd_scene load_steps=259 format=3 uid="uid://w66ycrams3y7"]
 
 [ext_resource type="Script" uid="uid://b2x5cpidjvocl" path="res://Scenes/Units/Kangaskhan.gd" id="1_gefbp"]
-[ext_resource type="Texture2D" uid="uid://cdealv7g8pmd5" path="res://Assets/Pokemon/AFrontView/ezgif-2edcb728378f3a.png" id="2_4nbll"]
+[ext_resource type="Texture2D" uid="uid://byiadnb6x3tsr" path="res://Assets/Pokemon/AFrontView/ezgif-2edcb728378f3a.png" id="2_4nbll"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwwdt"]
 atlas = ExtResource("2_4nbll")

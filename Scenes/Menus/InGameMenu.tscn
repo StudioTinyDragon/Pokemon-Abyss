@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://ba32k2066s13"]
+[gd_scene load_steps=2 format=3 uid="uid://c0fxtbxwq1mij"]
 
 [ext_resource type="Script" uid="uid://de2grehugld7s" path="res://Scenes/Menus/in_game_menu.gd" id="1_ra8e5"]
 
@@ -114,12 +114,4 @@ theme_override_font_sizes/font_size = 50
 text = "Exit Game
 "
 
-[node name="xButton" type="Button" parent="MenuPanel"]
-layout_mode = 0
-offset_left = 475.0
-offset_right = 501.0
-offset_bottom = 31.0
-text = "x"
-
 [connection signal="pressed" from="MenuPanel/PokemonTeamButton" to="." method="_on_pokemon_team_button_pressed"]
-[connection signal="pressed" from="MenuPanel/xButton" to="." method="_on_x_button_pressed"]
