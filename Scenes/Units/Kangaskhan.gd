@@ -134,7 +134,7 @@ var move_levels = {
 var isFainted
 var settingMove = false
 var isStruggling: bool = false
-
+var flinched = false
 #endregion
 
 

@@ -5,11 +5,11 @@ extends Node
 @export_enum("Physical", "Special", "Status") var moveCat = "Physical"
 @export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "enemy"
 @export var movePower: int = 40
-@export var maxPP: int = 35
+@export var maxPP: int
 @export_range(0, 100, 1.0) var moveAccuracy = 100.0
 @export var canCrit: bool = true
 @export_range(0, 100, 1.0) var BonusCritChance = 0.0
-@export_range(0, 100, 1.0) var flinchChance = 0.0
+@export_range(0, 100, 1.0) var flinchChance: float
 
 @export var isPrioMove: bool = false
 
