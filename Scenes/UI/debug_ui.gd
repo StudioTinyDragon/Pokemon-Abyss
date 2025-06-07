@@ -17,7 +17,7 @@ func _ready() -> void:
 
 func _on_debug_menu_button_pressed():
 	if debug_panel.visible == false:
-		debug_panel.visble = true
+		debug_panel.visible = true
 
 	else: debug_panel.visible = false
 	print (debug_panel.visible)
