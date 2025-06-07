@@ -4,4 +4,11 @@
 
 [node name="Pound" type="Node2D"]
 script = ExtResource("1_jvwhs")
+movePower = 40
 maxPP = 35
+moveAccuracy = 100.0
+canCrit = true
+makesContact = true
+effectedByProtect = true
+effectedByMirrorMove = true
+effectedByKingsRock = true

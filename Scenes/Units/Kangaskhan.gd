@@ -1,6 +1,9 @@
 extends Node2D
 
 #region PokemonVars
+var move_instances: Array = [] # Stores instantiated move objects
+@onready var move1 = $moves/Pound
+
 @export_category("Pokemon Info")
 @export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
@@ -91,19 +94,27 @@ var evasion : int                             = 0
 #endregion
 
 #region currentStats
-@export_subgroup("Current Stats")
-@warning_ignore("narrowing_conversion")
-@export var currentMaxHP :int             = ((maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP) * (1 + (0.1 * TraingnigHP))
-@warning_ignore("narrowing_conversion")
-@export var currentAttack :int            = ((maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack) * (1 + (0.01 * TraingnigAttack))
-@warning_ignore("narrowing_conversion")
-@export var currentDefense :int           = ((maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense) * (1 + (0.01 * TraingnigDefense))
-@warning_ignore("narrowing_conversion")
-@export var currentSPAttack :int          = ((maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack))
-@warning_ignore("narrowing_conversion")
-@export var currentSPDefense :int         = ((maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense))
-@warning_ignore("narrowing_conversion")
-@export var currentInitiative :int        = ((maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative))
+
+var currentMaxHP :int = 13
+var currentAttack :int = 6
+var currentDefense :int = 6
+var currentSPAttack :int = 5
+var currentSPDefense :int = 6
+var currentInitiative :int = 6
+
+# Setter for currentLevel and stat recalculation
+func set_currentLevel(val):
+	currentLevel = val
+	_recalculate_stats()
+
+# Call this after changing any stat-affecting exported var
+func _recalculate_stats():
+	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TraingnigHP)))
+	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TraingnigAttack)))
+	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TraingnigDefense)))
+	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack)))
+	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense)))
+	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative)))
 
 #endregion
 
@@ -151,6 +162,22 @@ var flinched = false
 func _ready():
 	shinyProbabilityGenerator()
 	setPokemonSprites()
+	_recalculate_stats()
+	move_instances.clear()
+	call_deferred("instantiate_moves")
+
+func instantiate_moves():
+	for move_name in currentMoves:
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		if ResourceLoader.exists(move_scene_path):
+			var move_scene = load(move_scene_path)
+			var move_instance = move_scene.instantiate()
+			if move_instance.has_method("initialize_from_inspector"):
+				move_instance.initialize_from_inspector()
+			move_instances.append(move_instance)
+			var prop_names = []
+			for p in move_instance.get_property_list():
+				prop_names.append(p.name)
 
 func setPokemonSprites():
 	animated_front.play()
@@ -298,7 +325,6 @@ func setMove4PP():
 				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
 			print("[Kangaskhan] Move script not found for %s" % move_name)
-
 
 func checkIfStruggle():
 	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:

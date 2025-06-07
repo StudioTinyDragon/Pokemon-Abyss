@@ -15,5 +15,4 @@ f. 8. Implement basic battle system (turn-based, simple moves)
 
 
 2. Crit https://bulbapedia.bulbagarden.net/wiki/Critical_hit
-3. Flinch
 5. prio move
