@@ -11,14 +11,13 @@ extends Control
 @onready var load_button: Button = $MenuPanel/LoadButton
 @onready var debug_menu_button: Button = $MenuPanel/DebugMenuButton
 @onready var options_button: Button = $MenuPanel/OptionsButton
-@onready var exit_game_button: Button = $MenuPanel/ExitGameButton
+
 
 
 func _ready() -> void:
 	add_to_group("InGameMenu")
 
 func _input(event):
-
 	if event.is_action_pressed("MainMenu") && StateManager.tmVisible == false && StateManager.inBattle == false:
 		if not menu_panel.visible == true:
 			menu_panel.visible = true

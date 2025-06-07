@@ -1,7 +1,10 @@
 extends Node2D
 
 @onready var debug_panel: Panel = $DebugPanel
-@onready var add_kangaskhan: Button = $Panel/addKangaskhan
+@onready var add_kangaskhan: Button = $DebugPanel/addKangaskhan
+@onready var load_party_button: Button = $DebugPanel/loadPartyButton
+@onready var save_party_button: Button = $DebugPanel/savePartyButton
+
 
 func _ready() -> void:
 	# Try to find InGameMenu node anywhere in the scene tree
@@ -20,7 +23,6 @@ func _on_debug_menu_button_pressed():
 		debug_panel.visble = true
 
 	else: debug_panel.visible = false
-	print (debug_panel.visible)
 
 func _on_add_kangaskhan_pressed() -> void:
 	# Instance Kangaskhan scene and add to the scene tree for debug/party

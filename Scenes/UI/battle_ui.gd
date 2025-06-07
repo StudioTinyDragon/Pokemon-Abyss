@@ -85,7 +85,6 @@ func readyToFight():
 	current_enemy_hp.text = str(EnemyCurrentHP, " / ", enemyMaxHP)
 	current_pokemon_hp.text = str(PlayerCurrentHP, " / ", playerMaxHP)
 	await get_tree().process_frame  # Wait one frame for everything to initialize
-	initialize_moves()
 
 func _on_ready_to_fight_timer_timeout() -> void:
 	battle_dialogue_box.visible = false
@@ -208,14 +207,15 @@ func _handle_move_button(move_index: int) -> void:
 	_last_player_move_name = player_move_name
 	var player_move_instance = null
 	var move_script_name = player_move_name.replace(" ", "")
-	var player_move_path = "res://Scripts/Moves/%s.gd" % move_script_name
-	if ResourceLoader.exists(player_move_path):
-		var move_resource = load(player_move_path)
-		player_move_instance = move_resource.new()
-		print("[DEBUG] Before decrement: %s" % [str(moves)])
-		moves[move_index]["pp"] = max(0, moves[move_index]["pp"] - 1)
-		print("[DEBUG] After decrement: %s" % [str(moves)])
-		refresh_move_buttons()
+	var move_scene_name = player_move_name.replace(" ", "")
+	var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_scene_name
+	if ResourceLoader.exists(move_scene_path):
+		var move_scene = load(move_scene_path)
+		player_move_instance = move_scene.instantiate()
+	print("[DEBUG] Before decrement: %s" % [str(moves)])
+	moves[move_index]["pp"] = max(0, moves[move_index]["pp"] - 1)
+	print("[DEBUG] After decrement: %s" % [str(moves)])
+	refresh_move_buttons()
 
 	if enemy_pokemon:
 		enemy_pokemon.checkIfStruggle()
@@ -404,9 +404,8 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		return
 
 	# --- Flinch check (only for damaging moves with flinch chance) ---
-	if move_instance.flinchChance > 0:
-		var flinch_roll = randi() % 100 + 1
-		if flinch_roll <= move_instance.flinchChance:
+	if move_instance.flinchChance > 0 and move_instance.has_method("try_flinch_opponent"):
+		if move_instance.try_flinch_opponent():
 			defender.flinched = true
 			print("[Battle] %s flinched!" % defender.Name)
 
@@ -500,36 +499,9 @@ func _enemyShoutoutQueue():
 	if battle_text:
 		var mon_name = enemy_pokemon.Name if enemy_pokemon and "Name" in enemy_pokemon else "Enemy Pokémon"
 		var move_name = _last_enemy_move_name if _last_enemy_move_name != null else "Move"
-		battle_text.text = "%s used %s!" % [mon_name, move_name]
+		battle_text.text = "Enemy %s used %s!" % [mon_name, move_name]
 	await get_tree().create_timer(1.0).timeout
 	TextManager.emit_signal("enemyShoutoutDone")
 
 func _enemyShoutoutDone():
 	pass
-
-func _on_move_go_back_pressed() -> void:
-	battle_options.visible = true
-	move_options.visible = false
-
-func initialize_moves():
-	print("Initializing moves for player and enemy Pokemon")
-	# --- Initialize flinchChance for Pound move if present ---
-	if player_pokemon and player_pokemon.currentMoves.size() > 0:
-		print("Loading moves for player Pokemon")
-		for move_name in player_pokemon.currentMoves:
-			print("Loading move: %s" % move_name)
-			var move_path = "res://Scripts/Moves/%s.gd" % move_name
-			if ResourceLoader.exists(move_path):
-				var move_resource = load(move_path)
-				var move_instance = move_resource.new()
-				if move_instance.has_method("initialize_from_inspector"):
-					move_instance.initialize_from_inspector()
-					print("Initialized move: %s" % move_name)
-	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
-		for move_name in enemy_pokemon.currentMoves:
-			var move_path = "res://Scripts/Moves/%s.gd" % move_name
-			if ResourceLoader.exists(move_path):
-				var move_resource = load(move_path)
-				var move_instance = move_resource.new()
-				if move_instance.has_method("initialize_from_inspector"):
-					move_instance.initialize_from_inspector()

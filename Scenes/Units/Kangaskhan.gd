@@ -1,6 +1,9 @@
 extends Node2D
 
 #region PokemonVars
+var move_instances: Array = [] # Stores instantiated move objects
+@onready var move1 = $moves/Pound
+
 @export_category("Pokemon Info")
 @export var Name : String                 = "Kangaskhan"
 @export var PokedexNR : int               = 115
@@ -160,6 +163,21 @@ func _ready():
 	shinyProbabilityGenerator()
 	setPokemonSprites()
 	_recalculate_stats()
+	move_instances.clear()
+	call_deferred("instantiate_moves")
+
+func instantiate_moves():
+	for move_name in currentMoves:
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		if ResourceLoader.exists(move_scene_path):
+			var move_scene = load(move_scene_path)
+			var move_instance = move_scene.instantiate()
+			if move_instance.has_method("initialize_from_inspector"):
+				move_instance.initialize_from_inspector()
+			move_instances.append(move_instance)
+			var prop_names = []
+			for p in move_instance.get_property_list():
+				prop_names.append(p.name)
 
 func setPokemonSprites():
 	animated_front.play()
@@ -307,7 +325,6 @@ func setMove4PP():
 				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
 		else:
 			print("[Kangaskhan] Move script not found for %s" % move_name)
-
 
 func checkIfStruggle():
 	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:
