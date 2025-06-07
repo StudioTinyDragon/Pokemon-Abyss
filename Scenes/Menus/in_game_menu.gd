@@ -12,7 +12,6 @@ extends Control
 @onready var debug_menu_button: Button = $MenuPanel/DebugMenuButton
 @onready var options_button: Button = $MenuPanel/OptionsButton
 @onready var exit_game_button: Button = $MenuPanel/ExitGameButton
-@onready var x_button: Button = $MenuPanel/xButton
 
 
 func _ready() -> void:
@@ -34,3 +33,7 @@ signal pokemonTeamPressed
 func _on_pokemon_team_button_pressed() -> void:
 	emit_signal("pokemonTeamPressed")
 	menu_panel.visible = false
+
+signal DebugMenuPressed
+func _on_debug_menu_button_pressed() -> void:
+	emit_signal("DebugMenuPressed")

@@ -1,8 +1,26 @@
 extends Node2D
 
+@onready var debug_panel: Panel = $DebugPanel
+@onready var add_kangaskhan: Button = $Panel/addKangaskhan
 
-@onready var add_kangaskhan: Button = $addKangaskhan
+func _ready() -> void:
+	# Try to find InGameMenu node anywhere in the scene tree
+	var in_game_menus = get_tree().get_nodes_in_group("InGameMenu")
+	var in_game_menu = null
+	if in_game_menus.size() > 0:
+		in_game_menu = in_game_menus[0]
+	else:
+		# fallback: search by name
+		in_game_menu = get_tree().get_root().find_node("InGameMenu", true, false)
+	if in_game_menu and in_game_menu.has_signal("DebugMenuPressed"):
+		in_game_menu.connect("DebugMenuPressed", Callable(self, "_on_debug_menu_button_pressed"))
 
+func _on_debug_menu_button_pressed():
+	if debug_panel.visible == false:
+		debug_panel.visble = true
+
+	else: debug_panel.visible = false
+	print (debug_panel.visible)
 
 func _on_add_kangaskhan_pressed() -> void:
 	# Instance Kangaskhan scene and add to the scene tree for debug/party

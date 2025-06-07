@@ -639,10 +639,10 @@ scale = Vector2(0.5, 0.5)
 
 [node name="DebugLayer" type="CanvasLayer" parent="."]
 
-[node name="DebugUi" parent="DebugLayer" instance=ExtResource("6_kukki")]
-
 [node name="Menus" type="CanvasLayer" parent="."]
 
 [node name="InGameMenu" parent="Menus" instance=ExtResource("7_kxphi")]
+
+[node name="DebugUi" parent="Menus" instance=ExtResource("6_kukki")]
 
 [node name="TeamManager" parent="Menus" instance=ExtResource("8_j28jb")]
