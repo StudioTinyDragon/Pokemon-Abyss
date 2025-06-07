@@ -68,6 +68,7 @@ func _ready() -> void:
 func _on_pokemon_team_pressed():
 	tm_panel.visible = true
 	StateManager.tmVisible = true
+	StateManager.mMenuVisible = false
 	_update_party_labels()
 
 # Updates the labels in the team manager to show the current party
