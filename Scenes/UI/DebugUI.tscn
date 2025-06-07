@@ -7,6 +7,7 @@
 script = ExtResource("1_7gdgf")
 
 [node name="DebugPanel" type="Panel" parent="."]
+visible = false
 offset_right = 421.0
 offset_bottom = 108.0
 

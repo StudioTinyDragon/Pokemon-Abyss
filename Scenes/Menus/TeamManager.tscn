@@ -6,7 +6,6 @@
 script = ExtResource("1_duhth")
 
 [node name="TMPanel" type="Panel" parent="."]
-visible = false
 offset_right = 1922.0
 offset_bottom = 1077.0
 
@@ -94,8 +93,45 @@ text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="PMPanel1" type="Panel" parent="TMPanel/Pokemon1"]
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 800.0
+offset_right = 1000.0
+offset_bottom = 250.0
+
+[node name="PM1Info" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM1Swap" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM1Evolve" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM1Item" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM1Release" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
 [node name="Pokemon2" type="Button" parent="TMPanel"]
-top_level = true
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
