@@ -9,7 +9,7 @@ extends Node
 @export_range(0, 100, 1.0) var moveAccuracy = 100.0
 @export var canCrit: bool = true
 @export_range(0, 100, 1.0) var BonusCritChance = 0.0
-@export_range(0, 100, 1.0) var interruptChance = 0.0
+@export_range(0, 100, 1.0) var flinchChance = 0.0
 
 @export var isPrioMove: bool = false
 
@@ -29,3 +29,8 @@ extends Node
 @export var canBypassDive: bool = false
 
 @export var isRecoil: int = 0
+
+
+func try_flinch_opponent() -> bool:
+	var roll = randf() * 100.0
+	return roll < flinchChance

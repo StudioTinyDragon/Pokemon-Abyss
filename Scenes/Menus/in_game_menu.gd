@@ -19,7 +19,7 @@ func _ready() -> void:
 	add_to_group("InGameMenu")
 
 func _input(event):
-	if event.is_action_pressed("MainMenu") && (menu_panel.visible == false):
+	if event.is_action_pressed("MainMenu") && (menu_panel.visible == false) && StateManager.tmVisible == false && StateManager.inBattle == false:
 		menu_panel.visible = true
 		StateManager.mMenuVisible = true
 

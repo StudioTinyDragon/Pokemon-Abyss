@@ -13,7 +13,7 @@ f. 8. Implement basic battle system (turn-based, simple moves)
 9. Add basic UI for battles (HP bars, move selection)
 10. Save and load game state (basic progress)
 
-1. Evasion Accuracy
+
 2. Crit https://bulbapedia.bulbagarden.net/wiki/Critical_hit
 3. Flinch
 5. prio move

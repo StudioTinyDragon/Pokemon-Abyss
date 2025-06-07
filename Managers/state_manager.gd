@@ -9,6 +9,7 @@ var inBattleSelect = false
 var inItems = false
 var switchingPokemon = false
 var mMenuVisible = false
+var tmVisible = false
 
 var player_position: Vector2 = Vector2.ZERO
 
