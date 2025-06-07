@@ -5,7 +5,7 @@ extends CharacterBody2D
 const SPEED = 220.0
 
 func _process(_delta: float) -> void:
-	if StateManager.inBattle == false:
+	if StateManager.inBattle == false && StateManager.mMenuVisible == false && StateManager.tmVisible == false:
 		var input_vector = Vector2.ZERO
 		input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 		input_vector.x += Input.get_action_strength("d") - Input.get_action_strength("a")

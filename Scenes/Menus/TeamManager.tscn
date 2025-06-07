@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2cqul6c54xsl"]
+[gd_scene load_steps=2 format=3 uid="uid://cfmh7yeows1cy"]
 
 [ext_resource type="Script" uid="uid://bhu7i1esjaqxm" path="res://Scenes/Menus/team_manager.gd" id="1_duhth"]
 
