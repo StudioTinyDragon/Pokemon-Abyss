@@ -1,4 +1,17 @@
+
 extends Control
+
+func _get_move_name(move_entry):
+	if typeof(move_entry) == TYPE_STRING:
+		return move_entry
+	elif typeof(move_entry) == TYPE_OBJECT and move_entry is PackedScene:
+		var path = move_entry.resource_path
+		if path != "":
+			var move_name = path.get_file().get_basename()
+			return move_name
+	elif typeof(move_entry) == TYPE_STRING_NAME:
+		return str(move_entry)
+	return ""
 
 @onready var battle_options: Panel = $BattleOptions
 @onready var battle_button: Button = $BattleOptions/battleButton
@@ -85,6 +98,8 @@ func readyToFight():
 	current_enemy_hp.text = str(EnemyCurrentHP, " / ", enemyMaxHP)
 	current_pokemon_hp.text = str(PlayerCurrentHP, " / ", playerMaxHP)
 	await get_tree().process_frame  # Wait one frame for everything to initialize
+	print("[DEBUG] At battle start: enemy_pokemon.currentMoves =", enemy_pokemon.currentMoves)
+	print("[DEBUG] At battle start: enemy_pokemon Move1PP-4PP =", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
 
 func _on_ready_to_fight_timer_timeout() -> void:
 	battle_dialogue_box.visible = false
@@ -244,21 +259,36 @@ func _handle_move_button(move_index: int) -> void:
 					enemy_move_instance = move_resource.new()
 			else:
 				var available_moves = []
+				print("[DEBUG] enemy_pokemon.currentMoves:", enemy_pokemon.currentMoves)
+				print("[DEBUG] enemy_pokemon Move1PP-4PP:", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
 				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
-					available_moves.append({"name": enemy_pokemon.currentMoves[0], "slot": 1})
+					var move1_name = _get_move_name(enemy_pokemon.currentMoves[0])
+					print("[DEBUG] Move1 candidate:", move1_name)
+					available_moves.append({"name": move1_name, "slot": 1})
 				if enemy_pokemon.Move2PP > 0 and enemy_pokemon.currentMoves.size() > 1:
-					available_moves.append({"name": enemy_pokemon.currentMoves[1], "slot": 2})
+					var move2_name = _get_move_name(enemy_pokemon.currentMoves[1])
+					print("[DEBUG] Move2 candidate:", move2_name)
+					available_moves.append({"name": move2_name, "slot": 2})
 				if enemy_pokemon.Move3PP > 0 and enemy_pokemon.currentMoves.size() > 2:
-					available_moves.append({"name": enemy_pokemon.currentMoves[2], "slot": 3})
+					var move3_name = _get_move_name(enemy_pokemon.currentMoves[2])
+					print("[DEBUG] Move3 candidate:", move3_name)
+					available_moves.append({"name": move3_name, "slot": 3})
 				if enemy_pokemon.Move4PP > 0 and enemy_pokemon.currentMoves.size() > 3:
-					available_moves.append({"name": enemy_pokemon.currentMoves[3], "slot": 4})
+					var move4_name = _get_move_name(enemy_pokemon.currentMoves[3])
+					print("[DEBUG] Move4 candidate:", move4_name)
+					available_moves.append({"name": move4_name, "slot": 4})
+				print("[DEBUG] available_moves:", available_moves)
 				if available_moves.size() > 0:
 					var idx = randi() % available_moves.size()
 					enemy_move_name = available_moves[idx]["name"]
-					var enemy_move_path = "res://Scripts/Moves/%s.gd" % enemy_move_name
-					if ResourceLoader.exists(enemy_move_path):
-						var move_resource = load(enemy_move_path)
-						enemy_move_instance = move_resource.new()
+					print("[DEBUG] Chosen enemy_move_name:", enemy_move_name)
+					var enemy_move_scene_path = "res://Scripts/Moves/%s.tscn" % enemy_move_name
+					print("[DEBUG] enemy_move_scene_path:", enemy_move_scene_path)
+					if ResourceLoader.exists(enemy_move_scene_path):
+						var move_scene = load(enemy_move_scene_path)
+						enemy_move_instance = move_scene.instantiate()
+						print("[DEBUG] Instantiated enemy_move_instance:", enemy_move_instance)
+						# Decrement PP for the used move
 						match available_moves[idx]["slot"]:
 							1:
 								enemy_pokemon.Move1PP = max(0, enemy_pokemon.Move1PP - 1)
@@ -268,87 +298,229 @@ func _handle_move_button(move_index: int) -> void:
 								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
 							4:
 								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
+					else:
+						print("[DEBUG] Move scene does not exist for:", enemy_move_scene_path)
 	_last_enemy_move_name = enemy_move_name
 
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
 	var player_initiative = player_pokemon.currentInitiative if player_pokemon else 0
 	var enemy_initiative = enemy_pokemon.currentInitiative if enemy_pokemon else 0
-	print("[DEBUG] Player move:", player_move_name, "Enemy move:", enemy_move_name)
 
-	# --- Simpler flinch system ---
+	# --- PrioMove/Initiative system ---
 	if player_move_instance and enemy_move_instance:
-		if player_initiative > enemy_initiative:
-			# Player goes first
-			if player_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
-				player_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
+		var player_prio = 0
+		var enemy_prio = 0
+		if "PrioMove" in player_move_instance:
+			player_prio = player_move_instance.PrioMove
+		if "PrioMove" in enemy_move_instance:
+			enemy_prio = enemy_move_instance.PrioMove
+		print("[DEBUG] Player move:", player_move_name, "PrioMove:", player_prio, "Enemy move:", enemy_move_name, "PrioMove:", enemy_prio)
+
+		# If both PrioMove == 0, use initiative
+		if player_prio == 0 and enemy_prio == 0:
+			print("[DEBUG] Both moves PrioMove == 0, using initiative.")
+			if player_initiative > enemy_initiative:
+				# Player goes first
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+			elif enemy_initiative > player_initiative:
+				# Enemy goes first
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
 			else:
-				execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("playerShoutoutQueue")
-				await TextManager.playerShoutoutDone
-			if enemy_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
-				enemy_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
+				# Initiative tie: player first, then enemy
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+
+		# If one or both PrioMove > 0, higher PrioMove goes first
+		elif player_prio > 0 or enemy_prio > 0:
+			print("[DEBUG] At least one move has PrioMove > 0, higher PrioMove goes first.")
+			if player_prio > enemy_prio:
+				# Player goes first
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+			elif enemy_prio > player_prio:
+				# Enemy goes first
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
 			else:
-				execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("enemyShoutoutQueue")
-				await TextManager.enemyShoutoutDone
-		elif enemy_initiative > player_initiative:
-			# Enemy goes first
-			if enemy_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
-				enemy_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
+				# PrioMove tie, player first
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+
+		# If one or both PrioMove < 0, lower PrioMove goes last
+		elif player_prio < 0 or enemy_prio < 0:
+			print("[DEBUG] At least one move has PrioMove < 0, lower PrioMove goes last.")
+			if player_prio < enemy_prio:
+				# Enemy goes first (player's PrioMove is lower)
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+			elif enemy_prio < player_prio:
+				# Player goes first (enemy's PrioMove is lower)
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
 			else:
-				execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("enemyShoutoutQueue")
-				await TextManager.enemyShoutoutDone
-			if player_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
-				player_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
-			else:
-				execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, false, true)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("playerShoutoutQueue")
-				await TextManager.playerShoutoutDone
-		else:
-			# Initiative tie: player first, then enemy
-			if player_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
-				player_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
-			else:
-				execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("playerShoutoutQueue")
-				await TextManager.playerShoutoutDone
-			if enemy_pokemon.flinched:
-				show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
-				enemy_pokemon.flinched = false
-				await get_tree().create_timer(1.0).timeout
-			else:
-				execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
-				await get_tree().create_timer(0.1).timeout
-				TextManager.emit_signal("enemyShoutoutQueue")
-				await TextManager.enemyShoutoutDone
-	elif player_move_instance:
-		execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
-		await get_tree().create_timer(0.1).timeout
-		TextManager.emit_signal("playerShoutoutQueue")
-		await TextManager.playerShoutoutDone
-	elif enemy_move_instance:
-		execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
-		await get_tree().create_timer(0.1).timeout
-		TextManager.emit_signal("enemyShoutoutQueue")
-		await TextManager.enemyShoutoutDone
+				# PrioMove tie, player first
+				if player_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % player_pokemon.Name)
+					player_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("playerShoutoutQueue")
+					await TextManager.playerShoutoutDone
+				if enemy_pokemon.flinched:
+					show_battle_message("%s flinched and couldn't move!" % enemy_pokemon.Name)
+					enemy_pokemon.flinched = false
+					await get_tree().create_timer(1.0).timeout
+				else:
+					execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, false, true)
+					await get_tree().create_timer(0.1).timeout
+					TextManager.emit_signal("enemyShoutoutQueue")
+					await TextManager.enemyShoutoutDone
 	else:
-		print("No valid moves to execute.")
+		# Only one move present
+		if player_move_instance:
+			execute_move(player_pokemon, enemy_pokemon, player_move_instance, player_move_name, damage_calculator, true, false)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("playerShoutoutQueue")
+			await TextManager.playerShoutoutDone
+		elif enemy_move_instance:
+			execute_move(enemy_pokemon, player_pokemon, enemy_move_instance, enemy_move_name, damage_calculator, true, false)
+			await get_tree().create_timer(0.1).timeout
+			TextManager.emit_signal("enemyShoutoutQueue")
+			await TextManager.enemyShoutoutDone
+		else:
+			print("No valid moves to execute.")
 	# After all shoutouts, hide the message box and show battle options
 	if battle_dialogue_box:
 		battle_dialogue_box.visible = false

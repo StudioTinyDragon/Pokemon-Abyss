@@ -4,3 +4,12 @@
 
 [node name="TailWhip" type="Node2D"]
 script = ExtResource("1_o1vw0")
+moveType = 0
+moveCat = "Status"
+effectRange = 5
+Effect = 1
+maxPP = 30
+moveAccuracy = 100.0
+effectedByProtect = true
+effectedByMagicCoat = true
+effectedByMirrorMove = true

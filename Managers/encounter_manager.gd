@@ -31,3 +31,9 @@ func debugKangaskhanEncounter():
 			enemy_pokemon.setMove3PP()
 		if enemy_pokemon.has_method("setMove4PP"):
 			enemy_pokemon.setMove4PP()
+		# Ensure enemy move instances are created from .tscn scenes (for Inspector values)
+		if enemy_pokemon.has_method("instantiate_moves"):
+			enemy_pokemon.instantiate_moves()
+		# Set all move PP from currentMoves (robust fallback)
+		if enemy_pokemon.has_method("set_all_move_pp_from_current_moves"):
+			enemy_pokemon.set_all_move_pp_from_current_moves()

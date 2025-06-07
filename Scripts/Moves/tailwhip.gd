@@ -1,34 +1,43 @@
 extends Node
 
-@export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark") var moveType = "Normal"
-@export_enum("Physical", "Special", "Status") var moveCat = "Status"
-@export var movePower: int = 0
-@export var maxPP: int = 30
-@export var canCrit: bool = true
-@export_range(0, 100, 1.0) var BonusCritChance = 0.0
-@export_range(0, 100, 1.0) var interruptChance = 0.0
-@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone") var effectRange
+@export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark") var moveType
+@export_enum("Physical", "Special", "Status") var moveCat: String
+@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange
+@export_enum("none", "DebuffEnenmyDefensex1") var Effect
+@export var movePower: int
+@export var maxPP: int
+@export_range(0, 100, 1.0) var moveAccuracy: float
+@export var canCrit: bool
+@export_range(0, 100, 1.0) var BonusCritChance: float
+@export_range(0, 100, 1.0) var flinchChance: float
 
-@export var makesContact: bool = false
+@export_range(-7, 5, 1) var PrioMove: float
 
-@export var effectedByProtect: bool = true
-@export var effectedByMagicCoat: bool = true
-@export var effectedBySnatch: bool = false
-@export var effectedByMirrorMove: bool = true
-@export var effectedByKingsRock: bool = false
+@export var makesContact: bool
 
-@export var isPrioMove: bool = false
-@export var canInterrupt: int = 0
+@export var effectedByProtect: bool
+@export var effectedByMagicCoat: bool
+@export var effectedBySnatch: bool
+@export var effectedByMirrorMove: bool
+@export var effectedByKingsRock: bool
 
-@export var canBypassFly: bool = false
-@export var canBypassBounce: bool = false
-@export var canBypassSkydrop: bool = false
-@export var canBypassDig: bool = false
-@export var canBypassDive: bool = false
+
+@export var canBypassFly: bool
+@export var canBypassBounce: bool
+@export var canBypassSkydrop: bool
+@export var canBypassDig: bool
+@export var canBypassDive: bool
+
+@export var isRecoil: int
 
 
 # Tail Whip now tracks debuffs per-pokemon using a stat_debuffs dictionary on the Pokémon instance (if available)
 func DebuffEnenmyDefensex1(target_pokemon):
+	# Effect is an int (enum index), so compare to the correct value
+	# 0 = "none", 1 = "DebuffEnenmyDefensex1"
+	if Effect != 1:
+		print("[Tail Whip] Effect enum is not set to DebuffEnenmyDefensex1, skipping debuff.")
+		return
 	if not target_pokemon or not target_pokemon.has_method("set_stat") or not target_pokemon.has_method("get_stat"):
 		print("[Tail Whip] Invalid target or missing stat methods.")
 		return
@@ -49,3 +58,26 @@ func DebuffEnenmyDefensex1(target_pokemon):
 	target_pokemon.set_stat("currentDefense", new_def)
 	target_pokemon.set_meta("stat_debuffs", stat_debuffs)
 	print("[Tail Whip] Target's Defense reduced by %.0f%% (%.0f%% total, max 30%%) from %s to %s" % [debuff_percent*100, stat_debuffs["defense"]*100, original_def, new_def])
+
+func initialize_from_inspector():
+	moveType = moveType
+	moveCat = moveCat
+	movePower = movePower
+	maxPP = maxPP
+	flinchChance = flinchChance
+	BonusCritChance = BonusCritChance
+	moveAccuracy = moveAccuracy
+	canCrit = canCrit
+	PrioMove = PrioMove
+	makesContact = makesContact
+	effectedByProtect = effectedByProtect
+	effectedByMagicCoat = effectedByMagicCoat
+	effectedBySnatch = effectedBySnatch
+	effectedByMirrorMove = effectedByMirrorMove
+	effectedByKingsRock = effectedByKingsRock
+	canBypassFly = canBypassFly
+	canBypassBounce = canBypassBounce
+	canBypassSkydrop = canBypassSkydrop
+	canBypassDig = canBypassDig
+	canBypassDive = canBypassDive
+	isRecoil = isRecoil

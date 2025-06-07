@@ -1,26 +1,33 @@
 extends Node
 
-@export var moveType: String = ""
-@export var moveCat: String = "Physical"
-@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "random enemy"
-@export var movePower: int = 50
-@export var maxPP: int = 200
-@export var accuracy: int = 100
-@export var makesContact: bool = true
-@export var effectedByProtect: bool = true
-@export var effectedByMagicCoat: bool = false
-@export var effectedBySnatch: bool = false
-@export var effectedByMirrorMove: bool = false
-@export var effectedByKingsRock: bool = true
-@export var isPrioMove: bool = false
-@export var canInterrupt: int = 0
-@export var isRecoil: int = 4
+@export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark", "none") var moveType = "Normal"
+@export_enum("Physical", "Special", "Status") var moveCat = "Physical"
+@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "enemy"
+@export var movePower: int
+@export var maxPP: int
+@export_range(0, 100, 1.0) var moveAccuracy: float
+@export var canCrit: bool
+@export_range(0, 100, 1.0) var BonusCritChance: float
+@export_range(0, 100, 1.0) var flinchChance: float
 
-@export var canBypassFly: bool = false
-@export var canBypassBounce: bool = false
-@export var canBypassSkydrop: bool = false
-@export var canBypassDig: bool = false
-@export var canBypassDive: bool = false
+@export_range(-7, 5, 1) var PrioMove: float
+
+@export var makesContact: bool
+
+@export var effectedByProtect: bool
+@export var effectedByMagicCoat: bool
+@export var effectedBySnatch: bool
+@export var effectedByMirrorMove: bool
+@export var effectedByKingsRock: bool
+
+
+@export var canBypassFly: bool
+@export var canBypassBounce: bool
+@export var canBypassSkydrop: bool
+@export var canBypassDig: bool
+@export var canBypassDive: bool
+
+@export var isRecoil: int
 
 func RecoilDamage(attacker):
 	# Calculate recoil damage based on the attacker's max HP and the recoil percentage
@@ -34,3 +41,24 @@ func RecoilDamage(attacker):
 		recoil_damage = 1  # Ensure at least 1 HP recoil
 	attacker.set_stat("currentHP", max(0, currentHP - recoil_damage))
 	print("[Struggle] Attacker takes %d recoil damage." % recoil_damage)
+
+func initialize_from_inspector():
+	movePower = movePower
+	maxPP = maxPP
+	flinchChance = flinchChance
+	BonusCritChance = BonusCritChance
+	moveAccuracy = moveAccuracy
+	canCrit = canCrit
+	PrioMove = PrioMove
+	makesContact = makesContact
+	effectedByProtect = effectedByProtect
+	effectedByMagicCoat = effectedByMagicCoat
+	effectedBySnatch = effectedBySnatch
+	effectedByMirrorMove = effectedByMirrorMove
+	effectedByKingsRock = effectedByKingsRock
+	canBypassFly = canBypassFly
+	canBypassBounce = canBypassBounce
+	canBypassSkydrop = canBypassSkydrop
+	canBypassDig = canBypassDig
+	canBypassDive = canBypassDive
+	isRecoil = isRecoil

@@ -4,3 +4,13 @@
 
 [node name="Struggle" type="Node2D"]
 script = ExtResource("1_frg0n")
+moveType = "none"
+effectRange = "random enemy"
+movePower = 50
+maxPP = 999
+moveAccuracy = 100.0
+canCrit = true
+makesContact = true
+effectedByProtect = true
+effectedByKingsRock = true
+isRecoil = 4

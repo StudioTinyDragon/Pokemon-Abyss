@@ -2,7 +2,6 @@ extends Node2D
 
 #region PokemonVars
 var move_instances: Array = [] # Stores instantiated move objects
-@onready var move1 = $moves/Pound
 
 @export_category("Pokemon Info")
 @export var Name : String                 = "Kangaskhan"
@@ -329,3 +328,21 @@ func setMove4PP():
 func checkIfStruggle():
 	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:
 		isStruggling = true
+
+func set_all_move_pp_from_current_moves():
+	for i in range(currentMoves.size()):
+		var move_name = currentMoves[i]
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		if ResourceLoader.exists(move_scene_path):
+			var move_scene = load(move_scene_path)
+			var move_instance = move_scene.instantiate()
+			var max_pp = move_instance.maxPP if "maxPP" in move_instance else 0
+			match i:
+				0:
+					Move1PP = max_pp
+				1:
+					Move2PP = max_pp
+				2:
+					Move3PP = max_pp
+				3:
+					Move4PP = max_pp
