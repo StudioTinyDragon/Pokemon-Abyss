@@ -12,6 +12,7 @@ func _ready() -> void:
 	enemy_pokemon = pokemon["enemy"]
 
 
+
 func _get_battle_pokemon() -> Dictionary: # Helper: get player and enemy pokemon
 	var pokemons = get_tree().get_nodes_in_group("player_pokemon")
 	player_pokemon = null

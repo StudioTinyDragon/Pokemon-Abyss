@@ -91,19 +91,27 @@ var evasion : int                             = 0
 #endregion
 
 #region currentStats
-@export_subgroup("Current Stats")
-@warning_ignore("narrowing_conversion")
-@export var currentMaxHP :int             = ((maxLvlHP - Lvl1HP) /99.0 * (currentLevel - 1.0) +Lvl1HP) * (1 + (0.1 * TraingnigHP))
-@warning_ignore("narrowing_conversion")
-@export var currentAttack :int            = ((maxLvlAttack - Lvl1Attack) /99.0 * (currentLevel - 1.0) +Lvl1Attack) * (1 + (0.01 * TraingnigAttack))
-@warning_ignore("narrowing_conversion")
-@export var currentDefense :int           = ((maxLvlDefense - Lvl1Defense) /99.0 * (currentLevel - 1.0) +Lvl1Defense) * (1 + (0.01 * TraingnigDefense))
-@warning_ignore("narrowing_conversion")
-@export var currentSPAttack :int          = ((maxLvlSPAttack - Lvl1SPAttack) /99.0 * (currentLevel - 1.0) +Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack))
-@warning_ignore("narrowing_conversion")
-@export var currentSPDefense :int         = ((maxLvlSPDefense - Lvl1SPDefense) /99.0 * (currentLevel - 1.0) +Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense))
-@warning_ignore("narrowing_conversion")
-@export var currentInitiative :int        = ((maxLvlInitiative - Lvl1Initiative) /99.0 * (currentLevel - 1.0) +Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative))
+
+var currentMaxHP :int = 13
+var currentAttack :int = 6
+var currentDefense :int = 6
+var currentSPAttack :int = 5
+var currentSPDefense :int = 6
+var currentInitiative :int = 6
+
+# Setter for currentLevel and stat recalculation
+func set_currentLevel(val):
+	currentLevel = val
+	_recalculate_stats()
+
+# Call this after changing any stat-affecting exported var
+func _recalculate_stats():
+	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TraingnigHP)))
+	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TraingnigAttack)))
+	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TraingnigDefense)))
+	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack)))
+	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense)))
+	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative)))
 
 #endregion
 
@@ -151,6 +159,7 @@ var flinched = false
 func _ready():
 	shinyProbabilityGenerator()
 	setPokemonSprites()
+	_recalculate_stats()
 
 func setPokemonSprites():
 	animated_front.play()

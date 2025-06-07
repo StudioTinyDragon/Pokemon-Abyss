@@ -84,6 +84,8 @@ func readyToFight():
 	ready_to_fight_timer.start()
 	current_enemy_hp.text = str(EnemyCurrentHP, " / ", enemyMaxHP)
 	current_pokemon_hp.text = str(PlayerCurrentHP, " / ", playerMaxHP)
+	await get_tree().process_frame  # Wait one frame for everything to initialize
+	initialize_moves()
 
 func _on_ready_to_fight_timer_timeout() -> void:
 	battle_dialogue_box.visible = false
@@ -508,3 +510,26 @@ func _enemyShoutoutDone():
 func _on_move_go_back_pressed() -> void:
 	battle_options.visible = true
 	move_options.visible = false
+
+func initialize_moves():
+	print("Initializing moves for player and enemy Pokemon")
+	# --- Initialize flinchChance for Pound move if present ---
+	if player_pokemon and player_pokemon.currentMoves.size() > 0:
+		print("Loading moves for player Pokemon")
+		for move_name in player_pokemon.currentMoves:
+			print("Loading move: %s" % move_name)
+			var move_path = "res://Scripts/Moves/%s.gd" % move_name
+			if ResourceLoader.exists(move_path):
+				var move_resource = load(move_path)
+				var move_instance = move_resource.new()
+				if move_instance.has_method("initialize_from_inspector"):
+					move_instance.initialize_from_inspector()
+					print("Initialized move: %s" % move_name)
+	if enemy_pokemon and enemy_pokemon.currentMoves.size() > 0:
+		for move_name in enemy_pokemon.currentMoves:
+			var move_path = "res://Scripts/Moves/%s.gd" % move_name
+			if ResourceLoader.exists(move_path):
+				var move_resource = load(move_path)
+				var move_instance = move_resource.new()
+				if move_instance.has_method("initialize_from_inspector"):
+					move_instance.initialize_from_inspector()

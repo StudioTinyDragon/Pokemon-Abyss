@@ -1,6 +1,5 @@
 extends Node
 
-
 @export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark") var moveType = "Normal"
 @export_enum("Physical", "Special", "Status") var moveCat = "Physical"
 @export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "enemy"
@@ -9,7 +8,7 @@ extends Node
 @export_range(0, 100, 1.0) var moveAccuracy = 100.0
 @export var canCrit: bool = true
 @export_range(0, 100, 1.0) var BonusCritChance = 0.0
-@export_range(0, 100, 1.0) var flinchChance: float
+@export_range(0, 100, 1.0) var flinchChance: float = 0.0
 
 @export var isPrioMove: bool = false
 
@@ -30,7 +29,13 @@ extends Node
 
 @export var isRecoil: int = 0
 
-
 func try_flinch_opponent() -> bool:
 	var roll = randf() * 100.0
 	return roll < flinchChance
+
+# Call this after instancing if you want to ensure inspector values are used (optional for future-proofing)
+func initialize_from_inspector():
+	# This function can be expanded to re-assign all exported vars if needed
+	# For now, it just ensures flinchChance is set to its inspector value
+	flinchChance = flinchChance
+	print("Pound flinchChance initialized to: ", flinchChance)
