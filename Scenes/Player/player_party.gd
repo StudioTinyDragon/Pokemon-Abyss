@@ -3,7 +3,7 @@ extends Control
 
 func _ready() -> void:
 	# Example: Add a Kangaskhan to the party at game start
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
+	var kangaskhan_scene = load("uid://w66ycrams3y7")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()
 	kangaskhan_instance.uniquePokemonID = int(Time.get_unix_time_from_system()) + randi() % 100000
 	kangaskhan_instance.add_to_group("player_pokemon")
@@ -20,7 +20,7 @@ func _ready() -> void:
 		"unique_id": kangaskhan_instance.uniquePokemonID,
 		"types": kangaskhan_instance.TYP.duplicate(),
 		"level": kangaskhan_instance.currentLevel,
-		"current_hp": kangaskhan_instance.currentHP,
+		"current_hp": kangaskhan_instance.currentMaxHP,
 		"max_hp": kangaskhan_instance.currentMaxHP,
 		"moves": [
 			{"name": "Pound", "pp": 35, "max_pp": 35},

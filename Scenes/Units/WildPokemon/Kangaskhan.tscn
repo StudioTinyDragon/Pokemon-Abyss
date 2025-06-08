@@ -1,6 +1,6 @@
 [gd_scene load_steps=259 format=3 uid="uid://w66ycrams3y7"]
 
-[ext_resource type="Script" uid="uid://b2x5cpidjvocl" path="res://Scenes/Units/Kangaskhan.gd" id="1_gefbp"]
+[ext_resource type="Script" uid="uid://b2x5cpidjvocl" path="res://Scenes/Units/WildPokemon/Kangaskhan.gd" id="1_gefbp"]
 [ext_resource type="Texture2D" uid="uid://cdealv7g8pmd5" path="res://Assets/Pokemon/AFrontView/ezgif-2edcb728378f3a.png" id="2_4nbll"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nwwdt"]
@@ -1798,10 +1798,49 @@ animations = [{
 
 [node name="Kangaskhan" type="Node2D"]
 script = ExtResource("1_gefbp")
-Gender = "Female"
+Name = "Kangaskhan"
+PokedexNR = 155
+TYP = Array[String](["Normal"])
+Nature = 0
+canBeShiny = true
+isWild = true
+PotentialGenders = Array[String](["Female"])
+PotentialNatures = Array[String](["Hardy"])
 PokemonFront = "uid://b67hrmmgq31ti"
 PokemonBack = "uid://ch30ja4novgsg"
-Moves = Array[String](["Pound"])
+currentLevel = 1.0
+pokemonAccuracy = 100
+CatchRate = 45
+Lvl1HP = 13
+Lvl1Attack = 6
+Lvl1Defense = 6
+Lvl1SPAttack = 5
+Lvl1SPDefense = 6
+Lvl1Initiative = 6
+maxLvlHP = 320
+maxLvlAttack = 195
+maxLvlDefense = 165
+maxLvlSPAttack = 85
+maxLvlSPDefense = 165
+maxLvlInitiative = 185
+potentialAbilities = Array[String](["EarlyBird", "Scrappy", "InnerFocus"])
+move_levels = {
+"Bite": 12,
+"Crunch": 36,
+"DoubleHit": 32,
+"Endure": 40,
+"FakeOut": 8,
+"FocusEnergy": 20,
+"Growl": 4,
+"Headbutt": 24,
+"LastResort": 52,
+"Outrage": 48,
+"Pound": 1,
+"Reversal": 44,
+"Stomp": 16,
+"SuckerPunch": 28,
+"TailWhip": 1
+}
 
 [node name="PokemonFrontSprite" type="Sprite2D" parent="."]
 visible = false

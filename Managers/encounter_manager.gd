@@ -1,8 +1,56 @@
 extends Node
 
-func debugKangaskhanEncounter():
+func debugKangaskhanEncounter(level := 10, levelRange := 2):
 	# Instance Kangaskhan scene and add to the scene tree as enemy
-	var kangaskhan_scene = load("res://Scenes/Units/Kangaskhan.tscn")
+	var kangaskhan_scene = load("uid://w66ycrams3y7")
+	var kangaskhan_instance = kangaskhan_scene.instantiate()
+	# Assign a unique ID to this enemy Kangaskhan (different from player's)
+	# Use a timestamp + random value for uniqueness
+	kangaskhan_instance.uniquePokemonID = int(Time.get_unix_time_from_system()) + randi() % 100000
+	# Add to enemy group for logic separation
+	kangaskhan_instance.add_to_group("enemy_pokemon")
+	# Add to Units node if it exists
+	var units_node = get_node_or_null("../Units")
+	if units_node:
+		units_node.add_child(kangaskhan_instance)
+	else:
+		add_child(kangaskhan_instance)
+	print("Kangaskhan added as enemy for debug.")
+
+	# Set level and levelRange before WildGenerator
+	if kangaskhan_instance.has_method("setLevel"):
+		kangaskhan_instance.setLevel(level)
+	if kangaskhan_instance.has_method("setLevelRange"):
+		kangaskhan_instance.setLevelRange(levelRange)
+	if kangaskhan_instance.has_method("WildGenerator"):
+		kangaskhan_instance.WildGenerator()
+
+	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	for enemy_pokemon in enemies:
+		if enemy_pokemon.has_method("SetPotentiellMoves"):
+			enemy_pokemon.SetPotentiellMoves()
+		if enemy_pokemon.has_method("SetMoves"):
+			enemy_pokemon.SetMoves()
+		if enemy_pokemon.has_method("setMove1PP"):
+			enemy_pokemon.setMove1PP()
+		if enemy_pokemon.has_method("setMove2PP"):
+			enemy_pokemon.setMove2PP()
+		if enemy_pokemon.has_method("setMove3PP"):
+			enemy_pokemon.setMove3PP()
+		if enemy_pokemon.has_method("setMove4PP"):
+			enemy_pokemon.setMove4PP()
+		if enemy_pokemon.has_method("setCurrentHP"):
+			enemy_pokemon.setCurrentHP()
+		# Ensure enemy move instances are created from .tscn scenes (for Inspector values)
+		if enemy_pokemon.has_method("instantiate_moves"):
+			enemy_pokemon.instantiate_moves()
+		# Set all move PP from currentMoves (robust fallback)
+		if enemy_pokemon.has_method("set_all_move_pp_from_current_moves"):
+			enemy_pokemon.set_all_move_pp_from_current_moves()
+
+func debugKangaskhanEncounter1():
+	# Instance Kangaskhan scene and add to the scene tree as enemy
+	var kangaskhan_scene = load("uid://w66ycrams3y7")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()
 	# Assign a unique ID to this enemy Kangaskhan (different from player's)
 	# Use a timestamp + random value for uniqueness
@@ -31,6 +79,8 @@ func debugKangaskhanEncounter():
 			enemy_pokemon.setMove3PP()
 		if enemy_pokemon.has_method("setMove4PP"):
 			enemy_pokemon.setMove4PP()
+		if enemy_pokemon.has_method("setCurrentHP"):
+			enemy_pokemon.setCurrentHP()
 		# Ensure enemy move instances are created from .tscn scenes (for Inspector values)
 		if enemy_pokemon.has_method("instantiate_moves"):
 			enemy_pokemon.instantiate_moves()
