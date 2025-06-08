@@ -4,7 +4,7 @@ extends Node
 signal request_ready_to_fight
 
 func try_interact_with_tile1(player: Node2D) -> void:
-	var radius = 20 # pixels
+	var radius = 30 # pixels
 	# Search the whole scene for TreeCollision nodes
 	var root = player.get_tree().current_scene
 	for node in root.get_children():
@@ -35,7 +35,7 @@ func try_interact_with_tile1(player: Node2D) -> void:
 					return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:
-	var radius = 22 # pixels
+	var radius = 30 # pixels
 	var root = player.get_tree().current_scene
 	for node in root.get_children():
 		if node is TileMapLayer:
