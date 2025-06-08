@@ -4,19 +4,20 @@ extends Node2D
 var move_instances: Array = [] # Stores instantiated move objects
 
 @export_category("Pokemon Info")
-@export var Name : String                 = "Kangaskhan"
-@export var PokedexNR : int               = 115
-@export var OwndexNR: int                 
-@export var TYP: Array[String]            = ["Normal"]
-@export_enum("Female", "Male") var Gender = "No standard Gender"
-@export_enum("Hardy") var Nature          = "No standard Nature"
-@export var canBeShiny: bool              = true
-@export var isShiny: bool                 = false
+@export var Name : String
+@export var PokedexNR: int
+@export var OwndexNR: int
+@export var TYP: Array[String]
+@export_enum("Female", "Male") var Gender
+@export_enum("Hardy") var Nature
+@export var canBeShiny: bool
+@export var isShiny: bool
+@export var isWild: bool
 
 @export var uniquePokemonID: int
 
-@export var PotentialGenders: Array[String] = ["Female"]
-@export var PotentialNatures: Array[String] = ["Hardy"]
+@export var PotentialGenders: Array[String]
+@export var PotentialNatures: Array[String]
 
 @export_subgroup("Sprites")
 @export_file("*.png") var PokemonFront             = ""
@@ -28,7 +29,7 @@ var move_instances: Array = [] # Stores instantiated move objects
 
 #region Evolve Info
 @export_subgroup("evolve info")
-@export var canEvolve :bool                 = false
+@export var canEvolve :bool
 @export var EvolveLvl :int
 @export var EvolveItem :String
 @export var EvolveLocation :String
@@ -39,100 +40,81 @@ var move_instances: Array = [] # Stores instantiated move objects
 #region currentBattleStats
 
 #dynamic stats
-var currentHP: int                = 13
-var Move1PP: int                  = 0
-var Move2PP: int                  = 0
-var Move3PP: int                  = 0
-var Move4PP: int                  = 0
+var currentHP: int
+var Move1PP: int
+var Move2PP: int
+var Move3PP: int
+var Move4PP: int
 var StatusEffect: Array[String]   = []
 @export_group("Stats")
 @export var heldItem: String
 
-@export_range(0, 100, 1.0) var currentLevel   = 1.0
-@export var Exp: int                          = 0
-@export var Moves: Array[String]              = []
+@export_range(0, 100, 1.0) var currentLevel
+@export var Exp: int
+@export var Moves: Array[String]
 @export var Ability : String
-var pokemonAccuracy: int                      = 100
-var evasion : int                             = 0
+@export var pokemonAccuracy: int
+@export var evasion : int
+@export var CatchRate: int
 
 #endregion
 
 # Statblock
 #region MinStats
 @export_subgroup("Lvl1 Stats")
-@export var Lvl1HP: int                         = 13
-@export var Lvl1Attack: int                     = 6
-@export var Lvl1Defense: int                    = 6
-@export var Lvl1SPAttack: int                   = 5
-@export var Lvl1SPDefense: int                  = 6
-@export var Lvl1Initiative: int                 = 6
+@export var Lvl1HP: int
+@export var Lvl1Attack: int
+@export var Lvl1Defense: int
+@export var Lvl1SPAttack: int
+@export var Lvl1SPDefense: int
+@export var Lvl1Initiative: int
 
 #endregion
 
 #region MaxStats
 @export_subgroup("Max Lvl Stats")
-@export var maxLvlHP: int                 = 320
-@export var maxLvlAttack: int             = 195
-@export var maxLvlDefense: int            = 165
-@export var maxLvlSPAttack: int           = 85
-@export var maxLvlSPDefense: int          = 165
-@export var maxLvlInitiative: int         = 185
+@export var maxLvlHP: int
+@export var maxLvlAttack: int
+@export var maxLvlDefense: int
+@export var maxLvlSPAttack: int
+@export var maxLvlSPDefense: int
+@export var maxLvlInitiative: int
 
 #endregion
 
 #region TrainingLvl
 @export_subgroup("Training Modifier")
-@export var TraingnigHP :int                   =0
-@export var TraingnigAttack :int               =0
-@export var TraingnigDefense :int              =0
-@export var TraingnigSPAttack :int             =0
-@export var TraingnigSPDefense :int            =0
-@export var TraingnigInitiative :int           =0 
+@export var TraingnigHP :int
+@export var TraingnigAttack :int
+@export var TraingnigDefense :int
+@export var TraingnigSPAttack :int
+@export var TraingnigSPDefense :int
+@export var TraingnigInitiative :int
 #TODO TrainingLvl erhöhen können + MaxLvl dafür ( ist schon in der Stat berechnung eingebunden, momentan für 1% Bonus pro TrainingLvl)
 
 #endregion
 
 #region currentStats
 
-var currentMaxHP :int = 13
-var currentAttack :int = 6
-var currentDefense :int = 6
-var currentSPAttack :int = 5
-var currentSPDefense :int = 6
-var currentInitiative :int = 6
-
-# Setter for currentLevel and stat recalculation
-func set_currentLevel(val):
-	currentLevel = val
-	_recalculate_stats()
-
-# Call this after changing any stat-affecting exported var
-func _recalculate_stats():
-	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TraingnigHP)))
-	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TraingnigAttack)))
-	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TraingnigDefense)))
-	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack)))
-	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense)))
-	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative)))
+var currentMaxHP :int
+var currentAttack :int
+var currentDefense :int
+var currentSPAttack :int
+var currentSPDefense :int
+var currentInitiative :int
 
 #endregion
 
-@export var CatchRate: int                = 45 #Higher Catchrate = easier
-
-@export var currentMoves: Array[String] = []
+@export var currentMoves: Array[String]
 @export_subgroup("Potential")
-@export var potentialMoves: Array[String] = []
-@export var potentialAbilities: Array[String] = ["Early Bird", "Scrappy", "Inner Focus"]
-@export var potentialHeldItems: Array[String] = ["Bitter Berry"]
+@export var potentialMoves: Array[String]
+@export var potentialAbilities: Array[String]
+@export var potentialHeldItems: Dictionary
 
 #region MoveLvlLocked
 @export_subgroup("Moves per Level")
-var move_levels = {
-	"Pound": 1,
-	"TailWhip": 1,
-	"Growl": 4,
-	"FakeOut": 8,
-	"Bite": 12
+@export var move_levels = {
+
 }
 
 #endregion
@@ -141,10 +123,12 @@ var move_levels = {
 
 #region State
 
+var levelRange: int = 0
 var isFainted
 var settingMove = false
 var isStruggling: bool = false
 var flinched = false
+
 #endregion
 
 
@@ -159,11 +143,29 @@ var flinched = false
 
 
 func _ready():
-	shinyProbabilityGenerator()
 	setPokemonSprites()
 	_recalculate_stats()
+	initializeInspector()
 	move_instances.clear()
 	call_deferred("instantiate_moves")
+	if isWild == true:
+		WildGenerator()
+		shinyProbabilityGenerator()
+		initializeInspector()
+
+# Setter for currentLevel and stat recalculation
+func set_currentLevel(val):
+	currentLevel = val
+	_recalculate_stats()
+
+# Call this after changing any stat-affecting exported var
+func _recalculate_stats():
+	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TraingnigHP)))
+	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TraingnigAttack)))
+	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TraingnigDefense)))
+	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack)))
+	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense)))
+	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative)))
 
 func instantiate_moves():
 	for move_name in currentMoves:
@@ -346,3 +348,83 @@ func set_all_move_pp_from_current_moves():
 					Move3PP = max_pp
 				3:
 					Move4PP = max_pp
+
+func setCurrentHP():
+	currentHP = currentMaxHP
+
+func setLevel(level: int):
+	currentLevel = level
+
+func setLevelRange(levelRange: int):
+	self.levelRange = levelRange
+
+func randomizeHeldItem(heldItemChance):
+	pass
+
+func WildGenerator():
+	# Randomize current level within [currentLevel - levelRange, currentLevel + levelRange], clamped 1-100
+	var min_level = max(1, currentLevel - levelRange)
+	var max_level = min(100, currentLevel + levelRange)
+	currentLevel = randi_range(min_level, max_level)
+	# randomly set current moves from potentiell moves
+	# randomize abilities from potentiell abilities
+	# randomize nature from potentiell natures
+	if isWild and (Gender == "" or Gender == null):
+		if PotentialGenders.size() > 0:
+			Gender = PotentialGenders[randi() % PotentialGenders.size()]
+	# randomize held item from potentiell items
+	_recalculate_stats()
+
+func initializeInspector():
+	Name = Name
+	PokedexNR = PokedexNR
+	OwndexNR = OwndexNR
+	TYP = TYP
+	Gender = Gender
+	Nature = Nature
+	canBeShiny = canBeShiny
+	isShiny = isShiny
+	isWild = isWild
+	
+	uniquePokemonID = uniquePokemonID
+	PotentialGenders = PotentialGenders
+	PotentialNatures = PotentialNatures
+	canEvolve = canEvolve
+	EvolveLvl = EvolveLvl
+	EvolveItem = EvolveItem
+	EvolveLocation = EvolveLocation
+	EvolveETC = EvolveETC
+	currentHP = currentHP
+	Move1PP = Move1PP
+	Move2PP = Move2PP
+	Move3PP = Move3PP
+	Move4PP = Move4PP
+	StatusEffect = StatusEffect
+
+	currentLevel = currentLevel
+	Exp = Exp
+	Moves = Moves
+	Ability = Ability
+	pokemonAccuracy = pokemonAccuracy
+	evasion = evasion
+
+	Lvl1HP = Lvl1HP
+	Lvl1Attack = Lvl1Attack
+	Lvl1Defense = Lvl1Defense
+	Lvl1SPAttack = Lvl1SPAttack
+	Lvl1SPDefense = Lvl1SPDefense
+	Lvl1Initiative = Lvl1Initiative
+
+	maxLvlHP = maxLvlHP
+	maxLvlAttack = maxLvlAttack
+	maxLvlDefense = maxLvlDefense
+	maxLvlSPAttack = maxLvlSPAttack
+	maxLvlSPDefense = maxLvlSPDefense
+	maxLvlInitiative = maxLvlInitiative
+
+	TraingnigHP = TraingnigHP
+	TraingnigAttack = TraingnigAttack
+	TraingnigDefense = TraingnigDefense
+	TraingnigSPAttack = TraingnigSPAttack
+	TraingnigSPDefense = TraingnigSPDefense
+	TraingnigInitiative = TraingnigInitiative

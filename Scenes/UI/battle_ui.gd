@@ -1,4 +1,3 @@
-
 extends Control
 
 func _get_move_name(move_entry):
@@ -36,7 +35,13 @@ func _get_move_name(move_entry):
 @onready var battle_text: RichTextLabel = $battleDialogueBox/battleText
 @onready var ready_to_fight_timer: Timer = $battleDialogueBox/readyToFightTimer
 @onready var attack_shoutout_timer: Timer = $battleDialogueBox/attackShoutoutTimer
+@onready var enemy_level: Label = $EnemyStatblock/EnemyLevel
+@onready var own_level: Label = $OwnStatblock/OwnLevel
+@onready var enemy_gender_sprite: Sprite2D = $EnemyStatblock/GenderPanel/EnemyGenderSprite
+@onready var player_gender_sprite: Sprite2D = $OwnStatblock/GenderPanel/PlayerGenderSprite
 
+const FEMALE_SIGN = preload("res://Assets/Icons/FemaleSign.png")
+const MALE_SIGN = preload("res://Assets/Icons/MaleSign.png")
 
 var _last_enemy_move_name: String = ""
 var _last_player_move_name: String = ""
@@ -90,6 +95,7 @@ func readyToFight():
 	getBattlePokemon()
 	showPokemonNames()
 	setPokemonPosition()
+
 	if test_battle and test_battle.has_method("_get_battle_pokemon"):
 		pokemon = test_battle._get_battle_pokemon()
 		player_pokemon = pokemon.get("player", null)
@@ -97,6 +103,15 @@ func readyToFight():
 	ready_to_fight_timer.start()
 	current_enemy_hp.text = str(EnemyCurrentHP, " / ", enemyMaxHP)
 	current_pokemon_hp.text = str(PlayerCurrentHP, " / ", playerMaxHP)
+	if own_level and player_pokemon and "currentLevel" in player_pokemon:
+		own_level.text = str(int(player_pokemon.currentLevel))
+	if enemy_level and enemy_pokemon and "currentLevel" in enemy_pokemon:
+		enemy_level.text = str(int(enemy_pokemon.currentLevel))
+	
+	# Set gender icons for player and enemy
+	_set_gender_sprite(player_pokemon, player_gender_sprite)
+	_set_gender_sprite(enemy_pokemon, enemy_gender_sprite)
+
 	await get_tree().process_frame  # Wait one frame for everything to initialize
 	print("[DEBUG] At battle start: enemy_pokemon.currentMoves =", enemy_pokemon.currentMoves)
 	print("[DEBUG] At battle start: enemy_pokemon Move1PP-4PP =", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
@@ -677,3 +692,18 @@ func _enemyShoutoutQueue():
 
 func _enemyShoutoutDone():
 	pass
+
+# Set gender icons for player and enemy
+func _set_gender_sprite(pokemon, sprite):
+	if not pokemon or not sprite:
+		return
+	var gender = ""
+	# Handle both string and enum/int
+	if "Gender" in pokemon:
+		gender = str(pokemon.Gender)
+	if gender == "Female" or gender == "0":
+		sprite.texture = FEMALE_SIGN
+	elif gender == "Male" or gender == "1":
+		sprite.texture = MALE_SIGN
+	else:
+		sprite.texture = null
