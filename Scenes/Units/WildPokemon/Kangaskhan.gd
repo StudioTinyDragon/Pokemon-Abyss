@@ -111,6 +111,7 @@ var currentInitiative :int
 @export var potentialAbilities: Array[String]
 @export var potentialHeldItems: Dictionary
 
+
 #region MoveLvlLocked
 @export_subgroup("Moves per Level")
 @export var move_levels = {
@@ -123,7 +124,7 @@ var currentInitiative :int
 
 #region State
 
-var levelRange: int = 0
+var levelRange: int
 var isFainted
 var settingMove = false
 var isStruggling: bool = false
@@ -148,10 +149,8 @@ func _ready():
 	initializeInspector()
 	move_instances.clear()
 	call_deferred("instantiate_moves")
-	if isWild == true:
-		WildGenerator()
-		shinyProbabilityGenerator()
-		initializeInspector()
+	initializeInspector()
+
 
 # Setter for currentLevel and stat recalculation
 func set_currentLevel(val):
@@ -169,7 +168,7 @@ func _recalculate_stats():
 
 func instantiate_moves():
 	for move_name in currentMoves:
-		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_scene_path):
 			var move_scene = load(move_scene_path)
 			var move_instance = move_scene.instantiate()
@@ -253,7 +252,7 @@ func get_stat(stat_name: String):
 func setMove1PP():
 	if settingMove == true and currentMoves.size() > 0:
 		var move_name = currentMoves[0]
-		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_path):
 			var move_resource = load(move_path)
 			var move_instance = move_resource.new()
@@ -273,7 +272,7 @@ func setMove1PP():
 func setMove2PP():
 	if settingMove == true and currentMoves.size() > 1:
 		var move_name = currentMoves[1]
-		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_path):
 			var move_resource = load(move_path)
 			var move_instance = move_resource.new()
@@ -292,7 +291,7 @@ func setMove2PP():
 func setMove3PP():
 	if settingMove == true and currentMoves.size() > 2:
 		var move_name = currentMoves[2]
-		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_path):
 			var move_resource = load(move_path)
 			var move_instance = move_resource.new()
@@ -311,7 +310,7 @@ func setMove3PP():
 func setMove4PP():
 	if settingMove == true and currentMoves.size() > 3:
 		var move_name = currentMoves[3]
-		var move_path = "res://Scripts/Moves/%s.gd" % move_name
+		var move_path = "res://Scripts/Moves/%s.gd" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_path):
 			var move_resource = load(move_path)
 			var move_instance = move_resource.new()
@@ -334,7 +333,7 @@ func checkIfStruggle():
 func set_all_move_pp_from_current_moves():
 	for i in range(currentMoves.size()):
 		var move_name = currentMoves[i]
-		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name.replace(" ", "")
 		if ResourceLoader.exists(move_scene_path):
 			var move_scene = load(move_scene_path)
 			var move_instance = move_scene.instantiate()
@@ -355,24 +354,59 @@ func setCurrentHP():
 func setLevel(level: int):
 	currentLevel = level
 
+@warning_ignore("shadowed_variable")
 func setLevelRange(levelRange: int):
 	self.levelRange = levelRange
-
-func randomizeHeldItem(heldItemChance):
-	pass
-
-func WildGenerator():
-	# Randomize current level within [currentLevel - levelRange, currentLevel + levelRange], clamped 1-100
 	var min_level = max(1, currentLevel - levelRange)
 	var max_level = min(100, currentLevel + levelRange)
 	currentLevel = randi_range(min_level, max_level)
-	# randomly set current moves from potentiell moves
-	# randomize abilities from potentiell abilities
-	# randomize nature from potentiell natures
-	if isWild and (Gender == "" or Gender == null):
+
+func SetRandomMoves():
+	for move in potentialMoves:
+		if not currentMoves.has(move) and currentMoves.size() < 4:
+			move = potentialMoves[randi() % potentialMoves.size()]
+			currentMoves.append(move)
+			settingMove = true
+
+func setRandomHeldItem():
+	var total_chance = 0
+	for chance in potentialHeldItems.values():
+		total_chance += int(chance)
+
+	if total_chance == 0:
+		return  # No items to choose from
+
+	var roll = randi() % total_chance
+	var cumulative = 0
+	for item_name in potentialHeldItems.keys():
+		cumulative += int(potentialHeldItems[item_name])
+		if roll < cumulative:
+			heldItem = item_name
+			return
+
+func GenderGenerator():
+	if Gender == "" or Gender == null:
 		if PotentialGenders.size() > 0:
 			Gender = PotentialGenders[randi() % PotentialGenders.size()]
-	# randomize held item from potentiell items
+
+func abilityGenerator():
+	if Ability == "" or Ability == null:
+		if potentialAbilities.size() > 0:
+			Ability = potentialAbilities[randi() % potentialAbilities.size()]
+
+func natureGenerator():
+	if Nature == "" or Nature == null:
+		if PotentialNatures.size() > 0:
+			Nature = PotentialNatures[randi() % PotentialNatures.size()]
+
+func WildGenerator():
+	if isWild:
+		SetRandomMoves()
+		setRandomHeldItem()
+		shinyProbabilityGenerator()
+		GenderGenerator()
+		abilityGenerator()
+		natureGenerator()
 	_recalculate_stats()
 
 func initializeInspector():

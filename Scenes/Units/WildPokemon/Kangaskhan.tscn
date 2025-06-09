@@ -1801,7 +1801,6 @@ script = ExtResource("1_gefbp")
 Name = "Kangaskhan"
 PokedexNR = 155
 TYP = Array[String](["Normal"])
-Nature = 0
 canBeShiny = true
 isWild = true
 PotentialGenders = Array[String](["Female"])
@@ -1823,23 +1822,26 @@ maxLvlDefense = 165
 maxLvlSPAttack = 85
 maxLvlSPDefense = 165
 maxLvlInitiative = 185
-potentialAbilities = Array[String](["EarlyBird", "Scrappy", "InnerFocus"])
+potentialAbilities = Array[String](["Early Bird", "Scrappy", "Inner Focus"])
+potentialHeldItems = {
+"Bitter Berry": 100
+}
 move_levels = {
 "Bite": 12,
 "Crunch": 36,
-"DoubleHit": 32,
+"Double Hit": 32,
 "Endure": 40,
-"FakeOut": 8,
-"FocusEnergy": 20,
+"Fake Out": 8,
+"Focus Energy": 20,
 "Growl": 4,
 "Headbutt": 24,
-"LastResort": 52,
+"Last Resort": 52,
 "Outrage": 48,
 "Pound": 1,
 "Reversal": 44,
 "Stomp": 16,
-"SuckerPunch": 28,
-"TailWhip": 1
+"Sucker Punch": 28,
+"Tail Whip": 1
 }
 
 [node name="PokemonFrontSprite" type="Sprite2D" parent="."]

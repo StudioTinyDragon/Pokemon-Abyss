@@ -39,6 +39,16 @@ func _get_move_name(move_entry):
 @onready var own_level: Label = $OwnStatblock/OwnLevel
 @onready var enemy_gender_sprite: Sprite2D = $EnemyStatblock/GenderPanel/EnemyGenderSprite
 @onready var player_gender_sprite: Sprite2D = $OwnStatblock/GenderPanel/PlayerGenderSprite
+@onready var held_item_icon_player: Sprite2D = $OwnStatblock/heldItemPlayer/heldItemIconPlayer
+@onready var held_item_label_player: Label = $OwnStatblock/heldItemPlayer/heldItemLabelPlayer
+@onready var held_item_icon_enemy: Sprite2D = $EnemyStatblock/heldItemEnemy/heldItemIconEnemy
+@onready var held_item_label_enemy: Label = $EnemyStatblock/heldItemEnemy/heldItemLabelEnemy
+@onready var nature_label_enemy: Label = $EnemyStatblock/nature/natureLabelEnemy
+@onready var ability_label_enemy: Label = $EnemyStatblock/ablility/abilityLabelEnemy
+@onready var nature_label_player: Label = $OwnStatblock/nature/natureLabelPlayer
+@onready var ability_label_player: Label = $OwnStatblock/ablility/abilityLabelPlayer
+
+
 
 const FEMALE_SIGN = preload("res://Assets/Icons/FemaleSign.png")
 const MALE_SIGN = preload("res://Assets/Icons/MaleSign.png")
@@ -111,7 +121,17 @@ func readyToFight():
 	# Set gender icons for player and enemy
 	_set_gender_sprite(player_pokemon, player_gender_sprite)
 	_set_gender_sprite(enemy_pokemon, enemy_gender_sprite)
-
+	
+	_set_held_item(player_pokemon, held_item_label_player)
+	_set_held_item(enemy_pokemon, held_item_label_enemy)
+	
+	
+	_set_ability_label(player_pokemon, ability_label_player)
+	_set_ability_label(enemy_pokemon, ability_label_enemy)
+	
+	_set_nature_label(player_pokemon, nature_label_player)
+	_set_nature_label(enemy_pokemon, nature_label_enemy)
+	
 	await get_tree().process_frame  # Wait one frame for everything to initialize
 	print("[DEBUG] At battle start: enemy_pokemon.currentMoves =", enemy_pokemon.currentMoves)
 	print("[DEBUG] At battle start: enemy_pokemon Move1PP-4PP =", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
@@ -181,6 +201,14 @@ func getBattlePokemon():
 	if player_pokemon and "currentMaxHP" in player_pokemon:
 		playerMaxHP = player_pokemon.currentMaxHP
 
+	# Set status effect labels for player and enemy
+	if current_pokemon_status and player_pokemon:
+		current_pokemon_status.text = _get_status_text(player_pokemon)
+	if current_enemy_status and enemy_pokemon:
+		current_enemy_status.text = _get_status_text(enemy_pokemon)
+
+
+
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
@@ -236,7 +264,6 @@ func _handle_move_button(move_index: int) -> void:
 	var player_move_name = moves[move_index]["name"]
 	_last_player_move_name = player_move_name
 	var player_move_instance = null
-	var move_script_name = player_move_name.replace(" ", "")
 	var move_scene_name = player_move_name.replace(" ", "")
 	var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_scene_name
 	if ResourceLoader.exists(move_scene_path):
@@ -564,6 +591,11 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 	print("[DEBUG] execute_move: attacker=%s, defender=%s, move_name=%s, moveCat=%s" % [attacker.Name if attacker else "None", defender.Name if defender else "None", move_name, move_instance.moveCat if move_instance else "None"])
 	# Handle Status moves (like Tail Whip) separately
 	if move_instance.moveCat == "Status":
+			# Set status effect labels for player and enemy
+		if current_pokemon_status and player_pokemon:
+			current_pokemon_status.text = _get_status_text(player_pokemon)
+		if current_enemy_status and enemy_pokemon:
+			current_enemy_status.text = _get_status_text(enemy_pokemon)
 		if move_instance.has_method("DebuffEnenmyDefensex1"):
 			if attacker.is_in_group("player_pokemon") and defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("enemy_pokemon"):
 				move_instance.DebuffEnenmyDefensex1(defender)
@@ -694,6 +726,7 @@ func _enemyShoutoutDone():
 	pass
 
 # Set gender icons for player and enemy
+@warning_ignore("shadowed_variable")
 func _set_gender_sprite(pokemon, sprite):
 	if not pokemon or not sprite:
 		return
@@ -707,3 +740,57 @@ func _set_gender_sprite(pokemon, sprite):
 		sprite.texture = MALE_SIGN
 	else:
 		sprite.texture = null
+
+@warning_ignore("shadowed_variable")
+func _set_held_item(pokemon, ilabel):
+	if not pokemon or not ilabel:
+		return
+	var heldItem = ""
+	if "heldItem" in pokemon:
+		heldItem = str(pokemon.heldItem)
+	if not heldItem == "":
+		#isprite.texture = 
+		ilabel.text = heldItem
+
+@warning_ignore("shadowed_variable")
+func _set_ability_label(pokemon, label):
+	if not pokemon or not label:
+		return
+	var ability = ""
+	if "Ability" in pokemon:
+		ability = str(pokemon.Ability)
+	if ability != "":
+		label.text = ability
+
+@warning_ignore("shadowed_variable")
+func _set_nature_label(pokemon, label):
+	if not pokemon or not label:
+		return
+	var nature = ""
+	if "Nature" in pokemon:
+		nature = str(pokemon.Nature)
+	if nature != "":
+		label.text = nature
+
+@warning_ignore("shadowed_variable")
+func _get_status_text(pokemon) -> String:
+	var status_list = []
+	# Stat debuffs: check both stat_debuffs in meta and as property
+	var debuffs = {}
+	if "stat_debuffs" in pokemon:
+		debuffs = pokemon.stat_debuffs if typeof(pokemon.stat_debuffs) == TYPE_DICTIONARY else {}
+	elif pokemon.has_method("get_meta") and pokemon.has_meta("stat_debuffs"):
+		debuffs = pokemon.get_meta("stat_debuffs")
+	if "defense" in debuffs and debuffs["defense"] > 0.0:
+		status_list.append("DEF↓")
+	if "attack" in debuffs and debuffs["attack"] > 0.0:
+		status_list.append("ATK↓")
+	# Status effects array (e.g. burn, flying, etc.)
+	if "StatusEffect" in pokemon and typeof(pokemon.StatusEffect) == TYPE_ARRAY:
+		for effect in pokemon.StatusEffect:
+			if effect != "none":
+				status_list.append(str(effect).capitalize())
+	# If nothing, show "OK" or blank
+	if status_list.size() == 0:
+		return "OK"
+	return ", ".join(status_list)

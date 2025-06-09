@@ -141,6 +141,7 @@ func get_party_names_and_positions() -> Array:
 	var result = []
 	for i in range(StateManager.player_party.size()):
 		var pokemon = StateManager.player_party[i]
+		@warning_ignore("shadowed_variable_base_class")
 		var name = pokemon.get("name", "Unknown")
 		result.append({"name": name, "position": i})
 	return result
