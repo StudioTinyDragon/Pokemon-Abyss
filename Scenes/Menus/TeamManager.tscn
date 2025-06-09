@@ -11,7 +11,6 @@ offset_right = 1922.0
 offset_bottom = 1077.0
 
 [node name="Pokemon1" type="Button" parent="TMPanel"]
-top_level = true
 layout_mode = 0
 offset_left = 100.0
 offset_top = 100.0
@@ -95,12 +94,16 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PMPanel1" type="Panel" parent="TMPanel/Pokemon1"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+top_level = true
 custom_minimum_size = Vector2(200, 250)
 layout_mode = 1
 anchors_preset = -1
-offset_left = 800.0
-offset_right = 1000.0
-offset_bottom = 250.0
+offset_left = 900.0
+offset_top = 100.0
+offset_right = 1100.0
+offset_bottom = 350.0
 
 [node name="PM1Info" type="Button" parent="TMPanel/Pokemon1/PMPanel1"]
 layout_mode = 0
@@ -136,7 +139,15 @@ offset_right = 200.0
 offset_bottom = 250.0
 text = "Release"
 
+[node name="Backround1" type="ColorRect" parent="TMPanel/Pokemon1/PMPanel1"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
+
 [node name="Pokemon2" type="Button" parent="TMPanel"]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -223,8 +234,60 @@ text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Pokemon3" type="Button" parent="TMPanel"]
+[node name="PMPanel2" type="Panel" parent="TMPanel/Pokemon2"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
 top_level = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 822.0
+offset_top = 100.0
+offset_right = 1022.0
+offset_bottom = 350.0
+
+[node name="PM2Info" type="Button" parent="TMPanel/Pokemon2/PMPanel2"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM2Swap" type="Button" parent="TMPanel/Pokemon2/PMPanel2"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM2Evolve" type="Button" parent="TMPanel/Pokemon2/PMPanel2"]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM2Item" type="Button" parent="TMPanel/Pokemon2/PMPanel2"]
+layout_mode = 0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM2Release" type="Button" parent="TMPanel/Pokemon2/PMPanel2"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
+[node name="Backround2" type="ColorRect" parent="TMPanel/Pokemon2/PMPanel2"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
+
+[node name="Pokemon3" type="Button" parent="TMPanel"]
 layout_mode = 0
 offset_left = 100.0
 offset_top = 300.0
@@ -307,8 +370,60 @@ text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Pokemon4" type="Button" parent="TMPanel"]
+[node name="PMPanel3" type="Panel" parent="TMPanel/Pokemon3"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
 top_level = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 900.0
+offset_top = 300.0
+offset_right = 1100.0
+offset_bottom = 550.0
+
+[node name="PM3Info" type="Button" parent="TMPanel/Pokemon3/PMPanel3"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM3Swap" type="Button" parent="TMPanel/Pokemon3/PMPanel3"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM3Evolve" type="Button" parent="TMPanel/Pokemon3/PMPanel3"]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM3Item" type="Button" parent="TMPanel/Pokemon3/PMPanel3"]
+layout_mode = 0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM3Release" type="Button" parent="TMPanel/Pokemon3/PMPanel3"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
+[node name="Backround3" type="ColorRect" parent="TMPanel/Pokemon3/PMPanel3"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
+
+[node name="Pokemon4" type="Button" parent="TMPanel"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -395,8 +510,60 @@ text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Pokemon5" type="Button" parent="TMPanel"]
+[node name="PMPanel4" type="Panel" parent="TMPanel/Pokemon4"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
 top_level = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 822.0
+offset_top = 300.0
+offset_right = 1022.0
+offset_bottom = 550.0
+
+[node name="PM4Info" type="Button" parent="TMPanel/Pokemon4/PMPanel4"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM4Swap" type="Button" parent="TMPanel/Pokemon4/PMPanel4"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM4Evolve" type="Button" parent="TMPanel/Pokemon4/PMPanel4"]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM4Item" type="Button" parent="TMPanel/Pokemon4/PMPanel4"]
+layout_mode = 0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM4Release" type="Button" parent="TMPanel/Pokemon4/PMPanel4"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
+[node name="Backround4" type="ColorRect" parent="TMPanel/Pokemon4/PMPanel4"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
+
+[node name="Pokemon5" type="Button" parent="TMPanel"]
 layout_mode = 0
 offset_left = 100.0
 offset_top = 500.0
@@ -479,8 +646,60 @@ text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Pokemon6" type="Button" parent="TMPanel"]
+[node name="PMPanel5" type="Panel" parent="TMPanel/Pokemon5"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
 top_level = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 900.0
+offset_top = 500.0
+offset_right = 1100.0
+offset_bottom = 750.0
+
+[node name="PM5Info" type="Button" parent="TMPanel/Pokemon5/PMPanel5"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM5Swap" type="Button" parent="TMPanel/Pokemon5/PMPanel5"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM5Evolve" type="Button" parent="TMPanel/Pokemon5/PMPanel5"]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM5Item" type="Button" parent="TMPanel/Pokemon5/PMPanel5"]
+layout_mode = 0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM5Release" type="Button" parent="TMPanel/Pokemon5/PMPanel5"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
+[node name="Backround5" type="ColorRect" parent="TMPanel/Pokemon5/PMPanel5"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
+
+[node name="Pokemon6" type="Button" parent="TMPanel"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -566,6 +785,59 @@ theme_override_font_sizes/font_size = 30
 text = "Status"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PMPanel6" type="Panel" parent="TMPanel/Pokemon6"]
+visible = false
+self_modulate = Color(0, 0, 0, 1)
+top_level = true
+custom_minimum_size = Vector2(200, 250)
+layout_mode = 1
+anchors_preset = -1
+offset_left = 822.0
+offset_top = 500.0
+offset_right = 1022.0
+offset_bottom = 750.0
+
+[node name="PM6Info" type="Button" parent="TMPanel/Pokemon6/PMPanel6"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+text = "Info"
+
+[node name="PM6Swap" type="Button" parent="TMPanel/Pokemon6/PMPanel6"]
+layout_mode = 0
+offset_top = 50.0
+offset_right = 200.0
+offset_bottom = 100.0
+text = "Swap"
+
+[node name="PM6Evolve" type="Button" parent="TMPanel/Pokemon6/PMPanel6"]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 200.0
+offset_bottom = 150.0
+text = "Evolve"
+
+[node name="PM6Item" type="Button" parent="TMPanel/Pokemon6/PMPanel6"]
+layout_mode = 0
+offset_top = 150.0
+offset_right = 200.0
+offset_bottom = 200.0
+text = "Item"
+
+[node name="PM6Release" type="Button" parent="TMPanel/Pokemon6/PMPanel6"]
+layout_mode = 0
+offset_top = 200.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = "Release"
+
+[node name="Backround6" type="ColorRect" parent="TMPanel/Pokemon6/PMPanel6"]
+self_modulate = Color(0, 0, 0, 1)
+show_behind_parent = true
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 250.0
 
 [node name="BackButton" type="Button" parent="TMPanel"]
 layout_mode = 0
