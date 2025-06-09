@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cig6eqk1anw1k"]
 
 [ext_resource type="Script" uid="uid://iwob80ce0mrq" path="res://Scenes/Battle/test_battle.gd" id="1_8knuu"]
-[ext_resource type="FontFile" uid="uid://dpn410hv3na3p" path="res://assets/Fonts/PixelOperator8.ttf" id="2_807d6"]
+[ext_resource type="FontFile" uid="uid://ccfwuyjker3is" path="res://assets/Fonts/PixelOperator8.ttf" id="2_807d6"]
 [ext_resource type="PackedScene" uid="uid://ci0op2hlj3y3u" path="res://Scenes/UI/BattleUI.tscn" id="3_eu7aj"]
 
 [node name="TestBattle" type="Node2D"]

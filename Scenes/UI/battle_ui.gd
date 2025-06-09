@@ -324,7 +324,7 @@ func _handle_move_button(move_index: int) -> void:
 					var idx = randi() % available_moves.size()
 					enemy_move_name = available_moves[idx]["name"]
 					print("[DEBUG] Chosen enemy_move_name:", enemy_move_name)
-					var enemy_move_scene_path = "res://Scripts/Moves/%s.tscn" % enemy_move_name
+					var enemy_move_scene_path = "res://Scripts/Moves/%s.tscn" % enemy_move_name.replace(" ", "")
 					print("[DEBUG] enemy_move_scene_path:", enemy_move_scene_path)
 					if ResourceLoader.exists(enemy_move_scene_path):
 						var move_scene = load(enemy_move_scene_path)
@@ -573,6 +573,11 @@ func _handle_move_button(move_index: int) -> void:
 	own_statblock.visible = true
 	refresh_move_buttons()
 
+func _process(_delta: float) -> void:
+	if current_pokemon_status and player_pokemon:
+		current_pokemon_status.text = _get_status_text(player_pokemon)
+	if current_enemy_status and enemy_pokemon:
+		current_enemy_status.text = _get_status_text(enemy_pokemon)
 
 func execute_move(attacker, defender, move_instance, move_name, damage_calculator, _is_first_attacker := false, _is_second_attacker := false):
 	move_options.visible = false
@@ -591,11 +596,6 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 	print("[DEBUG] execute_move: attacker=%s, defender=%s, move_name=%s, moveCat=%s" % [attacker.Name if attacker else "None", defender.Name if defender else "None", move_name, move_instance.moveCat if move_instance else "None"])
 	# Handle Status moves (like Tail Whip) separately
 	if move_instance.moveCat == "Status":
-			# Set status effect labels for player and enemy
-		if current_pokemon_status and player_pokemon:
-			current_pokemon_status.text = _get_status_text(player_pokemon)
-		if current_enemy_status and enemy_pokemon:
-			current_enemy_status.text = _get_status_text(enemy_pokemon)
 		if move_instance.has_method("DebuffEnenmyDefensex1"):
 			if attacker.is_in_group("player_pokemon") and defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("enemy_pokemon"):
 				move_instance.DebuffEnenmyDefensex1(defender)

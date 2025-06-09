@@ -1,6 +1,6 @@
 extends Node
 
-func debugKangaskhanEncounter(level := 10, levelRange := 2):
+func debugKangaskhanEncounter(level := 1, levelRange := 0):
 	# Instance Kangaskhan scene and add to the scene tree as enemy
 	var kangaskhan_scene = load("uid://w66ycrams3y7")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()

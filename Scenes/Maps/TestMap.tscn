@@ -1,11 +1,11 @@
 [gd_scene load_steps=14 format=4 uid="uid://dgfbnyymaia6u"]
 
 [ext_resource type="Script" uid="uid://cv8773qs5f30f" path="res://Scenes/Maps/test_map.gd" id="1_ekms1"]
-[ext_resource type="Texture2D" uid="uid://dim2s42paskx5" path="res://assets/tilemaps/terrain_tiles_v2.png" id="1_n4a11"]
+[ext_resource type="Texture2D" uid="uid://w0b4rjww2q88" path="res://assets/tilemaps/terrain_tiles_v2.png" id="1_n4a11"]
 [ext_resource type="PackedScene" uid="uid://cycfleiq7xks" path="res://Scenes/Player/Player.tscn" id="2_ekms1"]
 [ext_resource type="Script" uid="uid://fhyddhrgwtvn" path="res://Scenes/Maps/ground.gd" id="3_h1i30"]
 [ext_resource type="PackedScene" uid="uid://cig6eqk1anw1k" path="res://Scenes/Battle/TestBattle.tscn" id="4_tf83h"]
-[ext_resource type="Texture2D" uid="uid://d4cyllcvrw5ds" path="res://assets/tilemaps/rpg_maker_xp_friendly_tileset_version_3_outdoor_by_dirtywiggles_da7cb3h-fullview.png" id="4_xj7ls"]
+[ext_resource type="Texture2D" uid="uid://c3auooesyhpi" path="res://assets/tilemaps/rpg_maker_xp_friendly_tileset_version_3_outdoor_by_dirtywiggles_da7cb3h-fullview.png" id="4_xj7ls"]
 [ext_resource type="PackedScene" uid="uid://dhyrt4prb5b18" path="res://Scenes/UI/DebugUI.tscn" id="6_kukki"]
 [ext_resource type="PackedScene" uid="uid://c0fxtbxwq1mij" path="res://Scenes/Menus/InGameMenu.tscn" id="7_kxphi"]
 [ext_resource type="PackedScene" uid="uid://cfmh7yeows1cy" path="res://Scenes/Menus/TeamManager.tscn" id="8_j28jb"]
