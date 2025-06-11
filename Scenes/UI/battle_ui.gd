@@ -1,21 +1,10 @@
 extends Control
 
-func _get_move_name(move_entry):
-	if typeof(move_entry) == TYPE_STRING:
-		return move_entry
-	elif typeof(move_entry) == TYPE_OBJECT and move_entry is PackedScene:
-		var path = move_entry.resource_path
-		if path != "":
-			var move_name = path.get_file().get_basename()
-			return move_name
-	elif typeof(move_entry) == TYPE_STRING_NAME:
-		return str(move_entry)
-	return ""
 
 @onready var battle_options: Panel = $BattleOptions
 @onready var battle_button: Button = $BattleOptions/battleButton
-@onready var button_2: Button = $BattleOptions/Button2
-@onready var button_3: Button = $BattleOptions/Button3
+@onready var pokemon_button: Button = $BattleOptions/pokemonButton
+
 @onready var flee_button: Button = $BattleOptions/fleeButton
 @onready var move_options: Panel = $MoveOptions
 @onready var move_1_button: Button = $MoveOptions/move1Button
@@ -47,11 +36,20 @@ func _get_move_name(move_entry):
 @onready var ability_label_enemy: Label = $EnemyStatblock/ablility/abilityLabelEnemy
 @onready var nature_label_player: Label = $OwnStatblock/nature/natureLabelPlayer
 @onready var ability_label_player: Label = $OwnStatblock/ablility/abilityLabelPlayer
+@onready var typ_label_enemy: Label = $EnemyStatblock/typ/typLabelEnemy
+@onready var typ_label_player: Label = $OwnStatblock/typ/typLabelPlayer
 
 
+
+
+const TYP_FIRE = preload("res://Assets/Icons/TypFire.png")
+const TYP_NORMAL = preload("res://Assets/Icons/TypNormal.png")
 
 const FEMALE_SIGN = preload("res://Assets/Icons/FemaleSign.png")
 const MALE_SIGN = preload("res://Assets/Icons/MaleSign.png")
+
+var SuperEffective = false
+var notEffective = false
 
 var _last_enemy_move_name: String = ""
 var _last_player_move_name: String = ""
@@ -85,6 +83,10 @@ func _ready() -> void:
 	TextManager.connect("playerShoutoutDone", Callable(self, "_playerShoutoutDone"))
 	TextManager.connect("enemyShoutoutQueue", Callable(self, "_enemyShoutoutQueue"))
 	TextManager.connect("enemyShoutoutDone", Callable(self, "_enemyShoutoutDone"))
+	add_to_group("BattleUI")
+	if StateManager.has_signal("switchedToPM2"):
+		StateManager.connect("switchedToPM2", Callable(self, "_on_switchedToPM2"))
+
 
 #region timer
 
@@ -105,7 +107,7 @@ func readyToFight():
 	getBattlePokemon()
 	showPokemonNames()
 	setPokemonPosition()
-
+	add_to_group("BattleUI")
 	if test_battle and test_battle.has_method("_get_battle_pokemon"):
 		pokemon = test_battle._get_battle_pokemon()
 		player_pokemon = pokemon.get("player", null)
@@ -121,17 +123,28 @@ func readyToFight():
 	# Set gender icons for player and enemy
 	_set_gender_sprite(player_pokemon, player_gender_sprite)
 	_set_gender_sprite(enemy_pokemon, enemy_gender_sprite)
-	
 	_set_held_item(player_pokemon, held_item_label_player)
 	_set_held_item(enemy_pokemon, held_item_label_enemy)
-	
-	
 	_set_ability_label(player_pokemon, ability_label_player)
 	_set_ability_label(enemy_pokemon, ability_label_enemy)
-	
 	_set_nature_label(player_pokemon, nature_label_player)
 	_set_nature_label(enemy_pokemon, nature_label_enemy)
-	
+	_get_typ_label(player_pokemon, typ_label_player)
+	_get_typ_label(enemy_pokemon, typ_label_enemy)
+
+	# Set move button colors at battle start
+	if StateManager.player_party.size() > 0:
+		var moves = StateManager.player_party[0]["moves"]
+		_set_move_button_color(move_1_button, _get_move_type(moves[0]) if moves.size() > 0 else "")
+		_set_move_button_color(move_2_button, _get_move_type(moves[1]) if moves.size() > 1 else "")
+		_set_move_button_color(move_3_button, _get_move_type(moves[2]) if moves.size() > 2 else "")
+		_set_move_button_color(move_4_button, _get_move_type(moves[3]) if moves.size() > 3 else "")
+	else:
+		_set_move_button_color(move_1_button, "")
+		_set_move_button_color(move_2_button, "")
+		_set_move_button_color(move_3_button, "")
+		_set_move_button_color(move_4_button, "")
+
 	await get_tree().process_frame  # Wait one frame for everything to initialize
 	print("[DEBUG] At battle start: enemy_pokemon.currentMoves =", enemy_pokemon.currentMoves)
 	print("[DEBUG] At battle start: enemy_pokemon Move1PP-4PP =", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
@@ -162,14 +175,14 @@ func showPokemonNames():
 
 func setPokemonPosition():
 	var player_battle_pos = Vector2(StateManager.player_position.x - 125, StateManager.player_position.y - 15)
-	var enemy_battle_pos = Vector2(StateManager.player_position.x + 120, StateManager.player_position.y - 35)
+	var enemy_battle_pos = Vector2(StateManager.player_position.x + 140, StateManager.player_position.y - 35)
 
 	if player_pokemon:
 		player_pokemon.global_position = player_battle_pos
 		if player_pokemon.has_node("PokemonBackSprite"):
 			var back_sprite = player_pokemon.get_node("PokemonBackSprite")
 			back_sprite.visible = true
-			back_sprite.scale = Vector2(2.0, 2.0)
+			back_sprite.scale = Vector2(2.4, 2.4)
 		if player_pokemon.has_node("PokemonFrontSprite"):
 			player_pokemon.get_node("PokemonFrontSprite").visible = false
 
@@ -178,7 +191,7 @@ func setPokemonPosition():
 		if enemy_pokemon.has_node("PokemonFrontSprite"):
 			var front_sprite = enemy_pokemon.get_node("PokemonFrontSprite")
 			front_sprite.visible = true
-			front_sprite.scale = Vector2(0.8, 0.8)
+			front_sprite.scale = Vector2(1.2, 1.2)
 		if enemy_pokemon.has_node("PokemonBackSprite"):
 			enemy_pokemon.get_node("PokemonBackSprite").visible = false
 
@@ -200,19 +213,15 @@ func getBattlePokemon():
 		enemyMaxHP = enemy_pokemon.currentMaxHP
 	if player_pokemon and "currentMaxHP" in player_pokemon:
 		playerMaxHP = player_pokemon.currentMaxHP
-
 	# Set status effect labels for player and enemy
 	if current_pokemon_status and player_pokemon:
 		current_pokemon_status.text = _get_status_text(player_pokemon)
 	if current_enemy_status and enemy_pokemon:
 		current_enemy_status.text = _get_status_text(enemy_pokemon)
 
-
-
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
-
 	# Set move button text to moves from StateManager.player_party[0]
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
@@ -232,11 +241,21 @@ func _on_battle_button_pressed() -> void:
 			move_4_button.text = moves[3]["name"] + " (" + str(moves[3]["pp"]) + "/" + str(moves[3]["max_pp"]) + ")"
 		else:
 			move_4_button.text = "-"
+
+		# Set move button colors after setting text
+		_set_move_button_color(move_1_button, _get_move_type(moves[0]) if moves.size() > 0 else "")
+		_set_move_button_color(move_2_button, _get_move_type(moves[1]) if moves.size() > 1 else "")
+		_set_move_button_color(move_3_button, _get_move_type(moves[2]) if moves.size() > 2 else "")
+		_set_move_button_color(move_4_button, _get_move_type(moves[3]) if moves.size() > 3 else "")
 	else:
 		move_1_button.text = "-"
 		move_2_button.text = "-"
 		move_3_button.text = "-"
 		move_4_button.text = "-"
+		_set_move_button_color(move_1_button, "")
+		_set_move_button_color(move_2_button, "")
+		_set_move_button_color(move_3_button, "")
+		_set_move_button_color(move_4_button, "")
 
 	# Output enemy HP in the console (optional debug)
 	if enemy_pokemon and "currentHP" in enemy_pokemon:
@@ -582,6 +601,12 @@ func _process(_delta: float) -> void:
 func execute_move(attacker, defender, move_instance, move_name, damage_calculator, _is_first_attacker := false, _is_second_attacker := false):
 	move_options.visible = false
 	var _effectiveness = 1.0
+	var _move_damage = 0
+	var crit_this_turn = false
+	# --- Always initialize move from inspector before any logic ---
+	if move_instance and move_instance.has_method("initialize_from_inspector"):
+		move_instance.initialize_from_inspector()
+	# Now calculate effectiveness with correct moveType
 	if move_instance and defender and "TYP" in defender:
 		var move_types = []
 		if typeof(move_instance.moveType) == TYPE_ARRAY:
@@ -593,9 +618,51 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 			var dc = get_node("/root/damage_calculator")
 			_effectiveness = dc.get_type_multiplier(move_types, defender_types)
 	var _status_msg = ""
-	print("[DEBUG] execute_move: attacker=%s, defender=%s, move_name=%s, moveCat=%s" % [attacker.Name if attacker else "None", defender.Name if defender else "None", move_name, move_instance.moveCat if move_instance else "None"])
+	var attacker_types = attacker.TYP if attacker and "TYP" in attacker else []
+	var defender_types_dbg = defender.TYP if defender and "TYP" in defender else []
+	
+
+	# --- Calculate damage and store crit/effectiveness for UI shoutout ---
+	var move_cat_str = str(move_instance.moveCat)
+	if move_cat_str == "Physical":
+		_move_damage = damage_calculator.calculate_move_damage(attacker, defender, move_instance)
+		if "_last_crit" in move_instance and move_instance._last_crit:
+			crit_this_turn = true
+	elif move_cat_str == "Special":
+		_move_damage = damage_calculator.calculate_special_move_damage(attacker, defender, move_instance)
+		if "_last_crit" in move_instance and move_instance._last_crit:
+			crit_this_turn = true
+	else:
+		print("Move category not supported for damage calculation.")
+
+	# Always recalculate and set effectiveness after final damage calculation
+	var final_effectiveness = 1.0
+	if move_cat_str == "Physical" or move_cat_str == "Special":
+		var move_types = []
+		if typeof(move_instance.moveType) == TYPE_ARRAY:
+			move_types = move_instance.moveType
+		else:
+			move_types = [move_instance.moveType]
+		var defender_types = defender.TYP if defender and "TYP" in defender else []
+		if has_node("/root/damage_calculator"):
+			var dc = get_node("/root/damage_calculator")
+			final_effectiveness = dc.get_type_multiplier(move_types, defender_types)
+	else:
+		final_effectiveness = 1.0
+	print("[DEBUG] execute_move: attacker=%s, attacker_TYP=%s, defender=%s, defender_TYP=%s, move_name=%s, moveCat=%s, moveType=%s, effectiveness=%.2f" % [attacker.Name if attacker else "None", str(attacker_types), defender.Name if defender else "None", str(defender_types_dbg), move_name, move_instance.moveCat if move_instance else "None", str(move_instance.moveType), _effectiveness])
+	if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
+		attacker.last_move_crit = crit_this_turn
+		attacker.last_move_effectiveness = final_effectiveness
+	if attacker and attacker.is_in_group and attacker.is_in_group("enemy_pokemon"):
+		attacker.last_move_crit = crit_this_turn
+		attacker.last_move_effectiveness = final_effectiveness
+
+	# Use _move_damage for all HP and recoil calculations
+	var damage = _move_damage
+
+	# (rest of function continues as before)
 	# Handle Status moves (like Tail Whip) separately
-	if move_instance.moveCat == "Status":
+	if str(move_instance.moveCat) == "Status":
 		if move_instance.has_method("DebuffEnenmyDefensex1"):
 			if attacker.is_in_group("player_pokemon") and defender != attacker and defender.has_method("set_stat") and defender.has_method("get_stat") and defender.is_in_group("enemy_pokemon"):
 				move_instance.DebuffEnenmyDefensex1(defender)
@@ -620,6 +687,11 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		elif attacker.is_in_group("enemy_pokemon"):
 			_last_enemy_move_name = move_name + " (missed)"
 		print("[Battle] %s's %s missed! (roll=%d, hit_chance=%.2f)" % [attacker.Name, move_name, roll, hit_chance])
+		# Set effectiveness to 1.0 on miss for UI
+		if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
+			attacker.last_move_effectiveness = 1.0
+		if attacker and attacker.is_in_group and attacker.is_in_group("enemy_pokemon"):
+			attacker.last_move_effectiveness = 1.0
 		return
 
 	# --- Flinch check (only for damaging moves with flinch chance) ---
@@ -627,11 +699,16 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 		if move_instance.try_flinch_opponent():
 			defender.flinched = true
 			print("[Battle] %s flinched!" % defender.Name)
+			# Set effectiveness to 1.0 on flinch for UI (no damage dealt)
+			if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
+				attacker.last_move_effectiveness = 1.0
+			if attacker and attacker.is_in_group and attacker.is_in_group("enemy_pokemon"):
+				attacker.last_move_effectiveness = 1.0
 
-	var damage = 0
-	if move_instance.moveCat == "Physical":
+
+	if str(move_instance.moveCat) == "Physical":
 		damage = damage_calculator.calculate_move_damage(attacker, defender, move_instance)
-	elif move_instance.moveCat == "Special":
+	elif str(move_instance.moveCat) == "Special":
 		damage = damage_calculator.calculate_special_move_damage(attacker, defender, move_instance)
 	else:
 		print("Move category not supported for damage calculation.")
@@ -665,6 +742,7 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 func refresh_move_buttons() -> void:
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
+		print("[DEBUG] Full move dicts:", moves)
 		if moves.size() > 0:
 			move_1_button.text = moves[0]["name"] + " (" + str(moves[0]["pp"]) + "/" + str(moves[0]["max_pp"]) + ")"
 		else:
@@ -681,11 +759,21 @@ func refresh_move_buttons() -> void:
 			move_4_button.text = moves[3]["name"] + " (" + str(moves[3]["pp"]) + "/" + str(moves[3]["max_pp"]) + ")"
 		else:
 			move_4_button.text = "-"
+
+		# Set move button colors after setting text
+		_set_move_button_color(move_1_button, _get_move_type(moves[0]) if moves.size() > 0 else "")
+		_set_move_button_color(move_2_button, _get_move_type(moves[1]) if moves.size() > 1 else "")
+		_set_move_button_color(move_3_button, _get_move_type(moves[2]) if moves.size() > 2 else "")
+		_set_move_button_color(move_4_button, _get_move_type(moves[3]) if moves.size() > 3 else "")
 	else:
 		move_1_button.text = "-"
 		move_2_button.text = "-"
 		move_3_button.text = "-"
 		move_4_button.text = "-"
+		_set_move_button_color(move_1_button, "")
+		_set_move_button_color(move_2_button, "")
+		_set_move_button_color(move_3_button, "")
+		_set_move_button_color(move_4_button, "")
 
 
 func _on_flee_button_pressed():
@@ -699,6 +787,7 @@ func _on_flee_button_pressed():
 	StateManager.emit_signal("player_fled_battle")
 
 
+
 func _playerShoutoutQueue():
 	if battle_dialogue_box:
 		battle_dialogue_box.visible = true
@@ -706,7 +795,20 @@ func _playerShoutoutQueue():
 		var mon_name = player_pokemon.Name if player_pokemon and "Name" in player_pokemon else "Player Pokémon"
 		var move_name = _last_player_move_name if _last_player_move_name != null else "Move"
 		battle_text.text = "Your %s used %s!" % [mon_name, move_name]
-	await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(1.0).timeout
+		# --- Effectiveness Shoutout Only ---
+		if StateManager.isEffective:
+			battle_text.text = "It's super effective!"
+			StateManager.isEffective = false
+			await get_tree().create_timer(1.0).timeout
+		elif StateManager.notEffective:
+			battle_text.text = "It's not very effective..."
+			StateManager.notEffective = false
+			await get_tree().create_timer(1.0).timeout
+		if StateManager.defenseCap:
+			battle_text.text = "Defense cannot be reduced further!"
+			StateManager.defenseCap = false
+			await get_tree().create_timer(2.0).timeout
 	TextManager.emit_signal("playerShoutoutDone")
 
 func _playerShoutoutDone():
@@ -719,11 +821,36 @@ func _enemyShoutoutQueue():
 		var mon_name = enemy_pokemon.Name if enemy_pokemon and "Name" in enemy_pokemon else "Enemy Pokémon"
 		var move_name = _last_enemy_move_name if _last_enemy_move_name != null else "Move"
 		battle_text.text = "Enemy %s used %s!" % [mon_name, move_name]
-	await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(1.0).timeout
+		# --- Effectiveness Shoutout Only ---
+		if StateManager.isEffective:
+			battle_text.text = "It's super effective!"
+			StateManager.isEffective = false
+			await get_tree().create_timer(1.0).timeout
+		elif StateManager.notEffective:
+			battle_text.text = "It's not very effective..."
+			StateManager.notEffective = false
+			await get_tree().create_timer(1.0).timeout
+		if StateManager.defenseCap:
+			battle_text.text = "Defense cannot be reduced further!"
+			StateManager.defenseCap = false
+			await get_tree().create_timer(1.0).timeout
 	TextManager.emit_signal("enemyShoutoutDone")
 
 func _enemyShoutoutDone():
 	pass
+
+func _get_move_name(move_entry):
+	if typeof(move_entry) == TYPE_STRING:
+		return move_entry
+	elif typeof(move_entry) == TYPE_OBJECT and move_entry is PackedScene:
+		var path = move_entry.resource_path
+		if path != "":
+			var move_name = path.get_file().get_basename()
+			return move_name
+	elif typeof(move_entry) == TYPE_STRING_NAME:
+		return str(move_entry)
+	return ""
 
 # Set gender icons for player and enemy
 @warning_ignore("shadowed_variable")
@@ -790,7 +917,140 @@ func _get_status_text(pokemon) -> String:
 		for effect in pokemon.StatusEffect:
 			if effect != "none":
 				status_list.append(str(effect).capitalize())
-	# If nothing, show "OK" or blank
+
 	if status_list.size() == 0:
-		return "OK"
+		return "-"
 	return ", ".join(status_list)
+
+@warning_ignore("shadowed_variable")
+func _get_typ_label(pokemon, label):
+	if not pokemon or not label:
+		return
+	var typ
+	if "TYP" in pokemon:
+		typ = str(pokemon.TYP)
+	if typ != "":
+		label.text = typ
+
+
+# Helper to get type string from move dict or by loading the move resource
+func _get_move_type(move):
+	# Always ignore move["moveType"] and load from resource/scene to ensure inspector value is used
+	if "name" in move:
+		var move_name = move["name"].replace(" ", "")
+		# Try .tscn scene first (inspector values)
+		var move_path = "res://Scripts/Moves/%s.tscn" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_scene = load(move_path)
+			var move_instance = move_scene.instantiate()
+			if move_instance.has_method("initialize_from_inspector"):
+				move_instance.initialize_from_inspector()
+			if "moveType" in move_instance:
+				var type_str = str(move_instance.moveType).capitalize()
+				print("[DEBUG] Loaded moveType from scene for", move_name, ":", type_str)
+				return type_str
+		# Fallback: Try .gd script (no inspector values)
+		move_path = "res://Scripts/Moves/%s.gd" % move_name
+		if ResourceLoader.exists(move_path):
+			var move_resource = load(move_path)
+			var move_instance = move_resource.new()
+			if move_instance.has_method("initialize_from_inspector"):
+				move_instance.initialize_from_inspector()
+			if "moveType" in move_instance:
+				var type_str = str(move_instance.moveType).capitalize()
+				print("[DEBUG] Loaded moveType from resource for", move_name, ":", type_str)
+				return type_str
+	return ""
+
+# Helper to set move button color based on move type
+func _set_move_button_color(button: Button, move_type: String) -> void:
+	var stylebox = StyleBoxFlat.new()
+	print("[DEBUG] Setting color for button '", button.name, "' with move_type '", move_type, "'")
+	match move_type:
+		"Normal":
+			print("[DEBUG] -> Normal type: grey")
+			stylebox.bg_color = Color(0.7, 0.7, 0.7, 0.8) # grey, opaque
+		"Fire":
+			print("[DEBUG] -> Fire type: red")
+			stylebox.bg_color = Color(1, 0.2, 0.2, 0.8) # red, opaque
+		_:
+			print("[DEBUG] -> Default/Other type: white semi-transparent")
+			stylebox.bg_color = Color(0.8, 0.8, 0.8, 0.1) # white, semi-transparent
+	button.add_theme_stylebox_override("normal", stylebox)
+	button.add_theme_stylebox_override("hover", stylebox)
+	button.add_theme_stylebox_override("pressed", stylebox)
+	button.add_theme_stylebox_override("focus", stylebox)
+
+signal pokemonTeamPressed
+func _on_pokemon_button_pressed() -> void:
+	emit_signal("pokemonTeamPressed")
+
+
+
+# Updates the UI to reflect the new active Pokémon (player's second party member)
+func switchToNewPokemon():
+	# Get the new active Pokémon node (should be updated in test_battle.gd already)
+	var player_pokemon_nodes = get_tree().get_nodes_in_group("player_pokemon")
+	var new_poke_node = null
+	if StateManager.player_party.size() > 1:
+		var new_poke_dict = StateManager.player_party[1]
+		# Try to find the node by uniquePokemonID if possible
+		if "unique_id" in new_poke_dict:
+			for poke in player_pokemon_nodes:
+				if ("uniquePokemonID" in poke and poke["uniquePokemonID"] == new_poke_dict["unique_id"]):
+					new_poke_node = poke
+					break
+		if new_poke_node == null and player_pokemon_nodes.size() > 1:
+			new_poke_node = player_pokemon_nodes[1]
+	# Fallback: just use the first node
+	if new_poke_node == null and player_pokemon_nodes.size() > 0:
+		new_poke_node = player_pokemon_nodes[0]
+
+	# Update UI elements to reflect the new Pokémon
+	if new_poke_node:
+		# Update sprites, stats, HP, moves, etc.
+		player_pokemon = new_poke_node
+		# Example: update HP label (replace with your actual UI node names)
+		if has_node("current_pokemon_hp") and "currentHP" in player_pokemon and "currentMaxHP" in player_pokemon:
+			$current_pokemon_hp.text = str(player_pokemon.currentHP) + " / " + str(player_pokemon.currentMaxHP)
+		# Update move buttons
+		refresh_move_buttons()
+		# Optionally update gender, ability, held item, etc.
+		# (Call your helper functions as needed)
+		print("[BattleUI] Switched UI to new Pokémon:", player_pokemon.Name)
+	else:
+		print("[BattleUI] Could not find new Pokémon node to update UI.")
+
+
+# Called when the battle system emits 'switchedToPM2' (after switching logic in test_battle.gd)
+func _on_switchedToPM2():
+	switchToNewPokemon()
+
+# Called when the battle system emits 'switchedToPM1' (after switching logic in test_battle.gd)
+func _on_switchedToPM1():
+	switchToFirstPokemon()
+
+# Updates the UI to reflect the new active Pokémon (player's first party member)
+func switchToFirstPokemon():
+	var player_pokemon_nodes = get_tree().get_nodes_in_group("player_pokemon")
+	var new_poke_node = null
+	if StateManager.player_party.size() > 0:
+		var new_poke_dict = StateManager.player_party[0]
+		if "unique_id" in new_poke_dict:
+			for poke in player_pokemon_nodes:
+				if ("uniquePokemonID" in poke and poke["uniquePokemonID"] == new_poke_dict["unique_id"]):
+					new_poke_node = poke
+					break
+		if new_poke_node == null and player_pokemon_nodes.size() > 0:
+			new_poke_node = player_pokemon_nodes[0]
+	if new_poke_node == null and player_pokemon_nodes.size() > 0:
+		new_poke_node = player_pokemon_nodes[0]
+
+	if new_poke_node:
+		player_pokemon = new_poke_node
+		if has_node("current_pokemon_hp") and "currentHP" in player_pokemon and "currentMaxHP" in player_pokemon:
+			$current_pokemon_hp.text = str(player_pokemon.currentHP) + " / " + str(player_pokemon.currentMaxHP)
+		refresh_move_buttons()
+		print("[BattleUI] Switched UI to first Pokémon:", player_pokemon.Name)
+	else:
+		print("[BattleUI] Could not find first Pokémon node to update UI.")

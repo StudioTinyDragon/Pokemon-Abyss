@@ -60,6 +60,7 @@ var StatusEffect: Array[String]   = []
 #endregion
 
 # Statblock
+
 #region MinStats
 @export_subgroup("Lvl1 Stats")
 @export var Lvl1HP: int
@@ -129,6 +130,8 @@ var isFainted
 var settingMove = false
 var isStruggling: bool = false
 var flinched = false
+var last_move_crit: bool = false
+var last_move_effectiveness: float = 1.0
 
 #endregion
 

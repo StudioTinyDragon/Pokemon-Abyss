@@ -1,7 +1,25 @@
 extends Node
 
+#region signals
+
+
+
+
+
 @warning_ignore("unused_signal")
 signal player_fled_battle
+@warning_ignore("unused_signal")
+signal switchPM1
+@warning_ignore("unused_signal")
+signal switchPM2
+@warning_ignore("unused_signal")
+signal switchedToPM2
+
+
+#endregion
+
+#region vars
+
 
 var CalculatingDamage = false
 var inBattle = false
@@ -15,6 +33,18 @@ var player_position: Vector2 = Vector2.ZERO
 
 var player_party: Array = []
 var enemy_party: Array = []
+
+
+var isEffective = false
+var notEffective = false
+var defenseCap = false
+
+
+
+#endregion
+
+#region functions
+
 
 # Helper: Add a Pokémon to the party (returns true if added, false if full)
 func add_pokemon_to_party(pokemon_dict: Dictionary) -> bool:
@@ -60,3 +90,6 @@ func clear_stat_debuffs(unique_id: int) -> void:
 # Call this from the player or map script to update the position
 func update_player_position(pos: Vector2) -> void:
 	player_position = pos
+
+
+#endregion

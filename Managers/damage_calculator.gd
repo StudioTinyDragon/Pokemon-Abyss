@@ -1,8 +1,11 @@
 extends Node
 
-# Type effectiveness chart and loader
+
 var type_chart = {}
 var type_chart_loaded = false
+
+var critDamage: float = 1.8
+
 
 # Loads the type effectiveness chart from EffectiveChart.txt into a nested dictionary
 func load_type_chart():
@@ -38,11 +41,17 @@ func get_type_multiplier(attacker_types: Array, defender_types: Array) -> float:
 	load_type_chart()
 	var multiplier = 1.0
 	for atk_type in attacker_types:
-		if not type_chart.has(atk_type):
+		var atk_type_norm = str(atk_type).strip_edges().capitalize()
+		if not type_chart.has(atk_type_norm):
 			continue
 		for def_type in defender_types:
-			var m = type_chart[atk_type].get(def_type, 1.0)
+			var def_type_norm = str(def_type).strip_edges().capitalize()
+			var m = type_chart[atk_type_norm].get(def_type_norm, 1.0)
 			multiplier *= m
+			if multiplier >= 1.01:
+				StateManager.isEffective = true
+			elif multiplier <= 0.99:
+				StateManager.notEffective = true
 	return multiplier
 
 func calculate_damage(level: int, move_power: int, attack: int, defense: int) -> int:
@@ -75,7 +84,21 @@ func calculate_move_damage(attacker, defender, move) -> int:
 			if t in attacker.TYP:
 				stab = 1.5
 				break
-	return int(base_damage * type_multiplier * stab)
+	var damage = base_damage * type_multiplier * stab
+	# Critical hit check
+	var is_crit = false
+	# Try to ensure critChance is set (call critManager if available)
+	if move.has_method("critManager"):
+		move.critManager()
+	if "critChance" in move:
+		is_crit = calculate_crit(move)
+	elif move.has("critChance"):
+		is_crit = calculate_crit(move)
+	move._last_crit = is_crit
+	if is_crit:
+		print("[CRIT] Critical hit! Damage multiplied by ", critDamage)
+		damage *= critDamage
+	return int(damage)
 
 func calculate_special_move_damage(attacker, defender, move) -> int:
 	var move_power = move.movePower
@@ -103,7 +126,20 @@ func calculate_special_move_damage(attacker, defender, move) -> int:
 			if t in attacker.TYP:
 				stab = 1.5
 				break
-	return int(base_damage * type_multiplier * stab)
+	var damage = base_damage * type_multiplier * stab
+	# Critical hit check for special moves
+	var is_crit = false
+	if move.has_method("critManager"):
+		move.critManager()
+	if "critChance" in move:
+		is_crit = calculate_crit(move)
+	elif move.has("critChance"):
+		is_crit = calculate_crit(move)
+	move._last_crit = is_crit
+	if is_crit:
+		print("[CRIT] Critical hit! Damage multiplied by ", critDamage)
+		damage *= critDamage
+	return int(damage)
 
 func calculate_accuracy(moveAccuracy, pokemonAccuracy, evasion):
 	var hitChance = (moveAccuracy * pokemonAccuracy / 100) - evasion
@@ -112,5 +148,9 @@ func calculate_accuracy(moveAccuracy, pokemonAccuracy, evasion):
 func calculate_flinch():
 	pass
 
-func calculate_crit():
-	pass
+func calculate_crit(move) -> bool:
+	# move.critChance should be set (int, percent chance)
+	if not move or not ("critChance" in move):
+		return false
+	var roll = randf() * 100.0
+	return roll < move.critChance
