@@ -257,10 +257,6 @@ func _on_battle_button_pressed() -> void:
 		_set_move_button_color(move_3_button, "")
 		_set_move_button_color(move_4_button, "")
 
-	# Output enemy HP in the console (optional debug)
-	if enemy_pokemon and "currentHP" in enemy_pokemon:
-		print("Enemy HP:", enemy_pokemon.currentHP)
-
 func _on_move_1_button_pressed() -> void:
 	_handle_move_button(0)
 
@@ -320,8 +316,6 @@ func _handle_move_button(move_index: int) -> void:
 					enemy_move_instance = move_resource.new()
 			else:
 				var available_moves = []
-				print("[DEBUG] enemy_pokemon.currentMoves:", enemy_pokemon.currentMoves)
-				print("[DEBUG] enemy_pokemon Move1PP-4PP:", enemy_pokemon.Move1PP, enemy_pokemon.Move2PP, enemy_pokemon.Move3PP, enemy_pokemon.Move4PP)
 				if enemy_pokemon.Move1PP > 0 and enemy_pokemon.currentMoves.size() > 0:
 					var move1_name = _get_move_name(enemy_pokemon.currentMoves[0])
 					print("[DEBUG] Move1 candidate:", move1_name)
@@ -342,13 +336,10 @@ func _handle_move_button(move_index: int) -> void:
 				if available_moves.size() > 0:
 					var idx = randi() % available_moves.size()
 					enemy_move_name = available_moves[idx]["name"]
-					print("[DEBUG] Chosen enemy_move_name:", enemy_move_name)
 					var enemy_move_scene_path = "res://Scripts/Moves/%s.tscn" % enemy_move_name.replace(" ", "")
-					print("[DEBUG] enemy_move_scene_path:", enemy_move_scene_path)
 					if ResourceLoader.exists(enemy_move_scene_path):
 						var move_scene = load(enemy_move_scene_path)
 						enemy_move_instance = move_scene.instantiate()
-						print("[DEBUG] Instantiated enemy_move_instance:", enemy_move_instance)
 						# Decrement PP for the used move
 						match available_moves[idx]["slot"]:
 							1:
@@ -375,11 +366,9 @@ func _handle_move_button(move_index: int) -> void:
 			player_prio = player_move_instance.PrioMove
 		if "PrioMove" in enemy_move_instance:
 			enemy_prio = enemy_move_instance.PrioMove
-		print("[DEBUG] Player move:", player_move_name, "PrioMove:", player_prio, "Enemy move:", enemy_move_name, "PrioMove:", enemy_prio)
 
 		# If both PrioMove == 0, use initiative
 		if player_prio == 0 and enemy_prio == 0:
-			print("[DEBUG] Both moves PrioMove == 0, using initiative.")
 			if player_initiative > enemy_initiative:
 				# Player goes first
 				if player_pokemon.flinched:
@@ -443,7 +432,6 @@ func _handle_move_button(move_index: int) -> void:
 
 		# If one or both PrioMove > 0, higher PrioMove goes first
 		elif player_prio > 0 or enemy_prio > 0:
-			print("[DEBUG] At least one move has PrioMove > 0, higher PrioMove goes first.")
 			if player_prio > enemy_prio:
 				# Player goes first
 				if player_pokemon.flinched:
@@ -507,7 +495,6 @@ func _handle_move_button(move_index: int) -> void:
 
 		# If one or both PrioMove < 0, lower PrioMove goes last
 		elif player_prio < 0 or enemy_prio < 0:
-			print("[DEBUG] At least one move has PrioMove < 0, lower PrioMove goes last.")
 			if player_prio < enemy_prio:
 				# Enemy goes first (player's PrioMove is lower)
 				if enemy_pokemon.flinched:
@@ -649,7 +636,6 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 			final_effectiveness = dc.get_type_multiplier(move_types, defender_types)
 	else:
 		final_effectiveness = 1.0
-	print("[DEBUG] execute_move: attacker=%s, attacker_TYP=%s, defender=%s, defender_TYP=%s, move_name=%s, moveCat=%s, moveType=%s, effectiveness=%.2f" % [attacker.Name if attacker else "None", str(attacker_types), defender.Name if defender else "None", str(defender_types_dbg), move_name, move_instance.moveCat if move_instance else "None", str(move_instance.moveType), _effectiveness])
 	if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
 		attacker.last_move_crit = crit_this_turn
 		attacker.last_move_effectiveness = final_effectiveness
@@ -686,7 +672,6 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 			_last_player_move_name = move_name + " (missed)"
 		elif attacker.is_in_group("enemy_pokemon"):
 			_last_enemy_move_name = move_name + " (missed)"
-		print("[Battle] %s's %s missed! (roll=%d, hit_chance=%.2f)" % [attacker.Name, move_name, roll, hit_chance])
 		# Set effectiveness to 1.0 on miss for UI
 		if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
 			attacker.last_move_effectiveness = 1.0
@@ -698,7 +683,6 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 	if move_instance.flinchChance > 0 and move_instance.has_method("try_flinch_opponent"):
 		if move_instance.try_flinch_opponent():
 			defender.flinched = true
-			print("[Battle] %s flinched!" % defender.Name)
 			# Set effectiveness to 1.0 on flinch for UI (no damage dealt)
 			if attacker and attacker.is_in_group and attacker.is_in_group("player_pokemon"):
 				attacker.last_move_effectiveness = 1.0
@@ -742,7 +726,6 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 func refresh_move_buttons() -> void:
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
-		print("[DEBUG] Full move dicts:", moves)
 		if moves.size() > 0:
 			move_1_button.text = moves[0]["name"] + " (" + str(moves[0]["pp"]) + "/" + str(moves[0]["max_pp"]) + ")"
 		else:
@@ -947,7 +930,6 @@ func _get_move_type(move):
 				move_instance.initialize_from_inspector()
 			if "moveType" in move_instance:
 				var type_str = str(move_instance.moveType).capitalize()
-				print("[DEBUG] Loaded moveType from scene for", move_name, ":", type_str)
 				return type_str
 		# Fallback: Try .gd script (no inspector values)
 		move_path = "res://Scripts/Moves/%s.gd" % move_name
@@ -958,14 +940,12 @@ func _get_move_type(move):
 				move_instance.initialize_from_inspector()
 			if "moveType" in move_instance:
 				var type_str = str(move_instance.moveType).capitalize()
-				print("[DEBUG] Loaded moveType from resource for", move_name, ":", type_str)
 				return type_str
 	return ""
 
 # Helper to set move button color based on move type
 func _set_move_button_color(button: Button, move_type: String) -> void:
 	var stylebox = StyleBoxFlat.new()
-	print("[DEBUG] Setting color for button '", button.name, "' with move_type '", move_type, "'")
 	match move_type:
 		"Normal":
 			print("[DEBUG] -> Normal type: grey")
@@ -1016,8 +996,6 @@ func switchToNewPokemon():
 		# Update move buttons
 		refresh_move_buttons()
 		# Optionally update gender, ability, held item, etc.
-		# (Call your helper functions as needed)
-		print("[BattleUI] Switched UI to new Pokémon:", player_pokemon.Name)
 	else:
 		print("[BattleUI] Could not find new Pokémon node to update UI.")
 
@@ -1051,6 +1029,5 @@ func switchToFirstPokemon():
 		if has_node("current_pokemon_hp") and "currentHP" in player_pokemon and "currentMaxHP" in player_pokemon:
 			$current_pokemon_hp.text = str(player_pokemon.currentHP) + " / " + str(player_pokemon.currentMaxHP)
 		refresh_move_buttons()
-		print("[BattleUI] Switched UI to first Pokémon:", player_pokemon.Name)
 	else:
 		print("[BattleUI] Could not find first Pokémon node to update UI.")

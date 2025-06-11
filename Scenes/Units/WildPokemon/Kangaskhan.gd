@@ -243,13 +243,13 @@ func set_stat(stat_name: String, value):
 	if _has_exported_property(stat_name):
 		self.set(stat_name, value)
 	else:
-		print("[Kangaskhan] set_stat: Stat not found:", stat_name)
+		print("[Pokemon] set_stat: Stat not found:", stat_name)
 
 func get_stat(stat_name: String):
 	if _has_exported_property(stat_name):
 		return self.get(stat_name)
 	else:
-		print("[Kangaskhan] get_stat: Stat not found:", stat_name)
+		print("[Pokemon] get_stat: Stat not found:", stat_name)
 		return null
 
 func setMove1PP():
@@ -267,9 +267,9 @@ func setMove1PP():
 			if has_max_pp:
 				Move1PP = move_instance.maxPP
 			else:
-				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+				print("[Pokemon] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[Kangaskhan] Move script not found for %s" % move_name)
+			print("[Pokemon] Move script not found for %s" % move_name)
 
 
 func setMove2PP():
@@ -287,9 +287,9 @@ func setMove2PP():
 			if has_max_pp:
 				Move2PP = move_instance.maxPP
 			else:
-				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+				print("[Pokemon] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[Kangaskhan] Move script not found for %s" % move_name)
+			print("[Pokemon] Move script not found for %s" % move_name)
 
 func setMove3PP():
 	if settingMove == true and currentMoves.size() > 2:
@@ -306,9 +306,9 @@ func setMove3PP():
 			if has_max_pp:
 				Move3PP = move_instance.maxPP
 			else:
-				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+				print("[Pokemon] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[Kangaskhan] Move script not found for %s" % move_name)
+			print("[Pokemon] Move script not found for %s" % move_name)
 
 func setMove4PP():
 	if settingMove == true and currentMoves.size() > 3:
@@ -325,9 +325,9 @@ func setMove4PP():
 			if has_max_pp:
 				Move4PP = move_instance.maxPP
 			else:
-				print("[Kangaskhan] Move script for %s does not have maxPP." % move_name)
+				print("[Pokemon] Move script for %s does not have maxPP." % move_name)
 		else:
-			print("[Kangaskhan] Move script not found for %s" % move_name)
+			print("[Pokemon] Move script not found for %s" % move_name)
 
 func checkIfStruggle():
 	if Move1PP == 0 && Move2PP == 0 && Move3PP == 0 && Move4PP == 0:

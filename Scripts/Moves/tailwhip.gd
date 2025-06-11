@@ -80,7 +80,6 @@ func critManager():
 		critChance = 100
 
 func initialize_from_inspector():
-	print("[DEBUG][Pound] moveType before conversion:", moveType, "type:", typeof(moveType))
 	movePower = movePower
 	moveCat = moveCat
 	maxPP = maxPP
@@ -105,10 +104,6 @@ func initialize_from_inspector():
 	if typeof(moveType) == TYPE_INT:
 		var type_names = ["Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark"]
 		moveType = type_names[int(moveType)]
-		print("[DEBUG][Pound] moveType converted to string:", moveType)
-	else:
-		print("[DEBUG][Pound] moveType is already string:", moveType)
-	# Fix: ensure moveCat is always a string, not an int, for move category logic
 	if typeof(moveCat) == TYPE_INT:
 		var cat_names = ["Physical", "Special", "Status"]
 		moveCat = cat_names[int(moveCat)]

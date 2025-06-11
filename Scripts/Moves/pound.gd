@@ -88,10 +88,8 @@ func DebuffEnenmyDefensex1(target_pokemon):
 	# Effect is an int (enum index), so compare to the correct value
 	# 0 = "none", 1 = "DebuffEnenmyDefensex1"
 	if Effect != 1:
-		print("[Tail Whip] Effect enum is not set to DebuffEnenmyDefensex1, skipping debuff.")
 		return
 	if not target_pokemon or not target_pokemon.has_method("set_stat") or not target_pokemon.has_method("get_stat"):
-		print("[Tail Whip] Invalid target or missing stat methods.")
 		return
 	# Ensure stat_debuffs exists and is a dictionary
 	var stat_debuffs = target_pokemon.get_meta("stat_debuffs") if target_pokemon.has_meta("stat_debuffs") else {}
@@ -101,8 +99,6 @@ func DebuffEnenmyDefensex1(target_pokemon):
 		stat_debuffs["defense"] = 0.0
 	var current_debuff = stat_debuffs["defense"]
 	if current_debuff >= 0.3:
-		print("[Tail Whip] Target's Defense cannot be reduced further (max 30%).")
-		
 		return
 	var original_def = target_pokemon.get_stat("currentDefense") / (1.0 - current_debuff) if current_debuff > 0.0 else target_pokemon.get_stat("currentDefense")
 	var debuff_percent = min(0.05, 0.3 - current_debuff)
@@ -110,4 +106,3 @@ func DebuffEnenmyDefensex1(target_pokemon):
 	var new_def = max(1, original_def * (1.0 - stat_debuffs["defense"]))
 	target_pokemon.set_stat("currentDefense", new_def)
 	target_pokemon.set_meta("stat_debuffs", stat_debuffs)
-	print("[Tail Whip] Target's Defense reduced by %.0f%% (%.0f%% total, max 30%%) from %s to %s" % [debuff_percent*100, stat_debuffs["defense"]*100, original_def, new_def])
