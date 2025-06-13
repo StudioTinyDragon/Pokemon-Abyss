@@ -1,0 +1,608 @@
+[gd_scene load_steps=3 format=3 uid="uid://coajfockt6nd1"]
+
+[ext_resource type="FontFile" uid="uid://ccfwuyjker3is" path="res://Assets/Fonts/PixelOperator8.ttf" id="1_3vycf"]
+[ext_resource type="Script" uid="uid://db7uj511p25kc" path="res://Scenes/UI/new_battle_ui.gd" id="1_v322j"]
+
+[node name="NewBattleUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v322j")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(961, 539.5)
+scale = Vector2(1.06778, 1.20111)
+
+[node name="BattleOptions" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 1474.0
+offset_top = 849.0
+offset_right = 1902.0
+offset_bottom = 1053.0
+size_flags_vertical = 8
+
+[node name="battleButton" type="Button" parent="BattleOptions"]
+layout_mode = 1
+anchors_preset = -1
+offset_left = 23.0
+offset_top = 38.0
+offset_right = 198.0
+offset_bottom = 83.0
+scale = Vector2(0.951488, 1.10676)
+text = "Battle"
+autowrap_mode = 2
+
+[node name="Button2" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 112.0
+offset_right = 190.0
+offset_bottom = 162.0
+text = "Bag"
+
+[node name="pokemonButton" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 38.0
+offset_right = 388.0
+offset_bottom = 88.0
+text = "Pokemon"
+
+[node name="fleeButton" type="Button" parent="BattleOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 113.0
+offset_right = 388.0
+offset_bottom = 163.0
+text = "Run"
+
+[node name="currentPokemon" type="Label" parent="BattleOptions"]
+layout_mode = 0
+offset_right = 205.0
+offset_bottom = 26.0
+text = "Pokemon 1"
+
+[node name="MoveOptions" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1474.0
+offset_top = 849.0
+offset_right = 1902.0
+offset_bottom = 1053.0
+
+[node name="move1Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 38.0
+offset_right = 190.0
+offset_bottom = 88.0
+
+[node name="move2Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 113.0
+offset_right = 190.0
+offset_bottom = 163.0
+
+[node name="move3Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 38.0
+offset_right = 388.0
+offset_bottom = 88.0
+
+[node name="move4Button" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 113.0
+offset_right = 388.0
+offset_bottom = 163.0
+
+[node name="moveGoBack" type="Button" parent="MoveOptions"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 69.0
+offset_bottom = 35.0
+text = "Back
+"
+
+[node name="EnemyStatblock" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 1294.0
+offset_top = 26.0
+offset_right = 1922.0
+offset_bottom = 216.0
+
+[node name="EnemyName" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 20.0
+offset_right = 230.0
+offset_bottom = 60.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 40
+text = "Enemy: "
+
+[node name="CurrentEnemyHP" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 75.0
+offset_right = 147.0
+offset_bottom = 130.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentEnemyStatus" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 129.0
+offset_right = 558.0
+offset_bottom = 184.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 20
+text = "-"
+vertical_alignment = 1
+
+[node name="EnemyLevel" type="Label" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 155.0
+offset_right = 627.0
+offset_bottom = 188.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 25
+text = "x"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GenderPanel" type="Panel" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 587.0
+offset_right = 627.0
+offset_bottom = 40.0
+
+[node name="EnemyGenderSprite" type="Sprite2D" parent="EnemyStatblock/GenderPanel"]
+position = Vector2(19.5, 19.5)
+scale = Vector2(0.640625, 0.640625)
+
+[node name="heldItemEnemy" type="Panel" parent="EnemyStatblock"]
+layout_mode = 0
+offset_top = 190.0
+offset_right = 377.0
+offset_bottom = 230.0
+
+[node name="heldItemIconEnemy" type="Sprite2D" parent="EnemyStatblock/heldItemEnemy"]
+position = Vector2(25, 19.5)
+scale = Vector2(0.71875, 0.640625)
+
+[node name="heldItemLabelEnemy" type="Label" parent="EnemyStatblock/heldItemEnemy"]
+layout_mode = 0
+offset_left = 52.0
+offset_top = -1.0
+offset_right = 377.0
+offset_bottom = 39.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 25
+text = "-"
+vertical_alignment = 1
+
+[node name="nature" type="Panel" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 190.0
+offset_right = 627.0
+offset_bottom = 230.0
+
+[node name="natureLabelEnemy" type="Label" parent="EnemyStatblock/nature"]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 39.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Nature"
+vertical_alignment = 1
+
+[node name="ablility" type="Panel" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -24.0
+offset_right = 223.0
+offset_bottom = -1.0
+
+[node name="abilityLabelEnemy" type="Label" parent="EnemyStatblock/ablility"]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 221.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Ability"
+vertical_alignment = 1
+
+[node name="typ" type="Panel" parent="EnemyStatblock"]
+layout_mode = 0
+offset_left = 224.0
+offset_top = -24.0
+offset_right = 627.0
+offset_bottom = -1.0
+
+[node name="typLabelEnemy" type="Label" parent="EnemyStatblock/typ"]
+layout_mode = 0
+offset_right = 403.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Typ"
+vertical_alignment = 1
+
+[node name="OwnStatblock" type="Panel" parent="."]
+layout_mode = 0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 806.0
+
+[node name="PokemonName" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_top = 15.0
+offset_right = 280.0
+offset_bottom = 55.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 40
+text = "Pokemon:"
+
+[node name="CurrentPokemonHP" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 70.0
+offset_right = 151.0
+offset_bottom = 125.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 40
+text = "-/-"
+
+[node name="CurrentPokemonStatus" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_top = 125.0
+offset_right = 569.0
+offset_bottom = 180.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 20
+text = "-"
+vertical_alignment = 1
+
+[node name="OwnLevel" type="Label" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 558.0
+offset_top = 155.0
+offset_right = 627.0
+offset_bottom = 188.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 25
+text = "x"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GenderPanel" type="Panel" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 587.0
+offset_right = 627.0
+offset_bottom = 40.0
+
+[node name="PlayerGenderSprite" type="Sprite2D" parent="OwnStatblock/GenderPanel"]
+position = Vector2(20.5, 20)
+scale = Vector2(0.640625, 0.625)
+
+[node name="heldItemPlayer" type="Panel" parent="OwnStatblock"]
+layout_mode = 0
+offset_top = 190.0
+offset_right = 376.0
+offset_bottom = 230.0
+
+[node name="heldItemIconPlayer" type="Sprite2D" parent="OwnStatblock/heldItemPlayer"]
+position = Vector2(25, 19.5)
+scale = Vector2(0.71875, 0.640625)
+
+[node name="heldItemLabelPlayer" type="Label" parent="OwnStatblock/heldItemPlayer"]
+layout_mode = 0
+offset_left = 52.0
+offset_top = -1.0
+offset_right = 376.0
+offset_bottom = 39.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+theme_override_font_sizes/font_size = 25
+text = "-"
+vertical_alignment = 1
+
+[node name="nature" type="Panel" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 377.0
+offset_top = 190.0
+offset_right = 627.0
+offset_bottom = 230.0
+
+[node name="natureLabelPlayer" type="Label" parent="OwnStatblock/nature"]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 39.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Nature"
+vertical_alignment = 1
+
+[node name="ablility" type="Panel" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -24.0
+offset_right = 223.0
+offset_bottom = -1.0
+
+[node name="abilityLabelPlayer" type="Label" parent="OwnStatblock/ablility"]
+layout_mode = 0
+offset_left = 1.0
+offset_right = 221.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Ability"
+vertical_alignment = 1
+
+[node name="typ" type="Panel" parent="OwnStatblock"]
+layout_mode = 0
+offset_left = 224.0
+offset_top = -24.0
+offset_right = 627.0
+offset_bottom = -1.0
+
+[node name="typLabelPlayer" type="Label" parent="OwnStatblock/typ"]
+layout_mode = 0
+offset_right = 404.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("1_3vycf")
+text = "Typ"
+vertical_alignment = 1
+
+[node name="battleDialogueBox" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 274.0
+offset_top = 846.0
+offset_right = 1456.0
+offset_bottom = 1059.0
+size_flags_vertical = 8
+
+[node name="battleText" type="RichTextLabel" parent="battleDialogueBox"]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 16.0
+offset_right = 1156.0
+offset_bottom = 197.0
+theme_override_fonts/normal_font = ExtResource("1_3vycf")
+theme_override_font_sizes/normal_font_size = 50
+text = "Test"
+
+[node name="readyToFightTimer" type="Timer" parent="battleDialogueBox"]
+wait_time = 2.0
+one_shot = true
+
+[node name="attackShoutoutTimer" type="Timer" parent="battleDialogueBox"]
+one_shot = true
+
+[node name="Player1" type="Sprite2D" parent="."]
+position = Vector2(835, 562)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar1" type="ColorRect" parent="Player1"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP1" type="ColorRect" parent="Player1/Bar1"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Player2" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(540, 686)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar2" type="ColorRect" parent="Player2"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP2" type="ColorRect" parent="Player2/Bar2"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player3" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1090, 730)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar9" type="ColorRect" parent="Player3"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP9" type="ColorRect" parent="Player3/Bar9"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Player4" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(505, 392)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar4" type="ColorRect" parent="Player4"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP4" type="ColorRect" parent="Player4/Bar4"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player5" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(196, 615)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar5" type="ColorRect" parent="Player5"]
+offset_left = -36.0
+offset_top = 38.8571
+offset_right = 37.0
+offset_bottom = 46.8571
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP5" type="ColorRect" parent="Player5/Bar5"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player6" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(202, 310)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar6" type="ColorRect" parent="Player6"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP6" type="ColorRect" parent="Player6/Bar6"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy1" type="Sprite2D" parent="."]
+position = Vector2(1253, 449)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar7" type="ColorRect" parent="Enemy1"]
+offset_left = -40.2857
+offset_top = -44.2857
+offset_right = 32.7143
+offset_bottom = -36.2857
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP7" type="ColorRect" parent="Enemy1/Bar7"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Enemy2" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1016, 193)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar8" type="ColorRect" parent="Enemy2"]
+offset_left = -36.2857
+offset_top = -43.7143
+offset_right = 36.7143
+offset_bottom = -35.7143
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP8" type="ColorRect" parent="Enemy2/Bar8"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Enemy3" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1538, 557)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar3" type="ColorRect" parent="Enemy3"]
+offset_left = -34.8571
+offset_top = -49.1429
+offset_right = 38.1429
+offset_bottom = -41.1429
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP3" type="ColorRect" parent="Enemy3/Bar3"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy4" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1451, 176)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar10" type="ColorRect" parent="Enemy4"]
+offset_left = -36.8571
+offset_top = -48.5714
+offset_right = 36.1429
+offset_bottom = -40.5714
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP10" type="ColorRect" parent="Enemy4/Bar10"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy5" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1743, 183)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar11" type="ColorRect" parent="Enemy5"]
+offset_left = -37.4286
+offset_top = -42.5714
+offset_right = 35.5714
+offset_bottom = -34.5714
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP11" type="ColorRect" parent="Enemy5/Bar11"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy6" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1817, 491)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar12" type="ColorRect" parent="Enemy6"]
+offset_left = -42.5714
+offset_top = -40.8571
+offset_right = 30.4286
+offset_bottom = -32.8571
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP12" type="ColorRect" parent="Enemy6/Bar12"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[connection signal="timeout" from="battleDialogueBox/readyToFightTimer" to="." method="_on_ready_to_fight_timer_timeout"]

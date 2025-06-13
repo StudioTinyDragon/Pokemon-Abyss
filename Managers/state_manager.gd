@@ -3,9 +3,6 @@ extends Node
 #region signals
 
 
-
-
-
 @warning_ignore("unused_signal")
 signal player_fled_battle
 @warning_ignore("unused_signal")

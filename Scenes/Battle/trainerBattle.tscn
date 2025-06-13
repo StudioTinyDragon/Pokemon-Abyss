@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ba1sqkp0tstab"]
+
+[ext_resource type="Script" uid="uid://pwo1d3iha1p1" path="res://Scenes/Battle/trainer_battle.gd" id="1_s4foy"]
+
+[node name="TrainerBattle" type="Node2D"]
+script = ExtResource("1_s4foy")
