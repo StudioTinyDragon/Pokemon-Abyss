@@ -2,7 +2,7 @@ extends Node
 
 @export_enum("Normal", "Fighting", "Flying", "Poison", "Ground", "Rock", "Bug", "Ghost", "Steel", "Fire", "Water", "Grass", "Electric", "Psychic", "Ice", "Dragon", "Dark") var moveType
 @export_enum("Physical", "Special", "Status") var moveCat
-@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange = "enemy"
+@export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange
 @export_enum("none", "DebuffEnenmyDefensex1") var Effect
 @export var movePower: int
 @export var maxPP: int
@@ -41,6 +41,7 @@ func try_flinch_opponent() -> bool:
 	return roll < flinchChance
 
 func initialize_from_inspector():
+	effectRange = effectRange
 	movePower = movePower
 	moveCat = moveCat
 	maxPP = maxPP

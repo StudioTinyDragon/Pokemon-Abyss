@@ -85,12 +85,12 @@ var StatusEffect: Array[String]   = []
 
 #region TrainingLvl
 @export_subgroup("Training Modifier")
-@export var TraingnigHP :int
-@export var TraingnigAttack :int
-@export var TraingnigDefense :int
-@export var TraingnigSPAttack :int
-@export var TraingnigSPDefense :int
-@export var TraingnigInitiative :int
+@export var TrainingHP :int
+@export var TrainingAttack :int
+@export var TrainingDefense :int
+@export var TrainingSPAttack :int
+@export var TrainingSPDefense :int
+@export var TrainingInitiative :int
 #TODO TrainingLvl erhöhen können + MaxLvl dafür ( ist schon in der Stat berechnung eingebunden, momentan für 1% Bonus pro TrainingLvl)
 
 #endregion
@@ -154,6 +154,8 @@ func _ready():
 	call_deferred("instantiate_moves")
 	initializeInspector()
 
+func get_unique_id():
+	uniquePokemonID = int(Time.get_unix_time_from_system()) + randi() % 100000
 
 # Setter for currentLevel and stat recalculation
 func set_currentLevel(val):
@@ -162,12 +164,12 @@ func set_currentLevel(val):
 
 # Call this after changing any stat-affecting exported var
 func _recalculate_stats():
-	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TraingnigHP)))
-	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TraingnigAttack)))
-	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TraingnigDefense)))
-	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TraingnigSPAttack)))
-	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TraingnigSPDefense)))
-	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TraingnigInitiative)))
+	currentMaxHP = int(((maxLvlHP - Lvl1HP) / 99.0 * (currentLevel - 1.0) + Lvl1HP) * (1 + (0.1 * TrainingHP)))
+	currentAttack = int(((maxLvlAttack - Lvl1Attack) / 99.0 * (currentLevel - 1.0) + Lvl1Attack) * (1 + (0.01 * TrainingAttack)))
+	currentDefense = int(((maxLvlDefense - Lvl1Defense) / 99.0 * (currentLevel - 1.0) + Lvl1Defense) * (1 + (0.01 * TrainingDefense)))
+	currentSPAttack = int(((maxLvlSPAttack - Lvl1SPAttack) / 99.0 * (currentLevel - 1.0) + Lvl1SPAttack) * (1 + (0.01 * TrainingSPAttack)))
+	currentSPDefense = int(((maxLvlSPDefense - Lvl1SPDefense) / 99.0 * (currentLevel - 1.0) + Lvl1SPDefense) * (1 + (0.01 * TrainingSPDefense)))
+	currentInitiative = int(((maxLvlInitiative - Lvl1Initiative) / 99.0 * (currentLevel - 1.0) + Lvl1Initiative) * (1 + (0.01 * TrainingInitiative)))
 
 func instantiate_moves():
 	for move_name in currentMoves:
@@ -459,9 +461,11 @@ func initializeInspector():
 	maxLvlSPDefense = maxLvlSPDefense
 	maxLvlInitiative = maxLvlInitiative
 
-	TraingnigHP = TraingnigHP
-	TraingnigAttack = TraingnigAttack
-	TraingnigDefense = TraingnigDefense
-	TraingnigSPAttack = TraingnigSPAttack
-	TraingnigSPDefense = TraingnigSPDefense
-	TraingnigInitiative = TraingnigInitiative
+	TrainingHP = TrainingHP
+	TrainingAttack = TrainingAttack
+	TrainingDefense = TrainingDefense
+	TrainingSPAttack = TrainingSPAttack
+	TrainingSPDefense = TrainingSPDefense
+	TrainingInitiative = TrainingInitiative
+
+	PokemonBack = PokemonBack

@@ -23,15 +23,15 @@ func try_interact_with_tile1(player: Node2D) -> void:
 							node.get_node("BattleLayer").visible = true
 							StateManager.inBattle = true
 
-					# Hide tilemap
-					if "ground" in node:
-						node.ground.visible = false
-					# Hide player
-					var parent = node.get_parent()
-					if parent and parent.has_node("Player"):
-						var player_node = parent.get_node("Player")
-						if player_node.has_node("PlayerSprite2D"):
-							player_node.get_node("PlayerSprite2D").visible = false
+						# Hide tilemap
+						if "ground" in node:
+							node.ground.visible = false
+						# Hide player
+						var parent = node.get_parent()
+						if parent and parent.has_node("Player"):
+							var player_node = parent.get_node("Player")
+							if player_node.has_node("PlayerSprite2D"):
+								player_node.get_node("PlayerSprite2D").visible = false
 					return
 
 func update_tile1_interaction_labels(player: Node2D) -> void:

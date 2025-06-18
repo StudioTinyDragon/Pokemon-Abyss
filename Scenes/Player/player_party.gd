@@ -24,76 +24,122 @@ func update_pokemon_field(unique_id: int, field: String, value) -> bool:
 			return true
 	return false
 
-@warning_ignore("unused_parameter")
-func add_debug_kangaskhan_to_party(level := 10, levelRange := 2) -> void:
-	# Instance Kangaskhan scene and add to the scene tree as player Pokémon
-	var kangaskhan_scene = load("uid://w66ycrams3y7")
-	var kangaskhan_instance = kangaskhan_scene.instantiate()
-	kangaskhan_instance.uniquePokemonID = int(Time.get_unix_time_from_system()) + randi() % 100000
-	kangaskhan_instance.add_to_group("player_pokemon")
-	var units_node = get_node_or_null("../Units")
+
+
+# --- Utility: Instance a Pokémon scene and add to the scene tree ---
+func _instance_debug_pokemon(scene_path: String, group_name: String = "player_pokemon", parent_path: String = "../Units"):
+	var poke_scene = load(scene_path)
+	var poke_instance = poke_scene.instantiate()
+	poke_instance.add_to_group(group_name)
+	var units_node = get_node_or_null(parent_path)
 	if units_node:
-		units_node.add_child(kangaskhan_instance)
+		units_node.add_child(poke_instance)
 	else:
-		add_child(kangaskhan_instance)
-	print("Kangaskhan added to scene for debug.")
+		add_child(poke_instance)
+	print("Pokemon added to scene for debug from %s." % scene_path)
+	return poke_instance
 
-	# Set level and levelRange before WildGenerator
-	if kangaskhan_instance.has_method("setLevel"):
-		kangaskhan_instance.setLevel(1)
-	var player = get_tree().get_nodes_in_group("player_pokemon")
-	for player_pokemon in player:
-		if player_pokemon.has_method("SetPotentiellMoves"):
-			player_pokemon.SetPotentiellMoves()
-		if player_pokemon.has_method("SetMoves"):
-			player_pokemon.SetMoves()
-		if player_pokemon.has_method("setMove1PP"):
-			player_pokemon.setMove1PP()
-		if player_pokemon.has_method("setMove2PP"):
-			player_pokemon.setMove2PP()
-		if player_pokemon.has_method("setMove3PP"):
-			player_pokemon.setMove3PP()
-		if player_pokemon.has_method("setMove4PP"):
-			player_pokemon.setMove4PP()
-	# Ensure move instances are created from .tscn scenes (for Inspector values)
-	if kangaskhan_instance.has_method("instantiate_moves"):
-		kangaskhan_instance.instantiate_moves()
-	# Set all move PP from currentMoves (robust fallback)
-	if kangaskhan_instance.has_method("set_all_move_pp_from_current_moves"):
-		kangaskhan_instance.set_all_move_pp_from_current_moves()
-	if kangaskhan_instance.has_method("setCurrentHP"):
-		kangaskhan_instance.setCurrentHP()
-	if kangaskhan_instance.has_method("GenderGenerator"):
-		kangaskhan_instance.GenderGenerator()
+# --- Utility: Set up stats and moves for a Pokémon node ---
+func _setup_pokemon_stats_and_moves(poke_instance, group_name: String = "player_pokemon"):
+	if poke_instance.has_method("setLevel"):
+		poke_instance.setLevel(1)
+	if poke_instance.has_method("get_unique_id"):
+		poke_instance.get_unique_id()
+	var pokes = get_tree().get_nodes_in_group(group_name)
+	for poke in pokes:
+		if poke.has_method("SetPotentiellMoves"):
+			poke.SetPotentiellMoves()
+		if poke.has_method("SetMoves"):
+			poke.SetMoves()
+		if poke.has_method("setMove1PP"):
+			poke.setMove1PP()
+		if poke.has_method("setMove2PP"):
+			poke.setMove2PP()
+		if poke.has_method("setMove3PP"):
+			poke.setMove3PP()
+		if poke.has_method("setMove4PP"):
+			poke.setMove4PP()
+	if poke_instance.has_method("instantiate_moves"):
+		poke_instance.instantiate_moves()
+	if poke_instance.has_method("set_all_move_pp_from_current_moves"):
+		poke_instance.set_all_move_pp_from_current_moves()
+	if poke_instance.has_method("setCurrentHP"):
+		poke_instance.setCurrentHP()
+	if poke_instance.has_method("GenderGenerator"):
+		poke_instance.GenderGenerator()
 
-	# Add to party array as a dictionary
-	var party_pokemon = {
-		"name": kangaskhan_instance.Name,
-		"unique_id": kangaskhan_instance.uniquePokemonID,
-		"types": kangaskhan_instance.TYP.duplicate(),
-		"level": kangaskhan_instance.currentLevel,
-		"current_hp": kangaskhan_instance.currentMaxHP,
-		"max_hp": kangaskhan_instance.currentMaxHP,
-		"moves": [],
-		"status_effects": [],
-		"stat_debuffs": {"defense": 0.0, "attack": 0.0}
-	}
-	# Fill moves from currentMoves and PP
-	for i in range(kangaskhan_instance.currentMoves.size()):
-		var move_name = kangaskhan_instance.currentMoves[i]
+# --- Utility: Build moves array for party dictionary ---
+func _build_moves_array(poke_instance):
+	var moves_array = []
+	for i in range(poke_instance.currentMoves.size()):
+		var move_name = poke_instance.currentMoves[i]
 		var max_pp = 0
 		match i:
 			0:
-				max_pp = kangaskhan_instance.Move1PP
+				max_pp = poke_instance.Move1PP
 			1:
-				max_pp = kangaskhan_instance.Move2PP
+				max_pp = poke_instance.Move2PP
 			2:
-				max_pp = kangaskhan_instance.Move3PP
+				max_pp = poke_instance.Move3PP
 			3:
-				max_pp = kangaskhan_instance.Move4PP
-		party_pokemon["moves"].append({"name": move_name, "pp": max_pp, "max_pp": max_pp})
+				max_pp = poke_instance.Move4PP
+		moves_array.append({"name": move_name, "pp": max_pp, "max_pp": max_pp})
+	return moves_array
 
+# --- Utility: Build party dictionary for Pokémon ---
+func _build_party_pokemon_dict(poke_instance, moves_array):
+	return {
+		"name": poke_instance.Name,
+		"unique_id": poke_instance.uniquePokemonID,
+		"types": poke_instance.TYP.duplicate(),
+		"level": poke_instance.currentLevel,
+		"current_hp": poke_instance.currentHP,
+		"max_hp": poke_instance.currentMaxHP,
+		"current_attack": poke_instance.currentAttack,
+		"current_defense": poke_instance.currentDefense,
+		"current_sp_attack": poke_instance.currentSPAttack,
+		"current_sp_defense": poke_instance.currentSPDefense,
+		"current_iniative": poke_instance.currentInitiative,
+		"moves": moves_array.duplicate(),
+		"status_effects": [],
+		"stat_debuffs": {"defense": 0.0, "attack": 0.0},
+		# Sprite file paths for UI
+		"pokemon_front_sprite": poke_instance.PokemonFront if "PokemonFront" in poke_instance else "",
+		"pokemon_back_sprite": poke_instance.PokemonBack if "PokemonBack" in poke_instance else "",
+		"pokemon_icon_sprite": poke_instance.PokemonIcon if "PokemonIcon" in poke_instance else "",
+		"pokemon_front_sprite_shiny": poke_instance.PokemonFrontShiny if "PokemonFrontShiny" in poke_instance else "",
+		"pokemon_back_sprite_shiny": poke_instance.PokemonBackShiny if "PokemonBackShiny" in poke_instance else "",
+		"pokemon_image_sprite": poke_instance.PokemonImage if "PokemonImage" in poke_instance else "",
+		"is_shiny": poke_instance.isShiny,
+		"Gender": poke_instance.Gender,
+		"Nature": poke_instance.Nature,
+		"move_1_pp": poke_instance.Move1PP,
+		"move_2_pp": poke_instance.Move2PP,
+		"move_3_pp": poke_instance.Move3PP,
+		"move_4_pp": poke_instance.Move4PP,
+		"held_item": poke_instance.heldItem,
+		"exp": poke_instance.Exp,
+		"ability": poke_instance.Ability,
+		"trainings_hp": poke_instance.TrainingHP,
+		"trainings_attack": poke_instance.TrainingAttack,
+		"trainings_defense": poke_instance.TrainingDefense,
+		"trainings_sp_attack": poke_instance.TrainingSPAttack,
+		"trainings_sp_efense": poke_instance.TrainingSPDefense,
+		"trainings_initiative": poke_instance.TrainingInitiative,
+		"is_fainted": poke_instance.isFainted
+	}
+
+# --- Main: Add debug Pokémon to party (universal) ---
+func add_debug_pokemon_to_party(scene_path: String, group_name: String = "player_pokemon", parent_path: String = "../Units") -> void:
+	var poke_instance = _instance_debug_pokemon(scene_path, group_name, parent_path)
+	_setup_pokemon_stats_and_moves(poke_instance, group_name)
+	var moves_array = _build_moves_array(poke_instance)
+	var party_pokemon = _build_party_pokemon_dict(poke_instance, moves_array)
 	if StateManager.add_pokemon_to_party(party_pokemon):
-		print("Kangaskhan added to player_party.")
+		print("Pokemon added to player_party.")
 	else:
-		print("Party full, could not add Kangaskhan.")
+		print("Party full, could not add Pokemon.")
+
+# --- For compatibility: Add Kangaskhan as debug ---
+func add_debug_kangaskhan_to_party():
+	add_debug_pokemon_to_party("res://Scenes/Units/WildPokemon/Kangaskhan.tscn")

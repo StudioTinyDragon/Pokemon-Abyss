@@ -6,6 +6,7 @@
 script = ExtResource("1_jvwhs")
 moveType = 0
 moveCat = 0
+effectRange = 4
 Effect = 0
 movePower = 40
 maxPP = 35

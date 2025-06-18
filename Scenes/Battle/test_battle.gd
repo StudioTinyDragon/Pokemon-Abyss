@@ -5,7 +5,6 @@ var player_pokemon = null
 var enemy_pokemon = null
 
 
-
 func _ready() -> void:
 	# Set player_pokemon and enemy_pokemon only after the node is in the scene tree
 	var pokemon = _get_battle_pokemon()

@@ -39,8 +39,46 @@ extends Control
 @onready var typ_label_enemy: Label = $EnemyStatblock/typ/typLabelEnemy
 @onready var typ_label_player: Label = $OwnStatblock/typ/typLabelPlayer
 
+@onready var background: Sprite2D = $Background
+@onready var player_1: Sprite2D = $Player1
+@onready var bar_1: ColorRect = $Player1/Bar1
+@onready var hp_1: ColorRect = $Player1/Bar1/HP1
+@onready var player_2: Sprite2D = $Player2
+@onready var bar_2: ColorRect = $Player2/Bar2
+@onready var hp_2: ColorRect = $Player2/Bar2/HP2
+@onready var player_3: Sprite2D = $Player3
+@onready var bar_9: ColorRect = $Player3/Bar9
+@onready var hp_9: ColorRect = $Player3/Bar9/HP9
+@onready var player_4: Sprite2D = $Player4
+@onready var bar_4: ColorRect = $Player4/Bar4
+@onready var hp_4: ColorRect = $Player4/Bar4/HP4
+@onready var player_5: Sprite2D = $Player5
+@onready var bar_5: ColorRect = $Player5/Bar5
+@onready var hp_5: ColorRect = $Player5/Bar5/HP5
+@onready var player_6: Sprite2D = $Player6
+@onready var bar_6: ColorRect = $Player6/Bar6
+@onready var hp_6: ColorRect = $Player6/Bar6/HP6
+@onready var enemy_1: Sprite2D = $Enemy1
+@onready var bar_7: ColorRect = $Enemy1/Bar7
+@onready var hp_7: ColorRect = $Enemy1/Bar7/HP7
+@onready var enemy_2: Sprite2D = $Enemy2
+@onready var bar_8: ColorRect = $Enemy2/Bar8
+@onready var hp_8: ColorRect = $Enemy2/Bar8/HP8
+@onready var enemy_3: Sprite2D = $Enemy3
+@onready var bar_3: ColorRect = $Enemy3/Bar3
+@onready var hp_3: ColorRect = $Enemy3/Bar3/HP3
+@onready var enemy_4: Sprite2D = $Enemy4
+@onready var bar_10: ColorRect = $Enemy4/Bar10
+@onready var hp_10: ColorRect = $Enemy4/Bar10/HP10
+@onready var enemy_5: Sprite2D = $Enemy5
+@onready var bar_11: ColorRect = $Enemy5/Bar11
+@onready var hp_11: ColorRect = $Enemy5/Bar11/HP11
+@onready var enemy_6: Sprite2D = $Enemy6
+@onready var bar_12: ColorRect = $Enemy6/Bar12
+@onready var hp_12: ColorRect = $Enemy6/Bar12/HP12
 
 
+const FOREST = preload("res://Assets/parallax/forest.png")
 
 const TYP_FIRE = preload("res://Assets/Icons/TypFire.png")
 const TYP_NORMAL = preload("res://Assets/Icons/TypNormal.png")
@@ -90,6 +128,10 @@ func _ready() -> void:
 
 #region timer
 
+func setBackground():
+	background.visible = true
+	if BattleLogic.isForest:
+		background.texture = FOREST
 
 func readyToFight():
 	if _battle_started:
@@ -131,6 +173,7 @@ func readyToFight():
 	_set_nature_label(enemy_pokemon, nature_label_enemy)
 	_get_typ_label(player_pokemon, typ_label_player)
 	_get_typ_label(enemy_pokemon, typ_label_enemy)
+	setBackground()
 
 	# Set move button colors at battle start
 	if StateManager.player_party.size() > 0:
@@ -181,8 +224,8 @@ func setPokemonPosition():
 		player_pokemon.global_position = player_battle_pos
 		if player_pokemon.has_node("PokemonBackSprite"):
 			var back_sprite = player_pokemon.get_node("PokemonBackSprite")
-			back_sprite.visible = true
-			back_sprite.scale = Vector2(2.4, 2.4)
+			player_1.visible = true
+			player_1.texture = back_sprite.texture
 		if player_pokemon.has_node("PokemonFrontSprite"):
 			player_pokemon.get_node("PokemonFrontSprite").visible = false
 
@@ -190,8 +233,8 @@ func setPokemonPosition():
 		enemy_pokemon.global_position = enemy_battle_pos
 		if enemy_pokemon.has_node("PokemonFrontSprite"):
 			var front_sprite = enemy_pokemon.get_node("PokemonFrontSprite")
-			front_sprite.visible = true
-			front_sprite.scale = Vector2(1.2, 1.2)
+			enemy_1.visible = true
+			enemy_1.texture = front_sprite.texture
 		if enemy_pokemon.has_node("PokemonBackSprite"):
 			enemy_pokemon.get_node("PokemonBackSprite").visible = false
 
@@ -767,7 +810,10 @@ func _on_flee_button_pressed():
 	_battle_started = false
 	player_pokemon.get_node("PokemonBackSprite").visible = false
 	enemy_pokemon.get_node("PokemonFrontSprite").visible = false
-	StateManager.emit_signal("player_fled_battle")
+	StateManager.emit_signal("player_fled_battle") 
+	player_1.visible = false
+	enemy_1.visible = false
+	background.visible = false
 
 
 
@@ -1031,3 +1077,84 @@ func switchToFirstPokemon():
 		refresh_move_buttons()
 	else:
 		print("[BattleUI] Could not find first Pokémon node to update UI.")
+
+
+func _on_move_go_back_pressed() -> void:
+	move_options.visible = false
+	battle_options.visible = true
+
+
+# Returns a list of Pokémon nodes/dicts that are valid targets for a move
+func target_pokemon(target_type: String, user, allies: Array, enemies: Array) -> Array:
+	match target_type:
+		"one_enemy":
+			# Target a single enemy (default: first alive enemy)
+			for enemy in enemies:
+				if enemy and (not "is_fainted" in enemy or not enemy.is_fainted):
+					return [enemy]
+			return []
+		"adjacent_enemies":
+			# Target adjacent enemies (assume user is in allies, find index)
+			var idx = allies.find(user)
+			var targets = []
+			if idx != -1:
+				if idx < enemies.size():
+					targets.append(enemies[idx])
+				if idx > 0:
+					targets.append(enemies[idx-1])
+				if idx+1 < enemies.size():
+					targets.append(enemies[idx+1])
+			return targets
+		"all_enemies":
+			var result = []
+			for e in enemies:
+				if e and (not "is_fainted" in e or not e.is_fainted):
+					result.append(e)
+			return result
+		"random_enemy":
+			var valid = []
+			for e in enemies:
+				if e and (not "is_fainted" in e or not e.is_fainted):
+					valid.append(e)
+			if valid.size() > 0:
+				return [valid[randi() % valid.size()]]
+			return []
+		"self":
+			return [user]
+		"ally":
+			var result = []
+			for a in allies:
+				if a != user and (not "is_fainted" in a or not a.is_fainted):
+					result.append(a)
+			return result
+		"adjacent_allies":
+			var idx = allies.find(user)
+			var targets = []
+			if idx > 0:
+				targets.append(allies[idx-1])
+			if idx+1 < allies.size():
+				targets.append(allies[idx+1])
+			return targets
+		"all_allies":
+			var result = []
+			for a in allies:
+				if a and (not "is_fainted" in a or not a.is_fainted):
+					result.append(a)
+			return result
+		"everyone":
+			var result = []
+			for x in allies:
+				if x and (not "is_fainted" in x or not x.is_fainted):
+					result.append(x)
+			for x in enemies:
+				if x and (not "is_fainted" in x or not x.is_fainted):
+					result.append(x)
+			return result
+		_:
+			return []
+
+func target_inBattle(move, user, allies: Array, enemies: Array) -> Array:
+	var target_type = "one_enemy"
+	if "target_type" in move:
+		target_type = move.target_type
+	return target_pokemon(target_type, user, allies, enemies)

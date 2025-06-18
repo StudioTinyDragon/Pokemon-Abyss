@@ -12,12 +12,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_bg7jw")
 
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(961, 539.5)
+scale = Vector2(1.06778, 1.20111)
+
 [node name="BattleOptions" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 416.0
+offset_left = 1474.0
 offset_top = 849.0
-offset_right = 1598.0
-offset_bottom = 1062.0
+offset_right = 1902.0
+offset_bottom = 1053.0
 size_flags_vertical = 8
 
 [node name="battleButton" type="Button" parent="BattleOptions"]
@@ -28,7 +32,7 @@ offset_top = 38.0
 offset_right = 198.0
 offset_bottom = 83.0
 scale = Vector2(0.951488, 1.10676)
-text = "Battle!"
+text = "Battle"
 autowrap_mode = 2
 
 [node name="Button2" type="Button" parent="BattleOptions"]
@@ -37,7 +41,7 @@ offset_left = 23.0
 offset_top = 112.0
 offset_right = 190.0
 offset_bottom = 162.0
-text = "Item"
+text = "Bag"
 
 [node name="pokemonButton" type="Button" parent="BattleOptions"]
 layout_mode = 0
@@ -53,15 +57,21 @@ offset_left = 221.0
 offset_top = 113.0
 offset_right = 388.0
 offset_bottom = 163.0
-text = "Flee"
+text = "Run"
+
+[node name="currentPokemon" type="Label" parent="BattleOptions"]
+layout_mode = 0
+offset_right = 205.0
+offset_bottom = 26.0
+text = "Pokemon 1"
 
 [node name="MoveOptions" type="Panel" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 416.0
+offset_left = 1474.0
 offset_top = 849.0
-offset_right = 1598.0
-offset_bottom = 1062.0
+offset_right = 1902.0
+offset_bottom = 1053.0
 
 [node name="move1Button" type="Button" parent="MoveOptions"]
 layout_mode = 0
@@ -93,18 +103,18 @@ offset_bottom = 163.0
 
 [node name="moveGoBack" type="Button" parent="MoveOptions"]
 layout_mode = 0
-offset_left = 981.0
-offset_top = 113.0
-offset_right = 1156.0
-offset_bottom = 163.0
+offset_left = 6.0
+offset_top = 4.0
+offset_right = 69.0
+offset_bottom = 35.0
 text = "Back
 "
 
 [node name="EnemyStatblock" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 1279.0
+offset_left = 1294.0
 offset_top = 26.0
-offset_right = 1907.0
+offset_right = 1922.0
 offset_bottom = 216.0
 
 [node name="EnemyName" type="Label" parent="EnemyStatblock"]
@@ -226,10 +236,9 @@ vertical_alignment = 1
 
 [node name="OwnStatblock" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 617.0
-offset_right = 653.0
-offset_bottom = 807.0
+offset_top = 616.0
+offset_right = 628.0
+offset_bottom = 806.0
 
 [node name="PokemonName" type="Label" parent="OwnStatblock"]
 layout_mode = 0
@@ -350,12 +359,11 @@ text = "Typ"
 vertical_alignment = 1
 
 [node name="battleDialogueBox" type="Panel" parent="."]
-visible = false
 layout_mode = 0
-offset_left = 416.0
-offset_top = 849.0
-offset_right = 1598.0
-offset_bottom = 1062.0
+offset_left = 274.0
+offset_top = 846.0
+offset_right = 1456.0
+offset_bottom = 1059.0
 size_flags_vertical = 8
 
 [node name="battleText" type="RichTextLabel" parent="battleDialogueBox"]
@@ -375,8 +383,229 @@ one_shot = true
 [node name="attackShoutoutTimer" type="Timer" parent="battleDialogueBox"]
 one_shot = true
 
+[node name="Player1" type="Sprite2D" parent="."]
+position = Vector2(835, 562)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar1" type="ColorRect" parent="Player1"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP1" type="ColorRect" parent="Player1/Bar1"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Player2" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(540, 686)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar2" type="ColorRect" parent="Player2"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP2" type="ColorRect" parent="Player2/Bar2"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player3" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1090, 730)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar9" type="ColorRect" parent="Player3"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP9" type="ColorRect" parent="Player3/Bar9"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Player4" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(505, 392)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar4" type="ColorRect" parent="Player4"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP4" type="ColorRect" parent="Player4/Bar4"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player5" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(196, 615)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar5" type="ColorRect" parent="Player5"]
+offset_left = -36.0
+offset_top = 38.8571
+offset_right = 37.0
+offset_bottom = 46.8571
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP5" type="ColorRect" parent="Player5/Bar5"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Player6" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(202, 310)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar6" type="ColorRect" parent="Player6"]
+offset_left = -42.8571
+offset_top = 37.4286
+offset_right = 30.1429
+offset_bottom = 45.4286
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP6" type="ColorRect" parent="Player6/Bar6"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy1" type="Sprite2D" parent="."]
+position = Vector2(1253, 449)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar7" type="ColorRect" parent="Enemy1"]
+offset_left = -40.2857
+offset_top = -44.2857
+offset_right = 32.7143
+offset_bottom = -36.2857
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP7" type="ColorRect" parent="Enemy1/Bar7"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Enemy2" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1016, 193)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar8" type="ColorRect" parent="Enemy2"]
+offset_left = -36.2857
+offset_top = -43.7143
+offset_right = 36.7143
+offset_bottom = -35.7143
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+metadata/_edit_use_anchors_ = true
+
+[node name="HP8" type="ColorRect" parent="Enemy2/Bar8"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Enemy3" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1538, 557)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar3" type="ColorRect" parent="Enemy3"]
+offset_left = -34.8571
+offset_top = -49.1429
+offset_right = 38.1429
+offset_bottom = -41.1429
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP3" type="ColorRect" parent="Enemy3/Bar3"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy4" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1451, 176)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar10" type="ColorRect" parent="Enemy4"]
+offset_left = -36.8571
+offset_top = -48.5714
+offset_right = 36.1429
+offset_bottom = -40.5714
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP10" type="ColorRect" parent="Enemy4/Bar10"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy5" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1743, 183)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar11" type="ColorRect" parent="Enemy5"]
+offset_left = -37.4286
+offset_top = -42.5714
+offset_right = 35.5714
+offset_bottom = -34.5714
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP11" type="ColorRect" parent="Enemy5/Bar11"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
+[node name="Enemy6" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1817, 491)
+scale = Vector2(3.5, 3.5)
+
+[node name="Bar12" type="ColorRect" parent="Enemy6"]
+offset_left = -42.5714
+offset_top = -40.8571
+offset_right = 30.4286
+offset_bottom = -32.8571
+color = Color(0.099986, 0.099986, 0.099986, 0.756863)
+
+[node name="HP12" type="ColorRect" parent="Enemy6/Bar12"]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 8.0
+color = Color(0, 0.768627, 0, 1)
+
 [connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
-[connection signal="pressed" from="BattleOptions/Button2" to="." method="_on_button_2_pressed"]
 [connection signal="pressed" from="BattleOptions/pokemonButton" to="." method="_on_pokemon_button_pressed"]
 [connection signal="pressed" from="BattleOptions/fleeButton" to="." method="_on_flee_button_pressed"]
 [connection signal="pressed" from="MoveOptions/move1Button" to="." method="_on_move_1_button_pressed"]

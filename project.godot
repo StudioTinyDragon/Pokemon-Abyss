@@ -22,6 +22,7 @@ Interaction="*res://Managers/interaction.gd"
 EncounterManager="*res://Managers/encounter_manager.gd"
 TextManager="*res://Managers/TextManager.tscn"
 SaveManager="*res://Managers/save_manager.gd"
+BattleLogic="*res://Scenes/Battle/battleLogic.tscn"
 
 [display]
 
