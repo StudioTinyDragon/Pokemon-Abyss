@@ -1069,7 +1069,6 @@ func switchToFirstPokemon():
 			new_poke_node = player_pokemon_nodes[0]
 	if new_poke_node == null and player_pokemon_nodes.size() > 0:
 		new_poke_node = player_pokemon_nodes[0]
-
 	if new_poke_node:
 		player_pokemon = new_poke_node
 		if has_node("current_pokemon_hp") and "currentHP" in player_pokemon and "currentMaxHP" in player_pokemon:

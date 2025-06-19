@@ -15,6 +15,18 @@ signal switchedToPM2
 
 #endregion
 
+#region loadingscreens
+
+var toTestMap = false
+
+
+
+
+
+
+#endregion
+
+
 #region vars
 
 
