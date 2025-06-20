@@ -4,6 +4,7 @@ extends Node
 @export_enum("Physical", "Special", "Status") var moveCat: String
 @export_enum("ally", "adjacent allies", "all allies", "self", "enemy", "adjacent enemies", "all enemies", "everyone", "random enemy") var effectRange
 @export_enum("none", "DebuffEnenmyDefensex1") var Effect
+@export var moveDescription : String
 @export var movePower: int
 @export var maxPP: int
 @export_range(0, 100, 1.0) var moveAccuracy: float
@@ -80,6 +81,7 @@ func critManager():
 		critChance = 100
 
 func initialize_from_inspector():
+	moveDescription = moveDescription
 	movePower = movePower
 	moveCat = moveCat
 	maxPP = maxPP

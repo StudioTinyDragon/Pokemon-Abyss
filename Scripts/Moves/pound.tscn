@@ -8,6 +8,7 @@ moveType = 0
 moveCat = 0
 effectRange = 4
 Effect = 0
+moveDescription = "Pound one Enemy to death!"
 movePower = 40
 maxPP = 35
 moveAccuracy = 100.0

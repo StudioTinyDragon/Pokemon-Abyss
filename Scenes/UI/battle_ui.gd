@@ -77,6 +77,20 @@ extends Control
 @onready var bar_12: ColorRect = $Enemy6/Bar12
 @onready var hp_12: ColorRect = $Enemy6/Bar12/HP12
 
+@onready var enemy_b_panel: Panel = $EnemyBPanel
+@onready var friend_b_panel: Panel = $FriendBPanel
+@onready var enemy_b_1: Button = $EnemyBPanel/VBox/EnemyB1
+@onready var enemy_b_2: Button = $EnemyBPanel/VBox/EnemyB2
+@onready var enemy_b_3: Button = $EnemyBPanel/VBox/EnemyB3
+@onready var enemy_b_4: Button = $EnemyBPanel/VBox/EnemyB4
+@onready var enemy_b_5: Button = $EnemyBPanel/VBox/EnemyB5
+@onready var enemy_b_6: Button = $EnemyBPanel/VBox/EnemyB6
+@onready var friend_b_1: Button = $FriendBPanel/VBox/FriendB1
+@onready var friend_b_2: Button = $FriendBPanel/VBox/FriendB2
+@onready var friend_b_3: Button = $FriendBPanel/VBox/FriendB3
+@onready var friend_b_4: Button = $FriendBPanel/VBox/FriendB4
+@onready var friend_b_5: Button = $FriendBPanel/VBox/FriendB5
+@onready var friend_b_6: Button = $FriendBPanel/VBox/FriendB6
 
 const FOREST = preload("res://Assets/parallax/forest.png")
 
@@ -101,6 +115,9 @@ var pokemon
 var EnemyCurrentHP
 var PlayerCurrentHP
 
+signal targetSelected
+signal selectTarget
+
 # Shows a message in the battle dialogue box
 func show_battle_message(msg: String) -> void:
 	if battle_dialogue_box:
@@ -121,6 +138,7 @@ func _ready() -> void:
 	TextManager.connect("playerShoutoutDone", Callable(self, "_playerShoutoutDone"))
 	TextManager.connect("enemyShoutoutQueue", Callable(self, "_enemyShoutoutQueue"))
 	TextManager.connect("enemyShoutoutDone", Callable(self, "_enemyShoutoutDone"))
+	connect("selectTarget" , Callable(self, "_selectTarget"))
 	add_to_group("BattleUI")
 	if StateManager.has_signal("switchedToPM2"):
 		StateManager.connect("switchedToPM2", Callable(self, "_on_switchedToPM2"))
@@ -265,6 +283,13 @@ func getBattlePokemon():
 func _on_battle_button_pressed() -> void:
 	battle_options.visible = false
 	move_options.visible = true
+	_cache_move_descriptions()
+	# Debug: print cached descriptions
+	if StateManager.player_party.size() > 0:
+		var moves = StateManager.player_party[0]["moves"]
+		for i in range(moves.size()):
+			print("[DEBUG] Move", i, moves[i]["name"], "description:", moves[i].get("description", "<none>"))
+
 	# Set move button text to moves from StateManager.player_party[0]
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
@@ -301,15 +326,27 @@ func _on_battle_button_pressed() -> void:
 		_set_move_button_color(move_4_button, "")
 
 func _on_move_1_button_pressed() -> void:
+	_selectTarget(0)
+	emit_signal("selectTarget")
+	await targetSelected
 	_handle_move_button(0)
 
 func _on_move_2_button_pressed() -> void:
+	_selectTarget(1)
+	emit_signal("selectTarget")
+	await targetSelected
 	_handle_move_button(1)
 
 func _on_move_3_button_pressed() -> void:
+	_selectTarget(2)
+	emit_signal("selectTarget")
+	await targetSelected
 	_handle_move_button(2)
 
 func _on_move_4_button_pressed() -> void:
+	_selectTarget(3)
+	emit_signal("selectTarget")
+	await targetSelected
 	_handle_move_button(3)
 
 
@@ -393,8 +430,6 @@ func _handle_move_button(move_index: int) -> void:
 								enemy_pokemon.Move3PP = max(0, enemy_pokemon.Move3PP - 1)
 							4:
 								enemy_pokemon.Move4PP = max(0, enemy_pokemon.Move4PP - 1)
-					else:
-						print("[DEBUG] Move scene does not exist for:", enemy_move_scene_path)
 	_last_enemy_move_name = enemy_move_name
 
 	var damage_calculator = get_node("/root").get("damage_calculator") if has_node("/root/damage_calculator") else preload("res://Managers/damage_calculator.gd").new()
@@ -598,6 +633,7 @@ func _handle_move_button(move_index: int) -> void:
 					await get_tree().create_timer(0.1).timeout
 					TextManager.emit_signal("enemyShoutoutQueue")
 					await TextManager.enemyShoutoutDone
+
 	else:
 		# Only one move present
 		if player_move_instance:
@@ -769,23 +805,35 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 func refresh_move_buttons() -> void:
 	if StateManager.player_party.size() > 0:
 		var moves = StateManager.player_party[0]["moves"]
-		if moves.size() > 0:
-			move_1_button.text = moves[0]["name"] + " (" + str(moves[0]["pp"]) + "/" + str(moves[0]["max_pp"]) + ")"
-		else:
-			move_1_button.text = "-"
-		if moves.size() > 1:
-			move_2_button.text = moves[1]["name"] + " (" + str(moves[1]["pp"]) + "/" + str(moves[1]["max_pp"]) + ")"
-		else:
-			move_2_button.text = "-"
-		if moves.size() > 2:
-			move_3_button.text = moves[2]["name"] + " (" + str(moves[2]["pp"]) + "/" + str(moves[2]["max_pp"]) + ")"
-		else:
-			move_3_button.text = "-"
-		if moves.size() > 3:
-			move_4_button.text = moves[3]["name"] + " (" + str(moves[3]["pp"]) + "/" + str(moves[3]["max_pp"]) + ")"
-		else:
-			move_4_button.text = "-"
-
+		for i in range(moves.size()):
+			# Set move button text
+			var move_text = moves[i]["name"] + " (" + str(moves[i]["pp"]) + "/" + str(moves[i]["max_pp"]) + ")"
+			match i:
+				0:
+					move_1_button.text = move_text
+					# Set description for move 1
+					if "moveDescription" in moves[i]:
+						move_1_button.text = moves[i]["moveDescription"]
+					else:
+						move_1_button.text = ""
+				1:
+					move_2_button.text = move_text
+					if "moveDescription" in moves[i]:
+						move_2_button.text = moves[i]["moveDescription"]
+					else:
+						move_2_button.text = ""
+				2:
+					move_3_button.text = move_text
+					if "moveDescription" in moves[i]:
+						move_3_button.text = moves[i]["moveDescription"]
+					else:
+						move_3_button.text = ""
+				3:
+					move_4_button.text = move_text
+					if "moveDescription" in moves[i]:
+						move_4_button.text = moves[i]["moveDescription"]
+					else:
+						move_4_button.text = ""
 		# Set move button colors after setting text
 		_set_move_button_color(move_1_button, _get_move_type(moves[0]) if moves.size() > 0 else "")
 		_set_move_button_color(move_2_button, _get_move_type(moves[1]) if moves.size() > 1 else "")
@@ -796,6 +844,10 @@ func refresh_move_buttons() -> void:
 		move_2_button.text = "-"
 		move_3_button.text = "-"
 		move_4_button.text = "-"
+		move_1_button.hint_tooltip = ""
+		move_2_button.hint_tooltip = ""
+		move_3_button.hint_tooltip = ""
+		move_4_button.hint_tooltip = ""
 		_set_move_button_color(move_1_button, "")
 		_set_move_button_color(move_2_button, "")
 		_set_move_button_color(move_3_button, "")
@@ -994,13 +1046,10 @@ func _set_move_button_color(button: Button, move_type: String) -> void:
 	var stylebox = StyleBoxFlat.new()
 	match move_type:
 		"Normal":
-			print("[DEBUG] -> Normal type: grey")
 			stylebox.bg_color = Color(0.7, 0.7, 0.7, 0.8) # grey, opaque
 		"Fire":
-			print("[DEBUG] -> Fire type: red")
 			stylebox.bg_color = Color(1, 0.2, 0.2, 0.8) # red, opaque
 		_:
-			print("[DEBUG] -> Default/Other type: white semi-transparent")
 			stylebox.bg_color = Color(0.8, 0.8, 0.8, 0.1) # white, semi-transparent
 	button.add_theme_stylebox_override("normal", stylebox)
 	button.add_theme_stylebox_override("hover", stylebox)
@@ -1083,77 +1132,98 @@ func _on_move_go_back_pressed() -> void:
 	battle_options.visible = true
 
 
-# Returns a list of Pokémon nodes/dicts that are valid targets for a move
-func target_pokemon(target_type: String, user, allies: Array, enemies: Array) -> Array:
-	match target_type:
-		"one_enemy":
-			# Target a single enemy (default: first alive enemy)
-			for enemy in enemies:
-				if enemy and (not "is_fainted" in enemy or not enemy.is_fainted):
-					return [enemy]
-			return []
-		"adjacent_enemies":
-			# Target adjacent enemies (assume user is in allies, find index)
-			var idx = allies.find(user)
-			var targets = []
-			if idx != -1:
-				if idx < enemies.size():
-					targets.append(enemies[idx])
-				if idx > 0:
-					targets.append(enemies[idx-1])
-				if idx+1 < enemies.size():
-					targets.append(enemies[idx+1])
-			return targets
-		"all_enemies":
-			var result = []
-			for e in enemies:
-				if e and (not "is_fainted" in e or not e.is_fainted):
-					result.append(e)
-			return result
-		"random_enemy":
-			var valid = []
-			for e in enemies:
-				if e and (not "is_fainted" in e or not e.is_fainted):
-					valid.append(e)
-			if valid.size() > 0:
-				return [valid[randi() % valid.size()]]
-			return []
-		"self":
-			return [user]
-		"ally":
-			var result = []
-			for a in allies:
-				if a != user and (not "is_fainted" in a or not a.is_fainted):
-					result.append(a)
-			return result
-		"adjacent_allies":
-			var idx = allies.find(user)
-			var targets = []
-			if idx > 0:
-				targets.append(allies[idx-1])
-			if idx+1 < allies.size():
-				targets.append(allies[idx+1])
-			return targets
-		"all_allies":
-			var result = []
-			for a in allies:
-				if a and (not "is_fainted" in a or not a.is_fainted):
-					result.append(a)
-			return result
-		"everyone":
-			var result = []
-			for x in allies:
-				if x and (not "is_fainted" in x or not x.is_fainted):
-					result.append(x)
-			for x in enemies:
-				if x and (not "is_fainted" in x or not x.is_fainted):
-					result.append(x)
-			return result
-		_:
-			return []
+func _selectTarget(selected_move_index := 0):
+	# Show the battle dialogue box and set the text to the move description (if available)
+	battle_dialogue_box.visible = true
+	# Try to get the move description from the currently selected move (if available)
+	var move_desc = ""
+	if StateManager.player_party.size() > 0:
+		var moves = StateManager.player_party[0]["moves"]
+		if moves.size() > 0:
+			var move_index = clamp(selected_move_index, 0, moves.size() - 1)
+			if moves[move_index].has("description"):
+				move_desc = moves[move_index]["description"]
+			else:
+				move_desc = "No description."
+		else:
+			move_desc = "No description."
+	else:
+		move_desc = "No description."
+	battle_text.text = move_desc
 
-func target_inBattle(move, user, allies: Array, enemies: Array) -> Array:
-	var target_type = "one_enemy"
-	if "target_type" in move:
-		target_type = move.target_type
-	return target_pokemon(target_type, user, allies, enemies)
+	# Hide all target buttons by default
+	for i in range(1, 7):
+		var enemy_btn = get_node_or_null("EnemyBPanel/VBox/EnemyB%d" % i)
+		if enemy_btn:
+			enemy_btn.hide()
+		var friend_btn = get_node_or_null("FriendBPanel/VBox/FriendB%d" % i)
+		if friend_btn:
+			friend_btn.hide()
+	enemy_b_panel.visible = false
+	friend_b_panel.visible = false
+
+	# Check for enemies and show enemy target buttons with names
+	var enemies = get_tree().get_nodes_in_group("enemy_pokemon")
+	if enemies.size() > 0:
+		enemy_b_panel.visible = true
+		for i in range(min(enemies.size(), 6)):
+			var btn = get_node_or_null("EnemyBPanel/VBox/EnemyB%d" % (i+1))
+			if btn:
+				btn.visible = true
+				btn.text = enemies[i].Name if "Name" in enemies[i] else "Enemy %d" % (i+1)
+
+	# Check for allies (other than self) and show friend target buttons with names
+	var friends = get_tree().get_nodes_in_group("player_pokemon")
+	if friends.size() > 1:
+		friend_b_panel.visible = true
+		var self_id = player_pokemon.get_instance_id() if player_pokemon else null
+		var friend_idx = 0
+		for i in range(friends.size()):
+			if friends[i].get_instance_id() == self_id:
+				continue
+			friend_idx += 1
+			if friend_idx > 6:
+				break
+			var btn = get_node_or_null("FriendBPanel/VBox/FriendB%d" % friend_idx)
+			if btn:
+				btn.visible = true
+				btn.text = friends[i].Name if "Name" in friends[i] else "Ally %d" % friend_idx
+
+
+func _on_enemy_b_1_pressed() -> void:
+	# target appropriate pokemon
+	emit_signal("targetSelected")
+	enemy_b_panel.visible = false
+	friend_b_panel.visible = false
+	battle_dialogue_box.visible = false
+
+
+func _on_friend_b_1_pressed() -> void:
+	# target appropriate pokemon
+	emit_signal("targetSelected")
+	enemy_b_panel.visible = false
+	friend_b_panel.visible = false
+	battle_dialogue_box.visible = false
+
+
+# Caches move descriptions from the move scenes into the move dictionary for efficient UI display
+func _cache_move_descriptions():
+	if StateManager.player_party.size() == 0:
+		return
+	var moves = StateManager.player_party[0]["moves"]
+	for i in range(moves.size()):
+		if not moves[i].has("name"):
+			continue
+		var move_name = moves[i]["name"].replace(" ", "")
+		var move_scene_path = "res://Scripts/Moves/%s.tscn" % move_name
+		if ResourceLoader.exists(move_scene_path):
+			var move_scene = load(move_scene_path)
+			var move_instance = move_scene.instantiate()
+			if move_instance.has_method("initialize_from_inspector"):
+				move_instance.initialize_from_inspector()
+			if "moveDescription" in move_instance:
+				moves[i]["description"] = move_instance.moveDescription
+			else:
+				moves[i]["description"] = "No description."
+		else:
+			moves[i]["description"] = "No description."

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cboqtvc8568x5"]
 
-[ext_resource type="Script" uid="uid://cfkq5q64daks" path="res://Scripts/Moves/TailWhip.gd" id="1_o1vw0"]
+[ext_resource type="Script" uid="uid://cfkq5q64daks" path="res://Scripts/Moves/tailwhip.gd" id="1_o1vw0"]
 
 [node name="TailWhip" type="Node2D"]
 script = ExtResource("1_o1vw0")
@@ -8,6 +8,7 @@ moveType = 0
 moveCat = "Status"
 effectRange = 5
 Effect = 1
+moveDescription = "Whip that tail"
 maxPP = 30
 moveAccuracy = 100.0
 effectedByProtect = true

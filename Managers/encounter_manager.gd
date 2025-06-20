@@ -2,7 +2,7 @@ extends Node
 
 func debugKangaskhanEncounter(level := 1, levelRange := 0):
 	# Instance Kangaskhan scene and add to the scene tree as enemy
-	var kangaskhan_scene = load("uid://w66ycrams3y7")
+	var kangaskhan_scene = load("res://Scenes/Units/WildPokemon/Kangaskhan.tscn")
 	var kangaskhan_instance = kangaskhan_scene.instantiate()
 	# Assign a unique ID to this enemy Kangaskhan (different from player's)
 	# Use a timestamp + random value for uniqueness

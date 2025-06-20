@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ci0op2hlj3y3u"]
 
 [ext_resource type="Script" uid="uid://b633av0rl4vyg" path="res://Scenes/UI/battle_ui.gd" id="1_bg7jw"]
-[ext_resource type="FontFile" uid="uid://ccfwuyjker3is" path="res://Assets/Fonts/PixelOperator8.ttf" id="2_tpxnx"]
+[ext_resource type="FontFile" uid="uid://dbr32nx46vf0d" path="res://assets/Fonts/PixelOperator8.ttf" id="2_tpxnx"]
 
 [node name="BattleUI" type="Control"]
 layout_mode = 3
@@ -605,6 +605,104 @@ offset_right = 73.0
 offset_bottom = 8.0
 color = Color(0, 0.768627, 0, 1)
 
+[node name="EnemyBPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1474.0
+offset_top = 730.0
+offset_right = 1679.0
+offset_bottom = 1053.0
+
+[node name="VBox" type="VBoxContainer" parent="EnemyBPanel"]
+layout_mode = 0
+offset_right = 205.0
+offset_bottom = 364.0
+
+[node name="EnemyB1" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="EnemyB2" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="EnemyB3" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="EnemyB4" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="EnemyB5" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="EnemyB6" type="Button" parent="EnemyBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendBPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 1695.0
+offset_top = 730.0
+offset_right = 1900.0
+offset_bottom = 1053.0
+
+[node name="VBox" type="VBoxContainer" parent="FriendBPanel"]
+layout_mode = 0
+offset_right = 205.0
+offset_bottom = 364.0
+
+[node name="FriendB1" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendB2" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendB3" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendB4" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendB5" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
+[node name="FriendB6" type="Button" parent="FriendBPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Pokemon 1"
+
 [connection signal="pressed" from="BattleOptions/battleButton" to="." method="_on_battle_button_pressed"]
 [connection signal="pressed" from="BattleOptions/pokemonButton" to="." method="_on_pokemon_button_pressed"]
 [connection signal="pressed" from="BattleOptions/fleeButton" to="." method="_on_flee_button_pressed"]
@@ -614,3 +712,5 @@ color = Color(0, 0.768627, 0, 1)
 [connection signal="pressed" from="MoveOptions/move4Button" to="." method="_on_move_4_button_pressed"]
 [connection signal="pressed" from="MoveOptions/moveGoBack" to="." method="_on_move_go_back_pressed"]
 [connection signal="timeout" from="battleDialogueBox/readyToFightTimer" to="." method="_on_ready_to_fight_timer_timeout"]
+[connection signal="pressed" from="EnemyBPanel/VBox/EnemyB1" to="." method="_on_enemy_b_1_pressed"]
+[connection signal="pressed" from="FriendBPanel/VBox/FriendB1" to="." method="_on_friend_b_1_pressed"]

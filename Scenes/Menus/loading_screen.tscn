@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bey4yosdkivi5"]
 
 [ext_resource type="Script" uid="uid://0vtxkk1hhiow" path="res://Scenes/Menus/loading_screen.gd" id="1_7t3w0"]
-[ext_resource type="Texture2D" uid="uid://c0wav7oum1jc1" path="res://Assets/parallax/PlaceHolderLoadingScreen.png" id="2_18mfb"]
+[ext_resource type="Texture2D" uid="uid://dsrclrk2yvwid" path="res://Assets/parallax/PlaceHolderLoadingScreen.png" id="2_18mfb"]
 
 [node name="LoadingScreen" type="Control"]
 layout_mode = 3

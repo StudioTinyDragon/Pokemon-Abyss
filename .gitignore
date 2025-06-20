@@ -6,6 +6,5 @@
 addons2
 project_time.json
 *.tmp
-*.import
 *.pck
 export_presets.cfg
