@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7p0t5cdio80m"
-path="res://.godot/imported/ezgif-2edcb728378f3a.png-cc88dfd6b2c41c2700a1cf5d84c72f67.ctex"
+path="res://.godot/imported/ezgif-2edcb728378f3a.png-28fe50765ab3703c276b661ae9832cbe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Pokemon/AFrontView/ezgif-2edcb728378f3a.png"
-dest_files=["res://.godot/imported/ezgif-2edcb728378f3a.png-cc88dfd6b2c41c2700a1cf5d84c72f67.ctex"]
+source_file="res://Assets/Pokemon/AFrontView/ezgif-2edcb728378f3a.png"
+dest_files=["res://.godot/imported/ezgif-2edcb728378f3a.png-28fe50765ab3703c276b661ae9832cbe.ctex"]
 
 [params]
 

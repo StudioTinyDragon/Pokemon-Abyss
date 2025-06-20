@@ -684,8 +684,8 @@ func execute_move(attacker, defender, move_instance, move_name, damage_calculato
 			var dc = get_node("/root/damage_calculator")
 			_effectiveness = dc.get_type_multiplier(move_types, defender_types)
 	var _status_msg = ""
-	var attacker_types = attacker.TYP if attacker and "TYP" in attacker else []
-	var defender_types_dbg = defender.TYP if defender and "TYP" in defender else []
+	var _attacker_types = attacker.TYP if attacker and "TYP" in attacker else []
+	var _defender_types_dbg = defender.TYP if defender and "TYP" in defender else []
 	
 
 	# --- Calculate damage and store crit/effectiveness for UI shoutout ---

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbv36veybihl6"
-path="res://.godot/imported/FemaleSign.png-25a076058369e75a506ab830e5b81116.ctex"
+path="res://.godot/imported/FemaleSign.png-1c6e799e48ae0c3b212e347731b0baeb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Icons/FemaleSign.png"
-dest_files=["res://.godot/imported/FemaleSign.png-25a076058369e75a506ab830e5b81116.ctex"]
+source_file="res://Assets/Icons/FemaleSign.png"
+dest_files=["res://.godot/imported/FemaleSign.png-1c6e799e48ae0c3b212e347731b0baeb.ctex"]
 
 [params]
 

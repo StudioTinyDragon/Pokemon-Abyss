@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6kwcwpre3nwp"
-path="res://.godot/imported/kangaskhan.png-ca7fccc49b503dfba1c61b7a513020cf.ctex"
+path="res://.godot/imported/kangaskhan.png-8d928914133f4764d757119d9ee51be0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Pokemon/BackView/kangaskhan.png"
-dest_files=["res://.godot/imported/kangaskhan.png-ca7fccc49b503dfba1c61b7a513020cf.ctex"]
+source_file="res://Assets/Pokemon/BackView/kangaskhan.png"
+dest_files=["res://.godot/imported/kangaskhan.png-8d928914133f4764d757119d9ee51be0.ctex"]
 
 [params]
 
